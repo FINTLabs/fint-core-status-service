@@ -2,6 +2,9 @@ package no.fintlabs;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
+import no.fintlabs.adapter.models.AdapterContract;
+import no.fintlabs.entities.AdapterCapabilityEntity;
+import no.fintlabs.entities.AdapterContractEntity;
 import no.fintlabs.kafka.event.FintKafkaEventConsumerFactory;
 import org.springframework.stereotype.Service;
 
@@ -33,12 +36,14 @@ public class AdapterRegisterService {
 
     private Consumer<AdapterContract> onAdapterRegister() {
         return (AdapterContract adapterContract) -> {
-            log.info(adapterContract.toString());
-            adapterContract.getCapabilities().forEach(adapterCapability -> {
-                adapterCapability.setId(adapterContract.getAdapterId() + adapterCapability.getEntityUri());
-                adapterCapability.setAdapterContract(adapterContract);
-            });
-            adapterContractRepository.save(adapterContract);
+            log.trace("Register adapter {}", adapterContract.toString());
+
+            AdapterContractEntity adapterContractEntity = AdapterContractEntity.toEntity(adapterContract);
+            adapterContract.getCapabilities().forEach(adapterCapability -> adapterContractEntity
+                    .getCapabilityEntities()
+                    .add(AdapterCapabilityEntity.toEntity(adapterCapability, adapterContractEntity)));
+
+            adapterContractRepository.save(adapterContractEntity);
         };
     }
 

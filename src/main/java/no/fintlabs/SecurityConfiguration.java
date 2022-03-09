@@ -14,8 +14,10 @@ public class SecurityConfiguration {
     SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
         http
                 .authorizeExchange((authorize) -> authorize
-                        .pathMatchers("/**").hasAnyAuthority("SCOPE_fint-client")
-                        .anyExchange().authenticated()
+                        .pathMatchers("/**")
+                        .hasAnyAuthority("SCOPE_fint-adapter")
+                        .anyExchange()
+                        .authenticated()
                 )
                 .oauth2ResourceServer((resourceServer) -> resourceServer
                         .jwt(withDefaults())

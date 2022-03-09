@@ -2,6 +2,8 @@ package no.fintlabs;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
+import no.fintlabs.adapter.models.AdapterPing;
+import no.fintlabs.entities.AdapterContractEntity;
 import no.fintlabs.kafka.event.FintKafkaEventConsumerFactory;
 import org.springframework.stereotype.Service;
 
@@ -14,12 +16,10 @@ import java.util.regex.Pattern;
 public class AdapterPingService {
 
     private final FintKafkaEventConsumerFactory consumerFactory;
-    private final AdapterPingRepository adapterPingRepository;
     private final AdapterContractRepository adapterContractRepository;
 
-    public AdapterPingService(FintKafkaEventConsumerFactory consumerFactory, AdapterPingRepository adapterPingRepository, AdapterContractRepository adapterContractRepository) {
+    public AdapterPingService(FintKafkaEventConsumerFactory consumerFactory, AdapterContractRepository adapterContractRepository) {
         this.consumerFactory = consumerFactory;
-        this.adapterPingRepository = adapterPingRepository;
         this.adapterContractRepository = adapterContractRepository;
     }
 
@@ -35,17 +35,15 @@ public class AdapterPingService {
 
     private Consumer<AdapterPing> onAdapterPing() {
         return (AdapterPing adapterPing) -> {
-            log.info(adapterPing.toString());
-            AdapterContract adapterContract = adapterContractRepository.findAdapterContractByAdapterId(adapterPing.getAdapterId());
-            adapterPing.setAdapterContract(adapterContract);
-            adapterContract.setAdapterPing(adapterPing);
-            adapterPingRepository.save(adapterPing);
-            adapterContractRepository.save(adapterContract);
+            log.trace(adapterPing.toString());
+            AdapterContractEntity adapterContractEntity = adapterContractRepository.findAdapterContractByAdapterId(adapterPing.getAdapterId());
+            adapterContractEntity.setLastSeen(adapterPing.getTime());
+            adapterContractRepository.save(adapterContractEntity);
         };
     }
 
     private Consumer<JsonProcessingException> onJsonProcessingException() {
-        return (JsonProcessingException jsonProcessingExeption) -> log.error(jsonProcessingExeption.getMessage());
+        return (JsonProcessingException jsonProcessingException) -> log.error(jsonProcessingException.getMessage());
     }
 
 }
