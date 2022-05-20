@@ -35,7 +35,7 @@ spec:
     spec:
       restartPolicy: Always
       containers:
-        - image: fintlabsacr.azurecr.io/fint-core-status-service:build.${BUILD_NUMBER}_${GIT_COMMIT}
+        - image: fintlabsacr.azurecr.io/fint-core-status-service:dummy
           name: fint-core-status-service
           resources:
             limits:

@@ -39,8 +39,10 @@ dependencies {
     runtimeOnly 'org.postgresql:postgresql'
     implementation 'io.netty:netty-resolver-dns-native-macos:4.1.72.Final:osx-aarch_64'
 
-    implementation "no.fintlabs:fint-kafka:0-SNAPSHOT"
-    implementation 'no.fintlabs:fint-core-infra-models:1.0.0-rc-1'
+    implementation "no.fintlabs:fint-kafka:2.1.0"
+    implementation 'no.fintlabs:fint-core-infra-models:1.0.0-rc-3'
+    //implementation 'no.fintlabs:fint-core-infra-models:0-SNAPSHOT'
+
 
 
     implementation 'org.springdoc:springdoc-openapi-webflux-ui:1.6.6'

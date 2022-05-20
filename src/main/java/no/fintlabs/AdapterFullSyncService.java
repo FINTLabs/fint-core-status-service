@@ -1,8 +1,8 @@
 package no.fintlabs;
 
 import lombok.extern.slf4j.Slf4j;
-import no.fintlabs.adapter.models.AdapterPing;
-import no.fintlabs.entities.AdapterContractEntity;
+import no.fintlabs.adapter.models.SyncPageMetadata;
+import no.fintlabs.entities.AdapterFullSyncEntity;
 import no.fintlabs.kafka.common.topic.pattern.FormattedTopicComponentPattern;
 import no.fintlabs.kafka.common.topic.pattern.ValidatedTopicComponentPattern;
 import no.fintlabs.kafka.event.EventConsumerFactoryService;
@@ -16,24 +16,21 @@ import java.util.function.Consumer;
 
 @Slf4j
 @Service
-public class AdapterPingService {
+public class AdapterFullSyncService {
 
     private final EventConsumerFactoryService consumerFactory;
-    private final AdapterContractRepository adapterContractRepository;
+    private final AdapterFullSyncRepository adapterFullSyncRepository;
 
-    public AdapterPingService(EventConsumerFactoryService consumerFactory, AdapterContractRepository adapterContractRepository) {
+    public AdapterFullSyncService(EventConsumerFactoryService consumerFactory, AdapterFullSyncRepository adapterFullSyncRepository) {
         this.consumerFactory = consumerFactory;
-        this.adapterContractRepository = adapterContractRepository;
+        this.adapterFullSyncRepository = adapterFullSyncRepository;
     }
 
     @PostConstruct
     public void init() {
-
-
         consumerFactory.createFactory(
-                //Pattern.compile(".*.fint-core\\.event\\.adapter-health"),
-                AdapterPing.class,
-                onAdapterPing(),
+                SyncPageMetadata.class,
+                onAdapterRegister(),
                 new CommonLoggingErrorHandler(),
                 false
         ).createContainer(
@@ -41,18 +38,20 @@ public class AdapterPingService {
                         .builder()
                         .orgId(FormattedTopicComponentPattern.any())
                         .domainContext(FormattedTopicComponentPattern.anyOf("fint-core"))
-                        .eventName(ValidatedTopicComponentPattern.anyOf("adapter-health"))
+                        .eventName(ValidatedTopicComponentPattern.anyOf("adapter-full-sync"))
                         .build()
         );
     }
 
-    private Consumer<ConsumerRecord<String, AdapterPing>> onAdapterPing() {
-        return (ConsumerRecord<String, AdapterPing> record) -> {
-            AdapterPing adapterPing = record.value();
-            log.trace(adapterPing.toString());
-            AdapterContractEntity adapterContractEntity = adapterContractRepository.findAdapterContractByAdapterId(adapterPing.getAdapterId());
-            adapterContractEntity.setLastSeen(adapterPing.getTime());
-            adapterContractRepository.save(adapterContractEntity);
+    private Consumer<ConsumerRecord<String, SyncPageMetadata>> onAdapterRegister() {
+
+        return (ConsumerRecord<String, SyncPageMetadata> record) -> {
+            SyncPageMetadata syncPageMetadata = record.value();
+            log.trace("Sync page metadata: {}", syncPageMetadata.toString());
+
+            AdapterFullSyncEntity adapterFullSyncEntity = AdapterFullSyncEntity.toEntity(syncPageMetadata);
+
+            adapterFullSyncRepository.save(adapterFullSyncEntity);
         };
     }
 }

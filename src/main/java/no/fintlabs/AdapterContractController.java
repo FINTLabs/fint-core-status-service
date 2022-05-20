@@ -26,7 +26,7 @@ public class AdapterContractController {
         List<AdapterContractEntity> adapterContractEntities = adapterContractRepository.findAll()
                 .stream()
                 .peek(adapterContractEntity -> {
-                    Duration between = Duration.between(Instant.ofEpochSecond(adapterContractEntity.getLastSeen()), Instant.now());
+                    Duration between = Duration.between(Instant.ofEpochMilli(adapterContractEntity.getLastSeen()), Instant.now());
                     adapterContractEntity.setConsiderHealthy(between.toMinutes() <= adapterContractEntity.getPingIntervalInMinutes());
                 })
                 .collect(Collectors.toList());
