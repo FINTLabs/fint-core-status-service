@@ -13,14 +13,14 @@ class AdapterContractEntitySpec extends Specification {
                 .adapterId("https://test.com/test.com/test/test")
                 .pingIntervalInMinutes(10)
                 .time(System.currentTimeMillis())
-                .capabilities(Collections.emptyList())
+                .capabilities(Collections.emptySet())
                 .build()
 
         when:
         def contractEntity = AdapterContractEntity.toEntity(contract)
 
         then:
-        contractEntity.id == ""
+        contractEntity.adapterId == "https://test.com/test.com/test/test"
     }
 }
 
