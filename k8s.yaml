@@ -54,6 +54,9 @@ spec:
               cpu: "100m"
           ports:
             - containerPort: 8080
+          envFrom:
+            - secretRef:
+                name: fint-core-status-service
           env:
             - name: TZ
               value: Europe/Oslo
