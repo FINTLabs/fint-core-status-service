@@ -20,6 +20,10 @@ jobs:
     steps:
       - uses: actions/checkout@main
 
+      - name: Get repo name
+        id: get_repo
+        run: echo ::set-output name=REPO::${GITHUB_REPOSITORY#*/}
+
       - name: Connect to Azure Container Registry (ACR)
         uses: azure/docker-login@v1
         with:
