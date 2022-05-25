@@ -42,9 +42,16 @@ spec:
         io.kompose.service: fint-core-status-service
     spec:
       restartPolicy: Always
+      volumes:
+        - name: credentials
+          secret:
+            secretName: aiven-kafka-certificates
       containers:
         - image: fintlabsacr.azurecr.io/fint-core-status-service:dummy
           name: fint-core-status-service
+          volumeMounts:
+            - name: credentials
+              mountPath: /credentials
           resources:
             limits:
               memory: "512Mi"
@@ -57,6 +64,8 @@ spec:
           envFrom:
             - secretRef:
                 name: fint-core-status-service
+            - secretRef:
+                name: aiven-kafka
           env:
             - name: TZ
               value: Europe/Oslo
