@@ -1,6 +1,9 @@
 package no.fintlabs.entities;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import no.fintlabs.adapter.models.AdapterContract;
 
 import javax.persistence.*;
@@ -23,7 +26,7 @@ public class AdapterContractEntity {
 
     private String orgId;
     private String username;
-    private int pingIntervalInMinutes;
+    private int heartbeatIntervalInMinutes;
     private long time;
     private long lastSeen;
     @Transient
@@ -34,7 +37,7 @@ public class AdapterContractEntity {
 
         adapterContractEntity.setAdapterId(adapterContract.getAdapterId());
         adapterContractEntity.setOrgId(adapterContract.getOrgId());
-        adapterContractEntity.setPingIntervalInMinutes(adapterContract.getPingIntervalInMinutes());
+        adapterContractEntity.setHeartbeatIntervalInMinutes(adapterContract.getHeartbeatIntervalInMinutes());
         adapterContractEntity.setTime(adapterContract.getTime());
         adapterContractEntity.setUsername(adapterContract.getUsername());
 

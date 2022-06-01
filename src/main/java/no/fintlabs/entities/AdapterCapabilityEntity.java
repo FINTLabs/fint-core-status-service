@@ -25,9 +25,9 @@ public class AdapterCapabilityEntity {
     @JsonIgnore
     private AdapterContractEntity adapterContractEntity;
 
-    private String domain;
+    private String domainName;
     private String packageName;
-    private String clazz;
+    private String resourceName;
     private int fullSyncIntervalInDays;
     private AdapterCapability.DeltaSyncInterval deltaSyncInterval;
 
@@ -35,9 +35,9 @@ public class AdapterCapabilityEntity {
         AdapterCapabilityEntity adapterCapabilityEntity = new AdapterCapabilityEntity();
 
         adapterCapabilityEntity.setId(adapterContract.getAdapterId() + adapterCapability.getEntityUri());
-        adapterCapabilityEntity.setDomain(adapterCapability.getDomain());
+        adapterCapabilityEntity.setDomainName(adapterCapability.getDomainName());
         adapterCapabilityEntity.setPackageName(adapterCapability.getPackageName());
-        adapterCapabilityEntity.setClazz(adapterCapability.getClazz());
+        adapterCapabilityEntity.setResourceName(adapterCapability.getResourceName());
         adapterCapabilityEntity.setDeltaSyncInterval(adapterCapability.getDeltaSyncInterval());
         adapterCapabilityEntity.setFullSyncIntervalInDays(adapterCapability.getFullSyncIntervalInDays());
         adapterCapabilityEntity.setAdapterContractEntity(adapterContract);

@@ -27,7 +27,7 @@ public class AdapterContractController {
                 .stream()
                 .peek(adapterContractEntity -> {
                     Duration between = Duration.between(Instant.ofEpochMilli(adapterContractEntity.getLastSeen()), Instant.now());
-                    adapterContractEntity.setConsiderHealthy(between.toMinutes() <= adapterContractEntity.getPingIntervalInMinutes());
+                    adapterContractEntity.setConsiderHealthy(between.toMinutes() <= adapterContractEntity.getHeartbeatIntervalInMinutes());
                 })
                 .collect(Collectors.toList());
         return ResponseEntity.ok(adapterContractEntities);

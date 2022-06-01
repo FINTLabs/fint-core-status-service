@@ -1,7 +1,7 @@
 package no.fintlabs;
 
 import lombok.extern.slf4j.Slf4j;
-import no.fintlabs.adapter.models.AdapterPing;
+import no.fintlabs.adapter.models.AdapterHeartbeat;
 import no.fintlabs.entities.AdapterContractEntity;
 import no.fintlabs.kafka.common.topic.pattern.FormattedTopicComponentPattern;
 import no.fintlabs.kafka.common.topic.pattern.ValidatedTopicComponentPattern;
@@ -16,12 +16,12 @@ import java.util.function.Consumer;
 
 @Slf4j
 @Service
-public class AdapterPingService {
+public class AdapterHeartbeatService {
 
     private final EventConsumerFactoryService consumerFactory;
     private final AdapterContractRepository adapterContractRepository;
 
-    public AdapterPingService(EventConsumerFactoryService consumerFactory, AdapterContractRepository adapterContractRepository) {
+    public AdapterHeartbeatService(EventConsumerFactoryService consumerFactory, AdapterContractRepository adapterContractRepository) {
         this.consumerFactory = consumerFactory;
         this.adapterContractRepository = adapterContractRepository;
     }
@@ -31,9 +31,8 @@ public class AdapterPingService {
 
 
         consumerFactory.createFactory(
-                //Pattern.compile(".*.fint-core\\.event\\.adapter-health"),
-                AdapterPing.class,
-                onAdapterPing(),
+                AdapterHeartbeat.class,
+                onAdapterHeartbeat(),
                 new CommonLoggingErrorHandler(),
                 false
         ).createContainer(
@@ -46,12 +45,12 @@ public class AdapterPingService {
         );
     }
 
-    private Consumer<ConsumerRecord<String, AdapterPing>> onAdapterPing() {
-        return (ConsumerRecord<String, AdapterPing> record) -> {
-            AdapterPing adapterPing = record.value();
-            log.trace(adapterPing.toString());
-            AdapterContractEntity adapterContractEntity = adapterContractRepository.findAdapterContractByAdapterId(adapterPing.getAdapterId());
-            adapterContractEntity.setLastSeen(adapterPing.getTime());
+    private Consumer<ConsumerRecord<String, AdapterHeartbeat>> onAdapterHeartbeat() {
+        return (ConsumerRecord<String, AdapterHeartbeat> record) -> {
+            AdapterHeartbeat adapterHeartbeat = record.value();
+            log.trace(adapterHeartbeat.toString());
+            AdapterContractEntity adapterContractEntity = adapterContractRepository.findAdapterContractByAdapterId(adapterHeartbeat.getAdapterId());
+            adapterContractEntity.setLastSeen(adapterHeartbeat.getTime());
             adapterContractRepository.save(adapterContractEntity);
         };
     }
