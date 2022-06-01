@@ -11,7 +11,7 @@ class AdapterContractEntitySpec extends Specification {
                 .username("test@adapter.test.com")
                 .orgId("test.com")
                 .adapterId("https://test.com/test.com/test/test")
-                .pingIntervalInMinutes(10)
+                .heartbeatIntervalInMinutes(10)
                 .time(System.currentTimeMillis())
                 .capabilities(Collections.emptySet())
                 .build()
