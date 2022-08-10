@@ -64,7 +64,7 @@ jobs:
             k8s/beta.yaml
           images: |
             ${{ env.REGISTRY_NAME }}.azurecr.io/${{steps.get_repo.outputs.REPO}}:${{ github.sha }}
-          namespace: ${{ env.NAMESPACE }}
+          namespace: fint-core
           action: deploy
 
       ## Api cluster ##
