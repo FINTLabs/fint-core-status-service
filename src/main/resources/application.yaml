@@ -4,6 +4,8 @@ fint:
     enable-ssl: true
 
 spring:
+  webflux:
+    base-path: /status
   kafka:
     consumer:
       group-id: status-service
