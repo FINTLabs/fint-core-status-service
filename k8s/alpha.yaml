@@ -9,8 +9,6 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  annotations:
-    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
   labels:
     io.kompose.service: fint-core-status-service
   name: fint-core-status-service
@@ -18,9 +16,25 @@ spec:
   ports:
     - name: "8080"
       port: 8080
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     io.kompose.service: fint-core-status-service
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: fint-core-status-service
+  #namespace: default
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: Host(`beta.felleskomponent.no`) && PathPrefix(`/status`)
+      kind: Rule
+      services:
+        - name: fint-core-status-service
+          #namespace: default
+          port: 8080
 ---
 apiVersion: apps/v1
 kind: Deployment
