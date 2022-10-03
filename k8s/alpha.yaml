@@ -29,7 +29,7 @@ spec:
   entryPoints:
     - web
   routes:
-    - match: Host(`beta.felleskomponent.no`) && PathPrefix(`/status`)
+    - match: Host(`alpha.felleskomponent.no`) && PathPrefix(`/status`)
       kind: Rule
       services:
         - name: fint-core-status-service
