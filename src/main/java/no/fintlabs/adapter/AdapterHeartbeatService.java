@@ -1,9 +1,9 @@
-package no.fintlabs;
+package no.fintlabs.adapter;
 
 import lombok.extern.slf4j.Slf4j;
-import no.fintlabs.adapter.models.AdapterContract;
-import no.fintlabs.entities.AdapterCapabilityEntity;
-import no.fintlabs.entities.AdapterContractEntity;
+import no.fintlabs.adapter.contract.AdapterContractRepository;
+import no.fintlabs.adapter.models.AdapterHeartbeat;
+import no.fintlabs.adapter.entities.AdapterContractEntity;
 import no.fintlabs.kafka.common.topic.pattern.FormattedTopicComponentPattern;
 import no.fintlabs.kafka.common.topic.pattern.ValidatedTopicComponentPattern;
 import no.fintlabs.kafka.event.EventConsumerFactoryService;
@@ -17,22 +17,23 @@ import java.util.function.Consumer;
 
 @Slf4j
 @Service
-public class AdapterRegisterService {
+public class AdapterHeartbeatService {
 
     private final EventConsumerFactoryService consumerFactory;
     private final AdapterContractRepository adapterContractRepository;
 
-    public AdapterRegisterService(EventConsumerFactoryService consumerFactory, AdapterContractRepository adapterContractRepository) {
+    public AdapterHeartbeatService(EventConsumerFactoryService consumerFactory, AdapterContractRepository adapterContractRepository) {
         this.consumerFactory = consumerFactory;
         this.adapterContractRepository = adapterContractRepository;
     }
 
     @PostConstruct
     public void init() {
+
+
         consumerFactory.createFactory(
-                //Pattern.compile(".*.fint-core\\.event\\.adapter-register"),
-                AdapterContract.class,
-                onAdapterRegister(),
+                AdapterHeartbeat.class,
+                onAdapterHeartbeat(),
                 new CommonLoggingErrorHandler(),
                 false
         ).createContainer(
@@ -40,22 +41,17 @@ public class AdapterRegisterService {
                         .builder()
                         .orgId(FormattedTopicComponentPattern.any())
                         .domainContext(FormattedTopicComponentPattern.anyOf("fint-core"))
-                        .eventName(ValidatedTopicComponentPattern.anyOf("adapter-register"))
+                        .eventName(ValidatedTopicComponentPattern.anyOf("adapter-health"))
                         .build()
         );
     }
 
-    private Consumer<ConsumerRecord<String, AdapterContract>> onAdapterRegister() {
-        return (ConsumerRecord<String, AdapterContract> record) -> {
-            AdapterContract adapterContract = record.value();
-            log.trace("Register adapter {}", adapterContract.toString());
-
-            AdapterContractEntity adapterContractEntity = AdapterContractEntity.toEntity(adapterContract);
-            adapterContractEntity.setLastSeen(System.currentTimeMillis());
-            adapterContract.getCapabilities().forEach(adapterCapability -> adapterContractEntity
-                    .getCapabilityEntities()
-                    .add(AdapterCapabilityEntity.toEntity(adapterCapability, adapterContractEntity)));
-
+    private Consumer<ConsumerRecord<String, AdapterHeartbeat>> onAdapterHeartbeat() {
+        return (ConsumerRecord<String, AdapterHeartbeat> record) -> {
+            AdapterHeartbeat adapterHeartbeat = record.value();
+            log.trace(adapterHeartbeat.toString());
+            AdapterContractEntity adapterContractEntity = adapterContractRepository.findAdapterContractByAdapterId(adapterHeartbeat.getAdapterId());
+            adapterContractEntity.setLastSeen(adapterHeartbeat.getTime());
             adapterContractRepository.save(adapterContractEntity);
         };
     }

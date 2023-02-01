@@ -1,8 +1,8 @@
-package no.fintlabs;
+package no.fintlabs.adapter.fullsync;
 
 import lombok.extern.slf4j.Slf4j;
+import no.fintlabs.adapter.entities.AdapterFullSyncEntity;
 import no.fintlabs.adapter.models.SyncPageMetadata;
-import no.fintlabs.entities.AdapterFullSyncEntity;
 import no.fintlabs.kafka.common.topic.pattern.FormattedTopicComponentPattern;
 import no.fintlabs.kafka.common.topic.pattern.ValidatedTopicComponentPattern;
 import no.fintlabs.kafka.event.EventConsumerFactoryService;

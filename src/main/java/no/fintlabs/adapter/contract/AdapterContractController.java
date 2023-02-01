@@ -1,6 +1,6 @@
-package no.fintlabs;
+package no.fintlabs.adapter.contract;
 
-import no.fintlabs.entities.AdapterContractEntity;
+import no.fintlabs.adapter.entities.AdapterContractEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
