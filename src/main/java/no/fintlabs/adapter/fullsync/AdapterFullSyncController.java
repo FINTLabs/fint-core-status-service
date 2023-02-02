@@ -1,6 +1,6 @@
-package no.fintlabs;
+package no.fintlabs.adapter.fullsync;
 
-import no.fintlabs.entities.AdapterFullSyncEntity;
+import no.fintlabs.adapter.entities.AdapterFullSyncEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;

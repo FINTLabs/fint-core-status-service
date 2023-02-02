@@ -1,6 +1,6 @@
-package no.fintlabs;
+package no.fintlabs.adapter.fullsync;
 
-import no.fintlabs.entities.AdapterFullSyncEntity;
+import no.fintlabs.adapter.entities.AdapterFullSyncEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package no.fintlabs.entities;
+package no.fintlabs.adapter.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;

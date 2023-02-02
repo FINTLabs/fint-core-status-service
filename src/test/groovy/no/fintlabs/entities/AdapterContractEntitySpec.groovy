@@ -1,5 +1,6 @@
 package no.fintlabs.entities
 
+import no.fintlabs.adapter.entities.AdapterContractEntity
 import no.fintlabs.adapter.models.AdapterContract
 import spock.lang.Specification
 
