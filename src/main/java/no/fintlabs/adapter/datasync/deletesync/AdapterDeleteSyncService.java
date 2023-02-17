@@ -1,7 +1,7 @@
-package no.fintlabs.adapter.fullsync;
+package no.fintlabs.adapter.datasync.deletesync;
 
 import lombok.extern.slf4j.Slf4j;
-import no.fintlabs.adapter.entities.AdapterFullSyncEntity;
+import no.fintlabs.adapter.entities.AdapterDeleteSyncEntity;
 import no.fintlabs.adapter.models.SyncPageMetadata;
 import no.fintlabs.kafka.common.topic.pattern.FormattedTopicComponentPattern;
 import no.fintlabs.kafka.common.topic.pattern.ValidatedTopicComponentPattern;
@@ -16,21 +16,21 @@ import java.util.function.Consumer;
 
 @Slf4j
 @Service
-public class AdapterFullSyncService {
+public class AdapterDeleteSyncService {
 
     private final EventConsumerFactoryService consumerFactory;
-    private final AdapterFullSyncRepository adapterFullSyncRepository;
+    private final AdapterDeleteSyncRepository adapterDeleteSyncRepository;
 
-    public AdapterFullSyncService(EventConsumerFactoryService consumerFactory, AdapterFullSyncRepository adapterFullSyncRepository) {
+    public AdapterDeleteSyncService(EventConsumerFactoryService consumerFactory, AdapterDeleteSyncRepository adapterDeleteSyncRepository) {
         this.consumerFactory = consumerFactory;
-        this.adapterFullSyncRepository = adapterFullSyncRepository;
+        this.adapterDeleteSyncRepository = adapterDeleteSyncRepository;
     }
 
     @PostConstruct
     public void init() {
         consumerFactory.createFactory(
                 SyncPageMetadata.class,
-                onAdapterRegister(),
+                onAdapterDeleteSync(),
                 new CommonLoggingErrorHandler(),
                 false
         ).createContainer(
@@ -38,20 +38,19 @@ public class AdapterFullSyncService {
                         .builder()
                         .orgId(FormattedTopicComponentPattern.any())
                         .domainContext(FormattedTopicComponentPattern.anyOf("fint-core"))
-                        .eventName(ValidatedTopicComponentPattern.anyOf("adapter-full-sync"))
+                        .eventName(ValidatedTopicComponentPattern.anyOf("adapter-delete-sync"))
                         .build()
         );
     }
 
-    private Consumer<ConsumerRecord<String, SyncPageMetadata>> onAdapterRegister() {
-
+    private Consumer<ConsumerRecord<String, SyncPageMetadata>> onAdapterDeleteSync() {
         return (ConsumerRecord<String, SyncPageMetadata> record) -> {
             SyncPageMetadata syncPageMetadata = record.value();
             log.trace("Sync page metadata: {}", syncPageMetadata.toString());
 
-            AdapterFullSyncEntity adapterFullSyncEntity = AdapterFullSyncEntity.toEntity(syncPageMetadata);
+            AdapterDeleteSyncEntity adapterDeleteSyncEntity = AdapterDeleteSyncEntity.toEntity(syncPageMetadata);
 
-            adapterFullSyncRepository.save(adapterFullSyncEntity);
+            adapterDeleteSyncRepository.save(adapterDeleteSyncEntity);
         };
     }
 }

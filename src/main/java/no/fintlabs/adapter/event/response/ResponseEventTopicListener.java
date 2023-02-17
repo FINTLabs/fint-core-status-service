@@ -1,7 +1,7 @@
 package no.fintlabs.adapter.event.response;
 
 import lombok.extern.slf4j.Slf4j;
-import no.fintlabs.adapter.entities.ResponseFintEventEntity;
+import no.fintlabs.adapter.entities.ConsumerResponseEntity;
 import no.fintlabs.adapter.models.ResponseFintEvent;
 import no.fintlabs.kafka.common.topic.pattern.FormattedTopicComponentPattern;
 import no.fintlabs.kafka.common.topic.pattern.ValidatedTopicComponentPattern;
@@ -51,8 +51,8 @@ public class ResponseEventTopicListener {
                 consumerRecord.value().getOrgId(),
                 consumerRecord.value().getCorrId());
 
-        ResponseFintEventEntity responseFintEventEntity = ResponseFintEventEntity.toEntity(consumerRecord.value());
-        responseEventRepository.save(responseFintEventEntity);
+        ConsumerResponseEntity consumerResponseEntity = ConsumerResponseEntity.toEntity(consumerRecord.value());
+        responseEventRepository.save(consumerResponseEntity);
     }
 
 }

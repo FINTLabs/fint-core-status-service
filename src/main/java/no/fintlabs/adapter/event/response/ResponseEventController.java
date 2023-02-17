@@ -1,6 +1,6 @@
 package no.fintlabs.adapter.event.response;
 
-import no.fintlabs.adapter.entities.ResponseFintEventEntity;
+import no.fintlabs.adapter.entities.ConsumerResponseEntity;
 import no.fintlabs.adapter.models.ResponseFintEvent;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +21,7 @@ public class ResponseEventController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ResponseFintEventEntity>> getResponses(@RequestBody(required = false) ResponseFintEvent responseFintEvent) {
+    public ResponseEntity<List<ConsumerResponseEntity>> getResponses(@RequestBody(required = false) ResponseFintEvent responseFintEvent) {
         if (responseFintEvent != null) {
             return ResponseEntity.ok(responseEventRepository.findResponseFintEventEntitiesByCorrId(responseFintEvent.getCorrId()));
         }

@@ -12,8 +12,8 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "adapter_event_response")
-public class ResponseFintEventEntity {
+@Table(name = "consumer_event_response")
+public class ConsumerResponseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -29,8 +29,8 @@ public class ResponseFintEventEntity {
     private boolean rejected;
     private String rejectReason;
 
-    public static ResponseFintEventEntity toEntity(ResponseFintEvent responseFintEvent) {
-        return ResponseFintEventEntity.builder()
+    public static ConsumerResponseEntity toEntity(ResponseFintEvent responseFintEvent) {
+        return ConsumerResponseEntity.builder()
                 .corrId(responseFintEvent.getCorrId())
                 .orgId(responseFintEvent.getOrgId())
                 .adapterId(responseFintEvent.getAdapterId())
@@ -41,5 +41,4 @@ public class ResponseFintEventEntity {
                 .rejectReason(responseFintEvent.getRejectReason())
                 .build();
     }
-
 }
