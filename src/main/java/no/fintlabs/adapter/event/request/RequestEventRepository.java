@@ -1,14 +1,14 @@
 package no.fintlabs.adapter.event.request;
 
-import no.fintlabs.adapter.entities.RequestFintEventEntity;
+import no.fintlabs.adapter.entities.ConsumerRequestEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface RequestEventRepository extends JpaRepository<RequestFintEventEntity, String> {
+public interface RequestEventRepository extends JpaRepository<ConsumerRequestEntity, String> {
 
-    public List<RequestFintEventEntity> findRequestFintEventEntitiesByCorrId(String corrId);
+    public List<ConsumerRequestEntity> findRequestFintEventEntitiesByCorrId(String corrId);
 
 }

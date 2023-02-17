@@ -1,4 +1,4 @@
-package no.fintlabs.adapter.fullsync;
+package no.fintlabs.adapter.datasync.fullsync;
 
 import no.fintlabs.adapter.entities.AdapterFullSyncEntity;
 import org.springframework.data.domain.Page;
@@ -20,7 +20,7 @@ public class AdapterFullSyncController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<AdapterFullSyncEntity>> getAdapterContracts(
+    public ResponseEntity<Page<AdapterFullSyncEntity>> getAdapterFullSync(
             @RequestParam(value = "page", defaultValue = "0") int pageIndex,
             @RequestParam(value = "size", defaultValue = "50") int pageSize) {
 

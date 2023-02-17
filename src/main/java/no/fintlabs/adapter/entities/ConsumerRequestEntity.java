@@ -13,8 +13,8 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "adapter_event_request")
-public class RequestFintEventEntity {
+@Table(name = "consumer_event_request")
+public class ConsumerRequestEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -30,8 +30,8 @@ public class RequestFintEventEntity {
     private long created;
     private long timeToLive;
 
-    public static RequestFintEventEntity toEntity(RequestFintEvent requestFintEvent) {
-        return RequestFintEventEntity.builder()
+    public static ConsumerRequestEntity toEntity(RequestFintEvent requestFintEvent) {
+        return ConsumerRequestEntity.builder()
                 .corrId(requestFintEvent.getCorrId())
                 .orgId(requestFintEvent.getOrgId())
                 .domainName(requestFintEvent.getDomainName())
@@ -42,5 +42,4 @@ public class RequestFintEventEntity {
                 .timeToLive(requestFintEvent.getTimeToLive())
                 .build();
     }
-
 }
