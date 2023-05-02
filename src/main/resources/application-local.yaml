@@ -15,9 +15,9 @@ spring:
         jwt:
           issuer-uri: https://idp.felleskomponent.no/nidp/oauth/nam
   datasource:
-    url: ${fint.database.url}
-    username: ${fint.database.username}
-    password: ${fint.database.password}
+    url: jdbc:postgresql://localhost:5432/fint_core_status_service
+    username: postgres
+    password: password
   jpa:
     properties:
       hibernate:
