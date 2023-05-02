@@ -13,7 +13,7 @@ metadata:
     fintlabs.no/org-id: fintlabs.no
 spec:
   orgId: fintlabs.no
-  image: fintlabsacr.azurecr.io/fint-core-status-service:254170f9309525298c8ae22baf193dcc00401717
+  image: FINTLabs/fint-core-status-service
   resources:
     limits:
       memory: "512Mi"
