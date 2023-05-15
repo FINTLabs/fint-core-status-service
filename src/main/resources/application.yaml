@@ -17,6 +17,9 @@ spring:
   kafka:
     consumer:
       group-id: status-service
+  profiles:
+    include:
+      - db
 management:
   endpoints:
     web:
