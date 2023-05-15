@@ -9,6 +9,7 @@ import no.fintlabs.kafka.common.topic.pattern.ValidatedTopicComponentPattern;
 import no.fintlabs.kafka.event.EventConsumerFactoryService;
 import no.fintlabs.kafka.event.topic.EventTopicNamePatternParameters;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.listener.CommonLoggingErrorHandler;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,9 @@ import java.util.function.Consumer;
 @Slf4j
 @Service
 public class AdapterHeartbeatService {
+
+    @Value("${spring.datasource.url}")
+    private String url;
 
     private final EventConsumerFactoryService consumerFactory;
     private final AdapterContractRepository adapterContractRepository;
@@ -29,7 +33,7 @@ public class AdapterHeartbeatService {
 
     @PostConstruct
     public void init() {
-
+        log.info("Datasource url: ", url);
 
         consumerFactory.createFactory(
                 AdapterHeartbeat.class,

@@ -28,6 +28,7 @@ spec:
         topic: 'fintlabs-no.fint-core.*'
   database:
     enabled: true
+    database: fint-core
   ingress:
     enabled: true
   env:
