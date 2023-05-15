@@ -1,19 +1,24 @@
 fint:
   kafka:
     application-id: status-service
-    enable-ssl: true
+    enable-ssl: false
+    default-replicas: 1
+    topic:
+      org-id: fintlabs.no
+      domain-context: fint-core
 
 spring:
-  webflux:
-    base-path: /status
-  kafka:
-    consumer:
-      group-id: status-service
   security:
     oauth2:
       resourceserver:
         jwt:
           issuer-uri: https://idp.felleskomponent.no/nidp/oauth/nam
+  webflux:
+    base-path: /status
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: status-service
   datasource:
     url: jdbc:postgresql://localhost:5432/fint_core_status_service
     username: postgres
