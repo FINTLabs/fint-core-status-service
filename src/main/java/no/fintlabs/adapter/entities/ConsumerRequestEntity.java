@@ -3,6 +3,7 @@ package no.fintlabs.adapter.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import no.fintlabs.adapter.models.OperationType;
 import no.fintlabs.adapter.models.RequestFintEvent;
 
 import javax.persistence.*;
@@ -26,7 +27,7 @@ public class ConsumerRequestEntity {
     private String domainName;
     private String packageName;
     private String resourceName;
-    private String operation;
+    private OperationType operation;
     private long created;
     private long timeToLive;
 
@@ -37,7 +38,7 @@ public class ConsumerRequestEntity {
                 .domainName(requestFintEvent.getDomainName())
                 .packageName(requestFintEvent.getPackageName())
                 .resourceName(requestFintEvent.getResourceName())
-                .operation(requestFintEvent.getOperation().toString())
+                .operation(requestFintEvent.getOperationType())
                 .created(requestFintEvent.getCreated())
                 .timeToLive(requestFintEvent.getTimeToLive())
                 .build();
