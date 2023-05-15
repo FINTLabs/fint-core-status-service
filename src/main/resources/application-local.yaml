@@ -20,9 +20,9 @@ spring:
     consumer:
       group-id: status-service
   datasource:
-    url: jdbc:postgresql://localhost:5432/fint_core_status_service
+    url: jdbc:postgresql://localhost:5432/test
     username: postgres
-    password: password
+    password: postgres
   jpa:
     properties:
       hibernate:
@@ -32,7 +32,13 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         enable_lazy_load_no_trans: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
+    hikari:
+      schema: ${fint.database.username}
+  flyway:
+    locations: classpath:db/migration/
+    lock-retry-count: 300
+
 management:
   endpoints:
     web:

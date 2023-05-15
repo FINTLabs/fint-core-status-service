@@ -17,20 +17,6 @@ spring:
   kafka:
     consumer:
       group-id: status-service
-  datasource:
-    url: ${fint.database.url}
-    username: ${fint.database.username}
-    password: ${fint.database.password}
-  jpa:
-    properties:
-      hibernate:
-        jdbc:
-          lob:
-            non_contextual_creation: true
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-        enable_lazy_load_no_trans: true
-    hibernate:
-      ddl-auto: update
 management:
   endpoints:
     web:

@@ -3,14 +3,6 @@ kind: Application
 metadata:
   name: fint-core-status-service
   namespace: fintlabs-no
-  labels:
-    app.kubernetes.io/name: fint-core-status-service
-    app.kubernetes.io/instance: fint-core-status-service_fintlabs_no
-    app.kubernetes.io/version: latest
-    app.kubernetes.io/component: status-service
-    app.kubernetes.io/part-of: fint-core
-    fintlabs.no/team: core
-    fintlabs.no/org-id: fintlabs.no
 spec:
   orgId: fintlabs.no
   image: ghcr.io/fintlabs/fint-core-status-service:sha-0000000
@@ -27,16 +19,15 @@ spec:
       - permission: read
         topic: 'fintlabs-no.fint-core.*'
   database:
-    enabled: true
     database: fint-core
   ingress:
     enabled: true
   env:
-    - name: TZ
-      value: 'Europe/Oslo'
     - name: JAVA_TOOLS_OPTIONS
       value: '-XX:+ExitOnOutOfMemoryError -Xmx480M'
     - name: fint.kafka.topic.domain-context
       value: 'fint-core'
     - name: fint.kafka.topic.org-id
       value: 'fintlabs-no'
+  url:
+    basePath: /status
