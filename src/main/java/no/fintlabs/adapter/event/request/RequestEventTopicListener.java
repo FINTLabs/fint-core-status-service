@@ -8,6 +8,7 @@ import no.fintlabs.kafka.common.topic.pattern.ValidatedTopicComponentPattern;
 import no.fintlabs.kafka.event.EventConsumerConfiguration;
 import no.fintlabs.kafka.event.EventConsumerFactoryService;
 import no.fintlabs.kafka.event.topic.EventTopicNamePatternParameters;
+import no.fintlabs.topic.TopicService;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.stereotype.Service;
 
@@ -17,12 +18,15 @@ import javax.annotation.PostConstruct;
 @Service
 public class RequestEventTopicListener {
 
+    private final TopicService topicService;
+
     private final RequestEventRepository requestEventRepository;
 
     private final EventConsumerFactoryService consumerFactory;
 
-    public RequestEventTopicListener(EventConsumerFactoryService consumerFactory,
+    public RequestEventTopicListener(TopicService topicService, EventConsumerFactoryService consumerFactory,
                                      RequestEventRepository requestEventRepository) {
+        this.topicService = topicService;
         this.consumerFactory = consumerFactory;
         this.requestEventRepository = requestEventRepository;
     }
@@ -47,6 +51,7 @@ public class RequestEventTopicListener {
     }
 
     private void processEvent(ConsumerRecord<String, RequestFintEvent> consumerRecord) {
+        topicService.addToCache(consumerRecord.topic());
         log.debug("RequestFintEvent received: {} - {} from: {} - {} - {}",
                 consumerRecord.value().getOrgId(),
                 consumerRecord.value().getCorrId(),
