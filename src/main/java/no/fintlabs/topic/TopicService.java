@@ -39,4 +39,8 @@ public class TopicService {
         return domainMap;
     }
 
+    public Map<String, Map<String, List<String>>> getCache(){
+        return topicCache;
+    }
+
 }

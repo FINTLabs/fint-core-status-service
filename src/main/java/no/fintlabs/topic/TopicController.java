@@ -20,8 +20,8 @@ public class TopicController {
     }
 
     @GetMapping("/topic/")
-    public ResponseEntity<Map<String, Map<String, List<String>>>> getTopic() {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Map<String, Map<String, List<String>>>> getTopics() {
+        return ResponseEntity.ok(topicService.getCache());
     }
 
 }
