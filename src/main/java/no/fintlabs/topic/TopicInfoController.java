@@ -11,17 +11,17 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
-public class TopicController {
+public class TopicInfoController {
 
-    private final TopicService topicService;
+    private final TopicInfoService topicInfoService;
 
-    public TopicController(TopicService topicService) {
-        this.topicService = topicService;
+    public TopicInfoController(TopicInfoService topicInfoService) {
+        this.topicInfoService = topicInfoService;
     }
 
     @GetMapping("/topic/")
     public ResponseEntity<Map<String, Map<String, List<String>>>> getTopics() {
-        return ResponseEntity.ok(topicService.getCache());
+        return ResponseEntity.ok(topicInfoService.getCache());
     }
 
 }

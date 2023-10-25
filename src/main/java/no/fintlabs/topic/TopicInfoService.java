@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 @Service
-public class TopicService {
+public class TopicInfoService {
 
     public Map<String, Map<String, List<String>>> topicCache = new HashMap<>();
 
