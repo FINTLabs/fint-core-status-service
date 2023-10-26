@@ -23,7 +23,6 @@ public class TopicInfoController {
 
     @GetMapping("/getTopicInfo")
     public ResponseEntity<Map<String, Map<String, List<String>>>> getTopics() {
-        log.info("This endpoint was reached");
         return ResponseEntity.ok(topicInfoService.getCache());
     }
 
