@@ -1,4 +1,4 @@
-package no.fintlabs.adapter.datasync.deltaSync;
+package no.fintlabs.adapter.datasync.deltasync;
 
 import lombok.extern.slf4j.Slf4j;
 import no.fintlabs.adapter.entities.AdapterDeltaSyncEntity;

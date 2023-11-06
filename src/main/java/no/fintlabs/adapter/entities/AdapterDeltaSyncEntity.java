@@ -2,14 +2,12 @@ package no.fintlabs.adapter.entities;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import no.fintlabs.adapter.models.SyncPageMetadata;
 
 import javax.persistence.*;
 
+@Builder
 @Getter
 @Setter
 @AllArgsConstructor
@@ -36,18 +34,16 @@ public class AdapterDeltaSyncEntity {
     private long time;
 
     public static AdapterDeltaSyncEntity toEntity(SyncPageMetadata syncPageMetadata) {
-        AdapterDeltaSyncEntity adapterDeltaSyncEntity = new AdapterDeltaSyncEntity();
-
-            adapterDeltaSyncEntity.setAdapterId(syncPageMetadata.getAdapterId());
-            adapterDeltaSyncEntity.setCorrId(syncPageMetadata.getCorrId());
-            adapterDeltaSyncEntity.setOrgId(syncPageMetadata.getOrgId());
-            adapterDeltaSyncEntity.setTotalSize(syncPageMetadata.getTotalSize());
-            adapterDeltaSyncEntity.setPage(syncPageMetadata.getPage());
-            adapterDeltaSyncEntity.setTotalPages(syncPageMetadata.getTotalPages());
-            adapterDeltaSyncEntity.setUriRef(syncPageMetadata.getUriRef());
-            adapterDeltaSyncEntity.setTime(syncPageMetadata.getTime());
-
-        return adapterDeltaSyncEntity;
+        return AdapterDeltaSyncEntity.builder()
+                .adapterId(syncPageMetadata.getAdapterId())
+                .corrId(syncPageMetadata.getCorrId())
+                .totalSize(syncPageMetadata.getTotalSize())
+                .page(syncPageMetadata.getPage())
+                .pageSize(syncPageMetadata.getPageSize())
+                .totalPages(syncPageMetadata.getTotalPages())
+                .uriRef(syncPageMetadata.getUriRef())
+                .time(syncPageMetadata.getTime())
+                .build();
     }
 
 }

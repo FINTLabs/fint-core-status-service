@@ -1,4 +1,4 @@
-package no.fintlabs.adapter.datasync.deltaSync;
+package no.fintlabs.adapter.datasync.deltasync;
 
 import no.fintlabs.adapter.entities.AdapterDeltaSyncEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
