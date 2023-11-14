@@ -34,6 +34,20 @@ create table adapter_delete_sync
     uri_ref     varchar(255),
     primary key (id)
 );
+create table adapter_delta_sync
+(
+    id          int8 not null,
+    adapter_id  varchar(255),
+    corr_id     varchar(255),
+    org_id      varchar(255),
+    page        int8 not null,
+    page_size   int8 not null,
+    time        int8 not null,
+    total_pages int8 not null,
+    total_size  int8 not null,
+    uri_ref     varchar(255),
+    primary key (id)
+);
 create table adapter_full_sync
 (
     id          int8 not null,
