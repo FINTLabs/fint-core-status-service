@@ -32,11 +32,10 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         enable_lazy_load_no_trans: true
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     hikari:
       schema: ${fint.database.username}
   flyway:
-    locations: classpath:db/migration/
     lock-retry-count: 300
 
 management:
