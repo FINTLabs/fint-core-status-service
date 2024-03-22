@@ -22,6 +22,8 @@ spec:
     database: fint-core
   ingress:
     enabled: true
+    middlewares:
+      - fint-core-status-service-sso
   env:
     - name: JAVA_TOOLS_OPTIONS
       value: '-XX:+ExitOnOutOfMemoryError -Xmx480M'
