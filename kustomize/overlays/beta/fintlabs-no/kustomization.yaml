@@ -6,7 +6,7 @@ patches:
   - patch: |-
       - op: add
         path: "/spec/url/hostname"
-        value: "beta.felleskomponent.no"
+        value: "kunde-beta.felleskomponent.no"
     target:
       kind: Application
       name: fint-core-status-service

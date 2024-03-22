@@ -30,4 +30,4 @@ spec:
     - name: fint.kafka.topic.org-id
       value: 'fintlabs-no'
   url:
-    basePath: /status
+    basePath: /status/api
