@@ -11,18 +11,11 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class SecurityConfiguration {
 
     @Bean
-    SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
-        http
-                .authorizeExchange((authorize) -> authorize
-                        .pathMatchers("/**")
-                        .hasAnyAuthority("SCOPE_fint-adapter")
-                        .anyExchange()
-                        .authenticated()
-                )
-                .oauth2ResourceServer((resourceServer) -> resourceServer
-                        .jwt(withDefaults())
-                );
-        return http.build();
+    public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
+        return http
+                .authorizeExchange(authorize -> authorize.anyExchange().authenticated())
+                .oauth2ResourceServer((resourceServer) -> resourceServer.jwt(withDefaults()))
+                .build();
     }
 
 }
