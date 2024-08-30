@@ -1,0 +1,5 @@
+fint:
+  kafka:
+    topic:
+      org-id: fintlabs-no
+      domain-context: fint-core
