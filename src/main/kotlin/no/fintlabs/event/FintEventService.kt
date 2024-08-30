@@ -9,4 +9,8 @@ class FintEventService(val fintEventCache: FintEventCache) {
         return fintEventCache.cache.values.toList()
     }
 
+    fun getEventById(id: String): FintEvent? {
+        return fintEventCache.cache[id];
+    }
+
 }
