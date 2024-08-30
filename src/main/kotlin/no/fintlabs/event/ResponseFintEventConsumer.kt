@@ -11,7 +11,7 @@ import org.springframework.kafka.listener.ConcurrentMessageListenerContainer
 import org.springframework.stereotype.Component
 
 @Component
-class ResponseFintEventConsumer {
+class ResponseFintEventConsumer(val fintEventCache: FintEventCache) {
 
     @Bean
     fun registerResponseFintEventKafkaConsumer(eventConsumerFactoryService: EventConsumerFactoryService): ConcurrentMessageListenerContainer<String, ResponseFintEvent> {
@@ -28,7 +28,7 @@ class ResponseFintEventConsumer {
     }
 
     fun processEvent(consumerRecord: ConsumerRecord<String, ResponseFintEvent>) {
-
+        fintEventCache.add(consumerRecord.value())
     }
 
 }
