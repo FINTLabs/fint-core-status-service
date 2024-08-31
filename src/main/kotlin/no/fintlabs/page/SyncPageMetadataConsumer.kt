@@ -11,7 +11,9 @@ import org.springframework.kafka.listener.ConcurrentMessageListenerContainer
 import org.springframework.stereotype.Component
 
 @Component
-class SyncPageMetadataConsumer {
+class SyncPageMetadataConsumer(
+    val pageMetadataCache: PageMetadataCache
+) {
 
     @Bean
     fun registerSyncPageConsumer(eventConsumerFactoryService: EventConsumerFactoryService): ConcurrentMessageListenerContainer<String, SyncPage> {
@@ -27,7 +29,7 @@ class SyncPageMetadataConsumer {
     }
 
     fun processEvent(consumerRecord: ConsumerRecord<String, SyncPage>) {
-
+        pageMetadataCache.add(consumerRecord.value().metadata)
     }
 
 }
