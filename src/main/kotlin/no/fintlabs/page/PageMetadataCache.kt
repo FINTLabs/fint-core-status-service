@@ -11,6 +11,10 @@ class PageMetadataCache {
 
     private val cache: MutableMap<String, ConcurrentHashMap<String, PageMetaData>> = ConcurrentHashMap()
 
+    fun getAll(): Collection<PageMetaData> = cache.values.flatMap { it.values }
+
+    fun getAllByOrg(orgId: String): Collection<PageMetaData> = cache.getOrDefault(orgId, ConcurrentHashMap()).values
+
     fun add(syncPageMetaData: SyncPageMetadata) {
         val orgId = syncPageMetaData.orgId
         val corrId = syncPageMetaData.corrId
