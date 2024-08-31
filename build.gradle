@@ -26,7 +26,7 @@ dependencies {
     implementation 'org.springframework.kafka:spring-kafka'
 
     implementation 'no.fintlabs:fint-kafka:3.2.0-rc-1'
-    implementation 'no.fintlabs:fint-core-infra-models:2.0.0-rc-2'
+    implementation 'no.fintlabs:fint-core-infra-models:2.0.0-rc-3'
 
 	implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
 	implementation 'io.projectreactor.kotlin:reactor-kotlin-extensions'
