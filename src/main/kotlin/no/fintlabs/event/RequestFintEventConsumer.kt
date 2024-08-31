@@ -19,9 +19,9 @@ class RequestFintEventConsumer(val fintEventCache: FintEventCache) {
             RequestFintEvent::class.java,
             this::processEvent,
         ).createContainer(
-            EventTopicNamePatternParameters
-                .builder()
+            EventTopicNamePatternParameters.builder()
                 .orgId(FormattedTopicComponentPattern.any())
+                .domainContext(FormattedTopicComponentPattern.containing("fint-core"))
                 .eventName(ValidatedTopicComponentPattern.endingWith("-request"))
                 .build()
         )

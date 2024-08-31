@@ -1,8 +1,10 @@
 package no.fintlabs.contract
 
 import no.fintlabs.adapter.models.AdapterContract
+import no.fintlabs.kafka.common.topic.pattern.FormattedTopicComponentPattern
+import no.fintlabs.kafka.common.topic.pattern.ValidatedTopicComponentPattern
 import no.fintlabs.kafka.event.EventConsumerFactoryService
-import no.fintlabs.kafka.event.topic.EventTopicNameParameters
+import no.fintlabs.kafka.event.topic.EventTopicNamePatternParameters
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.springframework.context.annotation.Bean
 import org.springframework.kafka.listener.ConcurrentMessageListenerContainer
@@ -20,9 +22,10 @@ class AdapterContractConsumer(
             AdapterContract::class.java,
             this::processEvent,
         ).createContainer(
-            EventTopicNameParameters
-                .builder()
-                .eventName("adapter-register")
+            EventTopicNamePatternParameters.builder()
+                .orgId(FormattedTopicComponentPattern.any())
+                .domainContext(FormattedTopicComponentPattern.containing("fint-core"))
+                .eventName(ValidatedTopicComponentPattern.endingWith("adapter-contract"))
                 .build()
         )
     }

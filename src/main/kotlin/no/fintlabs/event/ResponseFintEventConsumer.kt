@@ -21,6 +21,7 @@ class ResponseFintEventConsumer(val fintEventCache: FintEventCache) {
         ).createContainer(
             EventTopicNamePatternParameters.builder()
                 .orgId(FormattedTopicComponentPattern.any())
+                .domainContext(FormattedTopicComponentPattern.containing("fint-core"))
                 .eventName(ValidatedTopicComponentPattern.endingWith("-response"))
                 .build()
 

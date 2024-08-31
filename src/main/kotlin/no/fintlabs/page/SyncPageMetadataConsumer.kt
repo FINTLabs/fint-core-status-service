@@ -23,6 +23,7 @@ class SyncPageMetadataConsumer(
         ).createContainer(
             EventTopicNamePatternParameters.builder()
                 .orgId(FormattedTopicComponentPattern.any())
+                .domainContext(FormattedTopicComponentPattern.containing("fint-core"))
                 .eventName(ValidatedTopicComponentPattern.endingWith("-sync"))
                 .build()
         )
