@@ -1,9 +1,11 @@
 fint:
   kafka:
     application-id: fint-core-status-service
-    enable-ssl: true
+    enable-ssl: false
+    default-replicas: 1
 
 spring:
   kafka:
+    bootstrap-servers: localhost:9092
     consumer:
       group-id: fint-core-status-service
