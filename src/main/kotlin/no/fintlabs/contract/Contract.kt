@@ -21,7 +21,7 @@ data class Contract(
                 orgId = adapterContract.orgId,
                 heartbeatIntervalInMinutes = adapterContract.heartbeatIntervalInMinutes,
                 components = getComponents(adapterContract.capabilities),
-                hasContact = true,
+                hasContact = false,
                 capabilities = adapterContract.capabilities
             )
         }

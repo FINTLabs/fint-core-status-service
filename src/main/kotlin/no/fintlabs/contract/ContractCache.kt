@@ -12,4 +12,6 @@ class ContractCache {
 
     fun add(adapterContract: AdapterContract) = cache.put(adapterContract.adapterId, Contract.fromAdapterContract(adapterContract))
 
+    fun save(contract: Contract) = cache.put(contract.adapterId, contract)
+
 }
