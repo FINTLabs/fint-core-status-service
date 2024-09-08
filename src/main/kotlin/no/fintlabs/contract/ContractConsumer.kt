@@ -3,6 +3,7 @@ package no.fintlabs.contract
 import no.fintlabs.adapter.models.AdapterContract
 import no.fintlabs.kafka.common.topic.pattern.FormattedTopicComponentPattern
 import no.fintlabs.kafka.common.topic.pattern.ValidatedTopicComponentPattern
+import no.fintlabs.kafka.event.EventConsumerConfiguration
 import no.fintlabs.kafka.event.EventConsumerFactoryService
 import no.fintlabs.kafka.event.topic.EventTopicNamePatternParameters
 import org.apache.kafka.clients.consumer.ConsumerRecord
@@ -22,6 +23,9 @@ class ContractConsumer(val contractCache: ContractCache) {
         return eventConsumerFactoryService.createFactory(
             AdapterContract::class.java,
             this::processEvent,
+            EventConsumerConfiguration.builder()
+                .seekingOffsetResetOnAssignment(true)
+                .build()
         ).createContainer(
             EventTopicNamePatternParameters.builder()
                 .orgId(FormattedTopicComponentPattern.any())
