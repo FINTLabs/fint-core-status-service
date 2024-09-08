@@ -1,7 +1,7 @@
 # FINT Core Status Service
 
 ## Overview
-The **fint-core-status-service** is a backend service designed to fetch and present metadata and events produced by the [provider-gateway](link to project). The service updates and displays metadata in a presentable way, while also updating the health status of each **AdapterContract** by monitoring their heartbeats.
+The **fint-core-status-service** is a backend service designed to fetch and present metadata and events produced by the [provider-gateway](https://github.com/FINTLabs/fint-core-provider-gateway). The service updates and displays metadata in a presentable way, while also updating the health status of each **AdapterContract** by monitoring their heartbeats.
 
 ### Key Features:
 - **Heartbeat Monitoring**: Listens to and tracks heartbeat events from each adapter to update their health status.
