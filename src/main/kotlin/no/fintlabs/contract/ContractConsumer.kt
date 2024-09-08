@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component
 
 
 @Component
-class AdapterContractConsumer(
-    val adapterContextCache: AdapterContextCache
+class ContractConsumer(
+    val contractCache: ContractCache
 ) {
 
     @Bean
@@ -31,7 +31,7 @@ class AdapterContractConsumer(
     }
 
     fun processEvent(consumerRecord: ConsumerRecord<String, AdapterContract>) {
-        adapterContextCache.add(consumerRecord.value())
+        contractCache.add(consumerRecord.value())
     }
 
 }
