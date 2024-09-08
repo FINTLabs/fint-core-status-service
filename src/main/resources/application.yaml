@@ -1,4 +1,6 @@
 fint:
+  heartbeat:
+    check-rate: 10000
   kafka:
     application-id: fint-core-status-service
     enable-ssl: true

@@ -10,7 +10,7 @@ class HeartbeatChecker(
     val contractCache: ContractCache
 ) {
 
-    @Scheduled(fixedRateString = "\${heartbeat.check.rate}")
+    @Scheduled(fixedRateString = "\${fint.heartbeat.check-rate}")
     fun checkHeartbeats() {
         contractCache.getAll().onEach { contract ->
             heartbeatCache.getLastHeartbeat(contract.adapterId)?.let { lastHeartbeat ->
