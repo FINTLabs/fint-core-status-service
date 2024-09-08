@@ -13,9 +13,7 @@ import org.springframework.stereotype.Component
 
 
 @Component
-class ContractConsumer(
-    val contractCache: ContractCache
-) {
+class ContractConsumer(val contractCache: ContractCache) {
 
     private val log = LoggerFactory.getLogger(ContractConsumer::class.java)
 
@@ -28,7 +26,7 @@ class ContractConsumer(
             EventTopicNamePatternParameters.builder()
                 .orgId(FormattedTopicComponentPattern.any())
                 .domainContext(FormattedTopicComponentPattern.containing("fint-core"))
-                .eventName(ValidatedTopicComponentPattern.endingWith("adapter-contract"))
+                .eventName(ValidatedTopicComponentPattern.endingWith("adapter-register"))
                 .build()
         )
     }
