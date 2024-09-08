@@ -1,6 +1,6 @@
 package no.fintlabs.page
 
-import no.fintlabs.adapter.models.sync.SyncPage
+import no.fintlabs.adapter.models.sync.SyncPageMetadata
 import no.fintlabs.kafka.common.topic.pattern.FormattedTopicComponentPattern
 import no.fintlabs.kafka.common.topic.pattern.ValidatedTopicComponentPattern
 import no.fintlabs.kafka.event.EventConsumerFactoryService
@@ -16,9 +16,9 @@ class SyncPageMetadataConsumer(
 ) {
 
     @Bean
-    fun registerSyncPageConsumer(eventConsumerFactoryService: EventConsumerFactoryService): ConcurrentMessageListenerContainer<String, SyncPage> {
+    fun registerSyncPageConsumer(eventConsumerFactoryService: EventConsumerFactoryService): ConcurrentMessageListenerContainer<String, SyncPageMetadata> {
         return eventConsumerFactoryService.createFactory(
-            SyncPage::class.java,
+            SyncPageMetadata::class.java,
             this::processEvent,
         ).createContainer(
             EventTopicNamePatternParameters.builder()
@@ -29,11 +29,11 @@ class SyncPageMetadataConsumer(
         )
     }
 
-    fun processEvent(consumerRecord: ConsumerRecord<String, SyncPage>) {
+    fun processEvent(consumerRecord: ConsumerRecord<String, SyncPageMetadata>) {
         val parts = consumerRecord.topic().split("-")
         val secondLastPart = parts.getOrNull(parts.size - 2)
         secondLastPart?.let {
-            pageMetadataCache.add(consumerRecord.value().metadata, it)
+            pageMetadataCache.add(consumerRecord.value(), it)
         }
     }
 
