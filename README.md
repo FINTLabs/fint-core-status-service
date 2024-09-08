@@ -21,12 +21,11 @@ The **fint-core-status-service** is a backend service designed to fetch and pres
    git clone <repository-url>
    cd fint-core-status-service
    ```
-2. Start the service with the local profile
-    ```bash
-   ./gradlew bootRun --args='--spring.profiles.active=local'
-   ```
-3. Run the docker-compose file
+2. Run the docker-compose file
     ```bash
    docker-compose up -d
    ```
-4. Boot up the application in you preferred IDE
+3. Start the service with the local profile
+    ```bash
+   ./gradlew bootRun --args='--spring.profiles.active=local'
+   ```
