@@ -1,8 +1,10 @@
 package no.fintlabs.contract.heartbeat
 
 import no.fintlabs.adapter.models.AdapterHeartbeat
+import no.fintlabs.kafka.common.topic.pattern.FormattedTopicComponentPattern
+import no.fintlabs.kafka.common.topic.pattern.ValidatedTopicComponentPattern
 import no.fintlabs.kafka.event.EventConsumerFactoryService
-import no.fintlabs.kafka.event.topic.EventTopicNameParameters
+import no.fintlabs.kafka.event.topic.EventTopicNamePatternParameters
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.springframework.context.annotation.Bean
 import org.springframework.kafka.listener.ConcurrentMessageListenerContainer
@@ -17,9 +19,10 @@ class HeartbeatConsumer(val heartbeatCache: HeartbeatCache) {
             AdapterHeartbeat::class.java,
             this::processEvent,
         ).createContainer(
-            EventTopicNameParameters
-                .builder()
-                .eventName("")
+            EventTopicNamePatternParameters.builder()
+                .orgId(FormattedTopicComponentPattern.any())
+                .domainContext(FormattedTopicComponentPattern.anyOf("fint-core"))
+                .eventName(ValidatedTopicComponentPattern.endingWith("adapter-health"))
                 .build()
         )
     }
