@@ -1,6 +1,7 @@
 package no.fintlabs.page
 
 import no.fintlabs.adapter.models.sync.SyncPageMetadata
+import no.fintlabs.adapter.models.sync.SyncType
 import no.fintlabs.page.model.Page
 import no.fintlabs.page.model.PageMetaData
 import org.springframework.stereotype.Component
@@ -11,7 +12,7 @@ class PageMetadataCache {
 
     val cache: MutableMap<String, ConcurrentHashMap<String, PageMetaData>> = ConcurrentHashMap()
 
-    fun add(syncPageMetaData: SyncPageMetadata) {
+    fun add(syncPageMetaData: SyncPageMetadata, syncType: String) {
         val orgId = syncPageMetaData.orgId
         val corrId = syncPageMetaData.corrId
 
@@ -40,9 +41,19 @@ class PageMetadataCache {
                     pagesAquired = 1,
                     totalEntities = syncPageMetaData.totalSize,
                     entitiesAquired = syncPageMetaData.pageSize,
-                    syncType = syncPageMetaData.syncType,
+                    syncType = getSyncType(syncType),
                     pages = mutableListOf(page)
                 )
         }
     }
+
+    private fun getSyncType(syncType: String): SyncType {
+        return when (syncType.lowercase()) {
+            "full" -> SyncType.FULL
+            "delta" -> SyncType.DELTA
+            "delete" -> SyncType.DELETE
+            else -> throw IllegalArgumentException("Unknown sync type: $syncType")
+        }
+    }
+
 }

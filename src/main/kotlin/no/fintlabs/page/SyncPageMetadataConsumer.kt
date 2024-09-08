@@ -30,7 +30,11 @@ class SyncPageMetadataConsumer(
     }
 
     fun processEvent(consumerRecord: ConsumerRecord<String, SyncPage>) {
-        pageMetadataCache.add(consumerRecord.value().metadata)
+        val parts = consumerRecord.topic().split("-")
+        val secondLastPart = parts.getOrNull(parts.size - 2)
+        secondLastPart?.let {
+            pageMetadataCache.add(consumerRecord.value().metadata, it)
+        }
     }
 
 }
