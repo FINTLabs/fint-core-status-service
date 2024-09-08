@@ -12,21 +12,13 @@ class HeartbeatChecker(
 
     @Scheduled(fixedRateString = "\${heartbeat.check.rate}")
     fun checkHeartbeats() {
-        val contracts = contractCache.getAll()
-
-        contracts.forEach { contract ->
-            val lastHeartbeat = heartbeatCache.getLastHeartbeat(contract.adapterId)
-            if (lastHeartbeat != null) {
+        contractCache.getAll().onEach { contract ->
+            heartbeatCache.getLastHeartbeat(contract.adapterId)?.let { lastHeartbeat ->
                 val timeSinceLastHeartbeat = System.currentTimeMillis() - lastHeartbeat
                 val expectedIntervalMillis = contract.heartbeatIntervalInMinutes * 60 * 1000
 
-                if (timeSinceLastHeartbeat > expectedIntervalMillis) {
-                    contract.hasContact = false
-                    contractCache.save(contract)
-                } else {
-                    contract.hasContact = true
-                    contractCache.save(contract)
-                }
+                contract.hasContact = timeSinceLastHeartbeat <= expectedIntervalMillis
+                contractCache.save(contract)
             }
         }
     }
