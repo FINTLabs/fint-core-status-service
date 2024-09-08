@@ -6,14 +6,15 @@ import no.fintlabs.kafka.common.topic.pattern.ValidatedTopicComponentPattern
 import no.fintlabs.kafka.event.EventConsumerFactoryService
 import no.fintlabs.kafka.event.topic.EventTopicNamePatternParameters
 import org.apache.kafka.clients.consumer.ConsumerRecord
+import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Bean
 import org.springframework.kafka.listener.ConcurrentMessageListenerContainer
 import org.springframework.stereotype.Component
 
 @Component
-class SyncPageMetadataConsumer(
-    val pageMetadataCache: PageMetadataCache
-) {
+class SyncPageMetadataConsumer(val pageMetadataCache: PageMetadataCache) {
+
+    private val log = LoggerFactory.getLogger(SyncPageMetadataConsumer::class.java)
 
     @Bean
     fun registerSyncPageConsumer(eventConsumerFactoryService: EventConsumerFactoryService): ConcurrentMessageListenerContainer<String, SyncPageMetadata> {
@@ -31,8 +32,9 @@ class SyncPageMetadataConsumer(
 
     fun processEvent(consumerRecord: ConsumerRecord<String, SyncPageMetadata>) {
         val parts = consumerRecord.topic().split("-")
-        val secondLastPart = parts.getOrNull(parts.size - 2)
-        secondLastPart?.let {
+        val syncType = parts.getOrNull(parts.size - 2)
+        log.info("Consumed {}-sync From: {}", syncType, consumerRecord.value().adapterId)
+        syncType?.let {
             pageMetadataCache.add(consumerRecord.value(), it)
         }
     }

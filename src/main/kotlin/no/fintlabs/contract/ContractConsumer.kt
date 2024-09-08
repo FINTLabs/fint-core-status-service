@@ -6,6 +6,7 @@ import no.fintlabs.kafka.common.topic.pattern.ValidatedTopicComponentPattern
 import no.fintlabs.kafka.event.EventConsumerFactoryService
 import no.fintlabs.kafka.event.topic.EventTopicNamePatternParameters
 import org.apache.kafka.clients.consumer.ConsumerRecord
+import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Bean
 import org.springframework.kafka.listener.ConcurrentMessageListenerContainer
 import org.springframework.stereotype.Component
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Component
 class ContractConsumer(
     val contractCache: ContractCache
 ) {
+
+    private val log = LoggerFactory.getLogger(ContractConsumer::class.java)
 
     @Bean
     fun registerAdapterContractKafkaConsumer(eventConsumerFactoryService: EventConsumerFactoryService): ConcurrentMessageListenerContainer<String, AdapterContract> {
@@ -31,6 +34,7 @@ class ContractConsumer(
     }
 
     fun processEvent(consumerRecord: ConsumerRecord<String, AdapterContract>) {
+        log.info("Consumed adapter-contract: {}", consumerRecord.value().adapterId)
         contractCache.add(consumerRecord.value())
     }
 
