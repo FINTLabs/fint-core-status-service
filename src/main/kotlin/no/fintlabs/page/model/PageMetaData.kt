@@ -8,7 +8,7 @@ class PageMetaData(
     val orgId: String,
     val entityUrl: String,
     val totalPages: Long,
-    var pagesAquired: Long,
+    var pagesAcquired: Long,
     val totalEntities: Long,
     var entitiesAquired: Long,
     val syncType: SyncType,

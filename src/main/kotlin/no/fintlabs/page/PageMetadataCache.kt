@@ -29,7 +29,7 @@ class PageMetadataCache {
 
             existingPageMetaData?.apply {
                 this.pages.add(page)
-                this.pagesAquired += 1
+                this.pagesAcquired += 1
                 this.entitiesAquired += syncPageMetaData.pageSize
             }
                 ?: PageMetaData(
@@ -38,7 +38,7 @@ class PageMetadataCache {
                     orgId = orgId,
                     entityUrl = syncPageMetaData.uriRef,
                     totalPages = syncPageMetaData.totalPages,
-                    pagesAquired = 1,
+                    pagesAcquired = 1,
                     totalEntities = syncPageMetaData.totalSize,
                     entitiesAquired = syncPageMetaData.pageSize,
                     syncType = getSyncType(syncType),
