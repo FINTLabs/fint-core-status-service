@@ -19,12 +19,18 @@ class HeartbeatChecker(
         contractCache.getAll().onEach { contract ->
             heartbeatCache.getLastHeartbeat(contract.adapterId)?.let { lastHeartbeat ->
                 log.info("Last heartbeat: {}", lastHeartbeat)
-                val timeSinceLastHeartbeat = System.currentTimeMillis() - lastHeartbeat
-                log.info("Time since last heartbeat: {}", lastHeartbeat)
-                val expectedIntervalMillis = contract.heartbeatIntervalInMinutes * 60 * 1000
-                log.info("Expected timing: {}", expectedIntervalMillis)
+                val timeInSeconds = System.currentTimeMillis() / 1000
+                val timeSinceLastHeartbeat = timeInSeconds - lastHeartbeat
+                log.info("Time since last heartbeat: {}", timeSinceLastHeartbeat)
+                val expectedIntervalSeconds = contract.heartbeatIntervalInMinutes * 60
+                log.info("Expected timing: {}", expectedIntervalSeconds)
 
-                contract.hasContact = timeSinceLastHeartbeat <= expectedIntervalMillis
+                if (timeSinceLastHeartbeat <= expectedIntervalSeconds) {
+                    contract.hasContact = true
+                }else if(timeSinceLastHeartbeat >= expectedIntervalSeconds){
+                    contract.hasContact = false
+                }
+
                 contractCache.save(contract)
             }
         }
