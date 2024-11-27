@@ -10,7 +10,6 @@ import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
 import org.springframework.security.web.server.SecurityWebFilterChain
 import reactor.core.publisher.Mono
-import javax.management.RuntimeMBeanException
 
 @Configuration
 @EnableWebFluxSecurity
@@ -23,10 +22,12 @@ class SecurityConfig {
     @Bean
     fun securityWebFilterChain(http: ServerHttpSecurity): SecurityWebFilterChain {
         return http
-            .authorizeExchange{ it.anyExchange().authenticated() }
-            .oauth2ResourceServer{ it.jwt {
-                this::validateAndConvertJwt
-            } }
+            .authorizeExchange { it.anyExchange().authenticated() }
+            .oauth2ResourceServer {
+                it.jwt {
+                    this::validateAndConvertJwt
+                }
+            }
             .build()
 
     }
