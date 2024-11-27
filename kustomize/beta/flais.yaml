@@ -16,7 +16,7 @@ ingres:
   enabled: true
   routes:
     - host: core-status.fintlabs.no
-      path: /api/fint-core
+      path: /beta
       middlewares:
         - fint-core-status-sso
   env:
