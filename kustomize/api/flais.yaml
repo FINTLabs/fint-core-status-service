@@ -17,8 +17,8 @@ spec:
     routes:
       - host: core-status.fintlabs.no
         path: /api
-        middlewares:
-          - fint-core-status-sso
+    middlewares:
+      - fint-core-status-sso
   env:
     - name: JAVA_TOOL_OPTIONS
       value: '-XX:+ExitOnOutOfMemoryError -Xmx525M'
