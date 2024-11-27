@@ -6,6 +6,11 @@ fint:
     enable-ssl: true
 
 spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://idp.felleskomponent.no/nidp/oauth/nam/token
   kafka:
     consumer:
       group-id: fint-core-status-service

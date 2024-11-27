@@ -7,6 +7,11 @@ fint:
     default-replicas: 1
 
 spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://idp.felleskomponent.no/nidp/oauth/nam
   kafka:
     bootstrap-servers: localhost:9092
     consumer:
