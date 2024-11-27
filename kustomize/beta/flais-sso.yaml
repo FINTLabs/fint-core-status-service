@@ -1,0 +1,18 @@
+apiVersion: fintlabs.no/v1alpha1
+kind: FLAISSso
+metadata:
+  name: fint-core-status-sso
+  namespace: fint-core
+  labels:
+    app.kubernetes.io/name: fint-core-status-sso
+    app.kubernetes.io/instance: fint-core-status-sso_fint-core
+    app.kubernetes.io/version: latest
+    app.kubernetes.io/component: sso
+    app.kubernetes.io/part-of: sso
+    fintlabs.no/team: core
+    fintlabs.no/org-id: fintlabs.no
+spec:
+  hostname: core-status.fintlabs.no
+  basePath: /beta/fint-core
+  loggingLevel: debug
+  upnClaim: upn
