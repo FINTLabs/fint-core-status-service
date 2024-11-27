@@ -12,6 +12,13 @@ spec:
     acls:
       - topic: '*.fint-core.event.*'
         permission: admin
+ingres:
+  enabled: true
+  routes:
+    - host: core-status.fintlabs.no
+      path: /api/fint-core
+      middlewares:
+        - fint-core-status-sso
   env:
     - name: JAVA_TOOL_OPTIONS
       value: '-XX:+ExitOnOutOfMemoryError -Xmx525M'
