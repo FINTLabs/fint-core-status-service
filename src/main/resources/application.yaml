@@ -14,3 +14,5 @@ spring:
   kafka:
     consumer:
       group-id: fint-core-status-service
+  webflux:
+    base-path: /api

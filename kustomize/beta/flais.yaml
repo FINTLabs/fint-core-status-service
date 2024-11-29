@@ -3,7 +3,6 @@ kind: Application
 metadata:
   name: fint-core-status-service
   namespace: fint-core
-
 spec:
   port: 8080
   orgId: fintlabs.no
@@ -13,16 +12,17 @@ spec:
     acls:
       - topic: '*.fint-core.event.*'
         permission: admin
-  url:
-    hostname: core-status.fintlabs.no
-    path: /beta
   ingress:
-    enabled: true
-    middlewares:
-      - fint-core-status-sso
+    routes:
+      - host: core-status.fintlabs.no
+        path: /api/beta
+        middlewares:
+        - fint-core-status-sso
   env:
     - name: JAVA_TOOL_OPTIONS
       value: '-XX:+ExitOnOutOfMemoryError -Xmx525M'
+    - name: spring.webflux.base-path
+      value: /api/beta
   resources:
     limits:
       memory: "1Gi"
