@@ -1,4 +1,7 @@
 fint:
+  security:
+    org-id: false
+    component: false
   heartbeat:
     check-rate: 10000
   kafka:
