@@ -12,7 +12,7 @@ import org.springframework.kafka.listener.ConcurrentMessageListenerContainer
 import org.springframework.stereotype.Component
 
 @Component
-class ResponseFintEventConsumer(val fintEventCache: FintEventCache) {
+class ResponseFintEventConsumer(val eventStatusCache: EventStatusCache) {
 
     private val log = LoggerFactory.getLogger(ResponseFintEventConsumer::class.java)
 
@@ -33,7 +33,7 @@ class ResponseFintEventConsumer(val fintEventCache: FintEventCache) {
 
     fun processEvent(consumerRecord: ConsumerRecord<String, ResponseFintEvent>) {
         log.info("Consumed Response: {}", consumerRecord.value().corrId)
-        fintEventCache.add(consumerRecord.value())
+        eventStatusCache.add(consumerRecord.value())
     }
 
 }

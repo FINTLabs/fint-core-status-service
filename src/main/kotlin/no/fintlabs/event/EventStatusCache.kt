@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component
 import java.util.concurrent.ConcurrentHashMap
 
 @Component
-class FintEventCache {
+class EventStatusCache {
 
     val cache: ConcurrentHashMap<String, EventStatus> = ConcurrentHashMap()
 

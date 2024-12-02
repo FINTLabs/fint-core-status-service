@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/event")
-class FintEventController(val fintEventService: FintEventService) {
+class EventStatusController(val fintEventService: FintEventService) {
 
     @GetMapping
     fun get(): Collection<EventStatus> = fintEventService.getAllEvents()
