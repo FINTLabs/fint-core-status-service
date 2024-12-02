@@ -15,14 +15,14 @@ spec:
   ingress:
     routes:
       - host: core-status.fintlabs.no
-        path: /api/status
+        path: /api/prod
         middlewares:
         - fint-core-status-sso
   env:
     - name: JAVA_TOOL_OPTIONS
       value: '-XX:+ExitOnOutOfMemoryError -Xmx525M'
     - name: spring.webflux.base-path
-      value: /api/status
+      value: /api/prod
   resources:
     limits:
       memory: "1Gi"
