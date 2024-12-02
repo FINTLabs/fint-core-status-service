@@ -1,9 +1,10 @@
 package no.fintlabs.event
 
+import no.fintlabs.adapter.models.event.FintEvent
 import no.fintlabs.adapter.models.event.RequestFintEvent
 import no.fintlabs.adapter.models.event.ResponseFintEvent
 
-class StatusEvent(
+class EventStatus(
     val corrId: String,
     val orgId: String,
     var hasError: Boolean,
@@ -12,10 +13,10 @@ class StatusEvent(
 ) {
 
     companion object {
-        fun from(event: no.fintlabs.adapter.models.event.FintEvent): StatusEvent {
+        fun from(event: FintEvent): EventStatus {
             return when (event) {
                 is RequestFintEvent -> {
-                    StatusEvent(
+                    EventStatus(
                         corrId = event.corrId,
                         orgId = event.orgId,
                         hasError = false,
@@ -25,7 +26,7 @@ class StatusEvent(
                 }
 
                 is ResponseFintEvent -> {
-                    StatusEvent(
+                    EventStatus(
                         corrId = event.corrId,
                         orgId = event.orgId,
                         hasError = event.isFailed || event.isRejected,

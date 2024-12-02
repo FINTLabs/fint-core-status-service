@@ -18,10 +18,10 @@ class FintEventController(val fintEventService: FintEventService) {
     }
 
     @GetMapping
-    fun get(): Collection<StatusEvent> = fintEventService.getAllEvents()
+    fun get(): Collection<EventStatus> = fintEventService.getAllEvents()
 
     @GetMapping("/{id}")
-    fun getById(@PathVariable id: String): ResponseEntity<StatusEvent> =
+    fun getById(@PathVariable id: String): ResponseEntity<EventStatus> =
         fintEventService.getEventById(id)?.let { ResponseEntity.ok(it) } ?: ResponseEntity.notFound().build()
 
 }

@@ -10,11 +10,11 @@ class FintEventService(val fintEventCache: FintEventCache) {
         fintEventCache.add(event)
     }
 
-    fun getAllEvents(): Collection<StatusEvent> {
+    fun getAllEvents(): Collection<EventStatus> {
         return fintEventCache.cache.values.toList()
     }
 
-    fun getEventById(id: String): StatusEvent? {
+    fun getEventById(id: String): EventStatus? {
         return fintEventCache.cache[id];
     }
 
