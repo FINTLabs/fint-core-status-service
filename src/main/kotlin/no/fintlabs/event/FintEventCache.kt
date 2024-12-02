@@ -9,16 +9,16 @@ import java.util.concurrent.ConcurrentHashMap
 @Component
 class FintEventCache {
 
-    val cache: ConcurrentHashMap<String, StatusEvent> = ConcurrentHashMap()
+    val cache: ConcurrentHashMap<String, EventStatus> = ConcurrentHashMap()
 
     fun add(fintEvent: FintEvent) =
         cache.compute(fintEvent.corrId) { _, cachedEvent ->
-            cachedEvent?.updateWith(fintEvent) ?: StatusEvent.from(fintEvent)
+            cachedEvent?.updateWith(fintEvent) ?: EventStatus.from(fintEvent)
         }
 
 }
 
-private fun StatusEvent.updateWith(event: FintEvent): StatusEvent {
+private fun EventStatus.updateWith(event: FintEvent): EventStatus {
     return when (event) {
         is RequestFintEvent -> this.copyWith(requestEvent = event)
         is ResponseFintEvent -> this.copyWith(
@@ -30,12 +30,12 @@ private fun StatusEvent.updateWith(event: FintEvent): StatusEvent {
     }
 }
 
-private fun StatusEvent.copyWith(
+private fun EventStatus.copyWith(
     hasError: Boolean = this.hasError,
     requestEvent: RequestFintEvent? = this.requestEvent,
     responseEvent: ResponseFintEvent? = this.responseEvent
-): StatusEvent {
-    return StatusEvent(
+): EventStatus {
+    return EventStatus(
         corrId = this.corrId,
         orgId = this.orgId,
         hasError = hasError,
