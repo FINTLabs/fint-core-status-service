@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RestController
 class FintEventController(val fintEventService: FintEventService) {
 
     @GetMapping
-    fun get(): Collection<FintEvent> = fintEventService.getAllEvents()
+    fun get(): Collection<StatusEvent> = fintEventService.getAllEvents()
 
     @GetMapping("/{id}")
-    fun getById(@PathVariable id: String): ResponseEntity<FintEvent> =
+    fun getById(@PathVariable id: String): ResponseEntity<StatusEvent> =
         fintEventService.getEventById(id)?.let { ResponseEntity.ok(it) } ?: ResponseEntity.notFound().build()
 
 }

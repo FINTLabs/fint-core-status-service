@@ -1,15 +1,20 @@
 package no.fintlabs.event
 
+import no.fintlabs.adapter.models.event.FintEvent
 import org.springframework.stereotype.Service
 
 @Service
 class FintEventService(val fintEventCache: FintEventCache) {
 
-    fun getAllEvents(): Collection<FintEvent> {
+    fun lol(event: FintEvent) {
+        fintEventCache.add(event)
+    }
+
+    fun getAllEvents(): Collection<StatusEvent> {
         return fintEventCache.cache.values.toList()
     }
 
-    fun getEventById(id: String): FintEvent? {
+    fun getEventById(id: String): StatusEvent? {
         return fintEventCache.cache[id];
     }
 

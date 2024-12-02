@@ -3,7 +3,7 @@ package no.fintlabs.event
 import no.fintlabs.adapter.models.event.RequestFintEvent
 import no.fintlabs.adapter.models.event.ResponseFintEvent
 
-class FintEvent(
+class StatusEvent(
     val corrId: String,
     val orgId: String,
     var hasError: Boolean,
@@ -12,10 +12,10 @@ class FintEvent(
 ) {
 
     companion object {
-        fun from(event: no.fintlabs.adapter.models.event.FintEvent): FintEvent {
+        fun from(event: no.fintlabs.adapter.models.event.FintEvent): StatusEvent {
             return when (event) {
                 is RequestFintEvent -> {
-                    FintEvent(
+                    StatusEvent(
                         corrId = event.corrId,
                         orgId = event.orgId,
                         hasError = false,
@@ -25,7 +25,7 @@ class FintEvent(
                 }
 
                 is ResponseFintEvent -> {
-                    FintEvent(
+                    StatusEvent(
                         corrId = event.corrId,
                         orgId = event.orgId,
                         hasError = event.isFailed || event.isRejected,
