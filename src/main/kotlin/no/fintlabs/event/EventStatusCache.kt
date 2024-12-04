@@ -23,7 +23,7 @@ private fun EventStatus.updateWith(event: FintEvent): EventStatus {
         is RequestFintEvent -> this.copyWith(requestEvent = event)
         is ResponseFintEvent -> this.copyWith(
             responseEvent = event,
-            hasError = event.isFailed || event.isRejected
+            hasError = event.isFailed || event.isRejected || event.isConflicted
         )
 
         else -> throw IllegalArgumentException("Unsupported event type")
