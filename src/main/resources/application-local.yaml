@@ -15,4 +15,4 @@ fint:
         group-id: ${fint.kafka.application-id}
 spring:
   webflux:
-    base-path: /api/beta
+    base-path: /api
