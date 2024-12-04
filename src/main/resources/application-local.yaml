@@ -13,3 +13,6 @@ fint:
     kafka:
       consumer:
         group-id: ${fint.kafka.application-id}
+spring:
+  webflux:
+    base-path: /api/beta
