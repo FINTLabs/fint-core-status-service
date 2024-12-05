@@ -15,15 +15,11 @@ class HeartbeatChecker(
 
     @Scheduled(fixedRateString = "\${fint.heartbeat.check-rate}")
     fun checkHeartbeats() {
-        log.info("Checking heartbeats")
         contractCache.getAll().onEach { contract ->
             heartbeatCache.getLastHeartbeat(contract.adapterId)?.let { lastHeartbeat ->
-                log.info("Last heartbeat: {}", lastHeartbeat)
                 val timeInSeconds = System.currentTimeMillis() / 1000
                 val timeSinceLastHeartbeat = timeInSeconds - lastHeartbeat
-                log.info("Time since last heartbeat: {}", timeSinceLastHeartbeat)
                 val expectedIntervalSeconds = contract.heartbeatIntervalInMinutes * 60
-                log.info("Expected timing: {}", expectedIntervalSeconds)
 
                 if (timeSinceLastHeartbeat <= expectedIntervalSeconds) {
                     contract.hasContact = true

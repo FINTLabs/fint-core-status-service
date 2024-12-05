@@ -36,7 +36,6 @@ class ContractConsumer(val contractCache: ContractCache) {
     }
 
     fun processEvent(consumerRecord: ConsumerRecord<String, AdapterContract>) {
-        log.info("Consumed adapter-contract: {}", consumerRecord.value().adapterId)
         contractCache.add(consumerRecord.value())
     }
 

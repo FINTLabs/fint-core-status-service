@@ -31,7 +31,6 @@ class HeartbeatConsumer(val heartbeatCache: HeartbeatCache) {
     }
 
     fun processEvent(consumerRecord: ConsumerRecord<String, AdapterHeartbeat>) {
-        log.info("Heartbeat from: {}", consumerRecord.value().adapterId)
         heartbeatCache.add(consumerRecord.value())
     }
 
