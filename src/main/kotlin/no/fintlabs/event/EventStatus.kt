@@ -5,6 +5,7 @@ import no.fintlabs.adapter.models.event.RequestFintEvent
 import no.fintlabs.adapter.models.event.ResponseFintEvent
 
 class EventStatus(
+    val topic: String,
     val corrId: String,
     val orgId: String,
     var hasError: Boolean,
@@ -13,10 +14,11 @@ class EventStatus(
 ) {
 
     companion object {
-        fun from(event: FintEvent): EventStatus {
+        fun from(event: FintEvent, topic: String): EventStatus {
             return when (event) {
                 is RequestFintEvent -> {
                     EventStatus(
+                        topic = topic,
                         corrId = event.corrId,
                         orgId = event.orgId,
                         hasError = false,
@@ -27,6 +29,7 @@ class EventStatus(
 
                 is ResponseFintEvent -> {
                     EventStatus(
+                        topic = topic,
                         corrId = event.corrId,
                         orgId = event.orgId,
                         hasError = event.isFailed || event.isRejected,
@@ -39,5 +42,4 @@ class EventStatus(
             }
         }
     }
-
 }

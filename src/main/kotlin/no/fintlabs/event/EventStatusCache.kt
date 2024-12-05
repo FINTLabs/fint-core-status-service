@@ -11,11 +11,10 @@ class EventStatusCache {
 
     val cache: ConcurrentHashMap<String, EventStatus> = ConcurrentHashMap()
 
-    fun add(fintEvent: FintEvent) =
+    fun add(fintEvent: FintEvent, topic: String) =
         cache.compute(fintEvent.corrId) { _, cachedEvent ->
-            cachedEvent?.updateWith(fintEvent) ?: EventStatus.from(fintEvent)
+            cachedEvent?.updateWith(fintEvent) ?: EventStatus.from(fintEvent, topic)
         }
-
 }
 
 private fun EventStatus.updateWith(event: FintEvent): EventStatus {
@@ -31,11 +30,13 @@ private fun EventStatus.updateWith(event: FintEvent): EventStatus {
 }
 
 private fun EventStatus.copyWith(
+    topic: String = this.topic,
     hasError: Boolean = this.hasError,
     requestEvent: RequestFintEvent? = this.requestEvent,
     responseEvent: ResponseFintEvent? = this.responseEvent
 ): EventStatus {
     return EventStatus(
+        topic = topic,
         corrId = this.corrId,
         orgId = this.orgId,
         hasError = hasError,
