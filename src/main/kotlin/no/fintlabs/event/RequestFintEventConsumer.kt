@@ -31,7 +31,7 @@ class RequestFintEventConsumer(val eventStatusCache: EventStatusCache) {
     }
 
     fun processEvent(consumerRecord: ConsumerRecord<String, RequestFintEvent>) {
-        log.info("Consumed Request: {}", consumerRecord.value().corrId)
+        log.info("Consumed Request: {} from topic name: {}", consumerRecord.value().corrId, consumerRecord.topic())
         eventStatusCache.add(consumerRecord.value())
     }
 
