@@ -23,6 +23,7 @@ class HeartbeatChecker(
 
                 if (timeSinceLastHeartbeat <= expectedIntervalSeconds) {
                     contract.hasContact = true
+                    contract.lastHeartbeat = timeInSeconds
                 }else if(timeSinceLastHeartbeat >= expectedIntervalSeconds){
                     contract.hasContact = false
                 }

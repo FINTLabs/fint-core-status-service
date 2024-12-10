@@ -2,6 +2,7 @@ package no.fintlabs.contract
 
 import no.fintlabs.adapter.models.AdapterCapability
 import no.fintlabs.adapter.models.AdapterContract
+import no.fintlabs.adapter.models.AdapterHeartbeat
 import java.util.stream.Collectors
 
 data class Contract(
@@ -9,6 +10,7 @@ data class Contract(
     val username: String,
     val orgId: String,
     val heartbeatIntervalInMinutes: Int,
+    var lastHeartbeat: Number,
     val components: Set<String>,
     var hasContact: Boolean,
     val capabilities: Set<AdapterCapability>
@@ -22,7 +24,8 @@ data class Contract(
                 heartbeatIntervalInMinutes = adapterContract.heartbeatIntervalInMinutes,
                 components = getComponents(adapterContract.capabilities),
                 hasContact = false,
-                capabilities = adapterContract.capabilities
+                capabilities = adapterContract.capabilities,
+                lastHeartbeat = 0
             )
         }
 
