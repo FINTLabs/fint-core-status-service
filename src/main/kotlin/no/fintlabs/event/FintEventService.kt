@@ -6,9 +6,9 @@ import org.springframework.stereotype.Service
 @Service
 class FintEventService(val eventStatusCache: EventStatusCache) {
 
-    fun lol(event: FintEvent) {
-        eventStatusCache.add(event)
-    }
+//    fun lol(event: FintEvent) {
+//        eventStatusCache.add(event)
+//    }
 
     fun getAllEvents(): Collection<EventStatus> {
         return eventStatusCache.cache.values.toList()

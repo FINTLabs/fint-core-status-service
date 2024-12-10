@@ -33,7 +33,7 @@ class ResponseFintEventConsumer(val eventStatusCache: EventStatusCache) {
 
     fun processEvent(consumerRecord: ConsumerRecord<String, ResponseFintEvent>) {
         log.info("Consumed Response: {}", consumerRecord.value().corrId)
-        eventStatusCache.add(consumerRecord.value())
+        eventStatusCache.add(consumerRecord.value(), consumerRecord.topic())
     }
 
 }
