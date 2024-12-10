@@ -14,13 +14,11 @@ spec:
         permission: admin
   ingress:
     routes:
-      - host: api.core-status.fintlabs.no
-        path: /beta
+      - host: core-status-beta.fintlabs.no
+        path: /
   env:
     - name: JAVA_TOOL_OPTIONS
       value: '-XX:+ExitOnOutOfMemoryError -Xmx525M'
-    - name: spring.webflux.base-path
-      value: /beta
   resources:
     limits:
       memory: "1Gi"
