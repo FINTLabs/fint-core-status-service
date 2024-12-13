@@ -1,6 +1,7 @@
-package no.fintlabs.event
+package no.fintlabs.event.request
 
-import no.fintlabs.adapter.models.event.ResponseFintEvent
+import no.fintlabs.adapter.models.event.RequestFintEvent
+import no.fintlabs.event.EventStatusCache
 import no.fintlabs.kafka.common.topic.pattern.FormattedTopicComponentPattern
 import no.fintlabs.kafka.common.topic.pattern.ValidatedTopicComponentPattern
 import no.fintlabs.kafka.event.EventConsumerFactoryService
@@ -12,27 +13,26 @@ import org.springframework.kafka.listener.ConcurrentMessageListenerContainer
 import org.springframework.stereotype.Component
 
 @Component
-class ResponseFintEventConsumer(val eventStatusCache: EventStatusCache) {
+class RequestFintEventConsumer(val eventStatusCache: EventStatusCache) {
 
-    private val log = LoggerFactory.getLogger(ResponseFintEventConsumer::class.java)
+    private val log = LoggerFactory.getLogger(RequestFintEventConsumer::class.java)
 
     @Bean
-    fun registerResponseFintEventKafkaConsumer(eventConsumerFactoryService: EventConsumerFactoryService): ConcurrentMessageListenerContainer<String, ResponseFintEvent> {
+    fun registerRequestFintEventKafkaConsumer(eventConsumerFactoryService: EventConsumerFactoryService): ConcurrentMessageListenerContainer<String, RequestFintEvent> {
         return eventConsumerFactoryService.createFactory(
-            ResponseFintEvent::class.java,
+            RequestFintEvent::class.java,
             this::processEvent,
         ).createContainer(
             EventTopicNamePatternParameters.builder()
                 .orgId(FormattedTopicComponentPattern.any())
                 .domainContext(FormattedTopicComponentPattern.containing("fint-core"))
-                .eventName(ValidatedTopicComponentPattern.endingWith("-response"))
+                .eventName(ValidatedTopicComponentPattern.endingWith("-request"))
                 .build()
-
         )
     }
 
-    fun processEvent(consumerRecord: ConsumerRecord<String, ResponseFintEvent>) {
-        log.info("Consumed Response: {}", consumerRecord.value().corrId)
+    fun processEvent(consumerRecord: ConsumerRecord<String, RequestFintEvent>) {
+        log.info("Consumed Request: {} from topic name: {}", consumerRecord.value().corrId, consumerRecord.topic())
         eventStatusCache.add(consumerRecord.value(), consumerRecord.topic())
     }
 

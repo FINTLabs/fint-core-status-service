@@ -1,4 +1,9 @@
-package PACKAGE_NAME;
-
-public class RequestFintEventEntiry {
-}
+//import jakarta.persistence.Entity;
+//import jakarta.persistence.Id;
+//
+//@Entity
+//public class RequestFintEventEntity {
+//
+//    @Id
+//    private String corrId;
+//}

@@ -1,1 +1,1 @@
-docker run --rm --name fint-core-status-service -p 5436:5432 -e POSTGRES_PASSWORD=password -e POSTGRES_DB=fint-personvern-adapter -d postgres
+docker run --rm --name fint-core-status-service -p 5436:5432 -e POSTGRES_PASSWORD=password -e POSTGRES_DB=fint-core-status-service -d postgres
