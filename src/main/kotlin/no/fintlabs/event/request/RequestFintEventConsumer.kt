@@ -1,11 +1,13 @@
 package no.fintlabs.event.request
 
+import no.fintlabs.MappingService
 import no.fintlabs.adapter.models.event.RequestFintEvent
 import no.fintlabs.event.EventStatusCache
 import no.fintlabs.kafka.common.topic.pattern.FormattedTopicComponentPattern
 import no.fintlabs.kafka.common.topic.pattern.ValidatedTopicComponentPattern
 import no.fintlabs.kafka.event.EventConsumerFactoryService
 import no.fintlabs.kafka.event.topic.EventTopicNamePatternParameters
+import no.fintlabs.request.RequestFintEventJpaRepository
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Bean
@@ -13,7 +15,11 @@ import org.springframework.kafka.listener.ConcurrentMessageListenerContainer
 import org.springframework.stereotype.Component
 
 @Component
-class RequestFintEventConsumer(val eventStatusCache: EventStatusCache) {
+class RequestFintEventConsumer(
+    val eventStatusCache: EventStatusCache,
+    val requestFintEventJpaRepository: RequestFintEventJpaRepository,
+    private val mappingService: MappingService
+) {
 
     private val log = LoggerFactory.getLogger(RequestFintEventConsumer::class.java)
 
@@ -33,6 +39,7 @@ class RequestFintEventConsumer(val eventStatusCache: EventStatusCache) {
 
     fun processEvent(consumerRecord: ConsumerRecord<String, RequestFintEvent>) {
         log.info("Consumed Request: {} from topic name: {}", consumerRecord.value().corrId, consumerRecord.topic())
+        requestFintEventJpaRepository.save(mappingService.mapRequestFintEventToEntity(consumerRecord.value()))
         eventStatusCache.add(consumerRecord.value(), consumerRecord.topic())
     }
 
