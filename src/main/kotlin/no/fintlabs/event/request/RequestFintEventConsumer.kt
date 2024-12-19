@@ -38,6 +38,7 @@ class RequestFintEventConsumer(
     }
 
     fun processEvent(consumerRecord: ConsumerRecord<String, RequestFintEvent>) {
+        log.debug("Consumed Request: {} from topic name: {}", consumerRecord.value().corrId, consumerRecord.topic())
         requestFintEventJpaRepository.save(mappingService.mapRequestFintEventToEntity(consumerRecord.value(), consumerRecord.topic()))
         eventStatusCache.add(consumerRecord.value(), consumerRecord.topic())
     }
