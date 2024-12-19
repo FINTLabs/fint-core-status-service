@@ -1,0 +1,28 @@
+apiVersion: fintlabs.no/v1alpha1
+kind: Application
+metadata:
+  name: fint-core-status-service
+  namespace: fint-core
+spec:
+  port: 8080
+  orgId: fintlabs.no
+  image: ghcr.io/fintlabs/fint-core-status-service:latest
+  kafka:
+    enabled: true
+    acls:
+      - topic: '*.fint-core.event.*'
+        permission: admin
+  ingress:
+    routes:
+      - host: core-status-alpha.fintlabs.no
+        path: /
+  env:
+    - name: JAVA_TOOL_OPTIONS
+      value: '-XX:+ExitOnOutOfMemoryError -Xmx525M'
+  resources:
+    limits:
+      memory: "1Gi"
+      cpu: "500m"
+    requests:
+      memory: "500Mi"
+      cpu: "100m"
