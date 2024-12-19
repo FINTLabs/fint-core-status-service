@@ -8,6 +8,7 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
+
   kafka:
     image: confluentinc/cp-kafka:latest
     networks:
@@ -23,6 +24,7 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
   kafdrop:
     image: obsidiandynamics/kafdrop:latest
     networks:
@@ -33,6 +35,17 @@ services:
       - 19000:9000
     environment:
       KAFKA_BROKERCONNECT: kafka:29092
+
+  fint-core-status-service:
+    image: postgres:latest
+    networks:
+      - broker-kafka
+    ports:
+      - 5436:5432
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: fint-core-status-service
+
 networks:
   broker-kafka:
     driver: bridge
