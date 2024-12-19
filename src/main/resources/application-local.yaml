@@ -16,3 +16,25 @@ fint:
 spring:
   webflux:
     base-path: /api
+  jpa:
+    properties:
+      jdbc:
+        time_zone: UTC
+        lob:
+          non_contextual_creation: true
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+      enable_lazy_load_no_trans: true
+    hibernate:
+      ddl-auto: update
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: ${fint.database.username}
+    url: ${fint.database.url}
+    password: ${fint.database.password}
+    hikari:
+      schema: public
+logging:
+  level:
+    no.fintlabs.kafka: off
+    org.springframework.kafka: off
+    org.apache.kafka: off

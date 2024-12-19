@@ -11,3 +11,11 @@ spring:
   kafka:
     consumer:
       group-id: ${fint.kafka.application-id}
+  profiles:
+    include: db
+
+logging:
+  level:
+    no.fintlabs.kafka: off
+    org.springframework.kafka: off
+    org.apache.kafka: off
