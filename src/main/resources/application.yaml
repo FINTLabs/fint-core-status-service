@@ -8,6 +8,11 @@ fint:
     application-id: fint-core-status-service
 
 spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://idp.felleskomponent.no/nidp/oauth/nam
   kafka:
     consumer:
       group-id: ${fint.kafka.application-id}
