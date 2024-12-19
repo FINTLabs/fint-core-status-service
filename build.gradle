@@ -26,6 +26,7 @@ dependencies {
     implementation 'org.springframework.kafka:spring-kafka'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
     implementation 'no.fintlabs:fint-kafka:3.2.0-rc-1'
     implementation 'no.fintlabs:fint-core-infra-models:2.1.0-rc-5'
@@ -39,9 +40,6 @@ dependencies {
     implementation 'org.postgresql:postgresql'
     implementation 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
-
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'io.projectreactor:reactor-test'
