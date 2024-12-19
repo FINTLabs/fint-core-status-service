@@ -8,11 +8,11 @@ fint:
     application-id: fint-core-status-service
     enable-ssl: false
     default-replicas: 1
-
   spring:
     kafka:
       consumer:
         group-id: ${fint.kafka.application-id}
+
 spring:
   webflux:
     base-path: /api
@@ -28,9 +28,9 @@ spring:
       ddl-auto: update
   datasource:
     driver-class-name: org.postgresql.Driver
-    username: ${fint.database.username}
-    url: ${fint.database.url}
-    password: ${fint.database.password}
+    url: jdbc:postgresql://localhost:5436/fint-core-status-service
+    username: postgres
+    password: password
     hikari:
       schema: public
 logging:
