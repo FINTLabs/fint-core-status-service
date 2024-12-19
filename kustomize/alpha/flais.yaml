@@ -12,6 +12,8 @@ spec:
     acls:
       - topic: '*.fint-core.event.*'
         permission: admin
+  database:
+    database: fint-core
   ingress:
     routes:
       - host: core-status-alpha.fintlabs.no
