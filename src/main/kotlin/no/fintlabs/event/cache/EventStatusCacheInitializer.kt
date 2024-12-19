@@ -26,7 +26,6 @@ class EventStatusCacheInitializer(
     }
 
     fun fillCache() {
-        log.info("Syncing cache with database")
         val requests: List<RequestFintEventEntity> = requestFintEventJpaRepository.findAll()
         val responses: List<ResponseFintEventEntity> = responseFintEventJpaRepository.findAll()
 
@@ -39,6 +38,7 @@ class EventStatusCacheInitializer(
             val responseFintEvent: ResponseFintEvent = mapper.mapEntityToResponseFintEvent(responseEntity)
             eventStatusCache.add(responseFintEvent, responseEntity.topic)
         }
+        log.info("Synced with database")
     }
 
 }
