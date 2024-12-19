@@ -2,7 +2,7 @@ package no.fintlabs.event.request
 
 import no.fintlabs.MappingService
 import no.fintlabs.adapter.models.event.RequestFintEvent
-import no.fintlabs.event.EventStatusCache
+import no.fintlabs.event.cache.EventStatusCache
 import no.fintlabs.kafka.common.topic.pattern.FormattedTopicComponentPattern
 import no.fintlabs.kafka.common.topic.pattern.ValidatedTopicComponentPattern
 import no.fintlabs.kafka.event.EventConsumerFactoryService
@@ -39,7 +39,7 @@ class RequestFintEventConsumer(
 
     fun processEvent(consumerRecord: ConsumerRecord<String, RequestFintEvent>) {
         log.info("Consumed Request: {} from topic name: {}", consumerRecord.value().corrId, consumerRecord.topic())
-        requestFintEventJpaRepository.save(mappingService.mapRequestFintEventToEntity(consumerRecord.value()))
+        requestFintEventJpaRepository.save(mappingService.mapRequestFintEventToEntity(consumerRecord.value(), consumerRecord.topic()))
         eventStatusCache.add(consumerRecord.value(), consumerRecord.topic())
     }
 

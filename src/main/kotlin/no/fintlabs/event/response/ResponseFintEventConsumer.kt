@@ -2,7 +2,7 @@ package no.fintlabs.event.response
 
 import no.fintlabs.MappingService
 import no.fintlabs.adapter.models.event.ResponseFintEvent
-import no.fintlabs.event.EventStatusCache
+import no.fintlabs.event.cache.EventStatusCache
 import no.fintlabs.kafka.common.topic.pattern.FormattedTopicComponentPattern
 import no.fintlabs.kafka.common.topic.pattern.ValidatedTopicComponentPattern
 import no.fintlabs.kafka.event.EventConsumerFactoryService
@@ -40,7 +40,7 @@ class ResponseFintEventConsumer(
 
     fun processEvent(consumerRecord: ConsumerRecord<String, ResponseFintEvent>) {
         log.info("Consumed Response: {}", consumerRecord.value().corrId)
-        responseFintEventJpaRepository.save(mappingService.mapResponseFintEventToEntity(consumerRecord.value()))
+        responseFintEventJpaRepository.save(mappingService.mapResponseFintEventToEntity(consumerRecord.value(), consumerRecord.topic()))
         eventStatusCache.add(consumerRecord.value(), consumerRecord.topic())
     }
 
