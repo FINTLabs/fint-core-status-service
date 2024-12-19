@@ -14,7 +14,7 @@ spec:
         permission: admin
   ingress:
     routes:
-      - host: api.core-status.fintlabs.no
+      - host: core-status.fintlabs.no
         path: /api
   env:
     - name: JAVA_TOOL_OPTIONS
