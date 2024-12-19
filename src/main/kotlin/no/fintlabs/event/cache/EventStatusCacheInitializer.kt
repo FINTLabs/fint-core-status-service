@@ -13,8 +13,8 @@ import org.springframework.stereotype.Component
 
 @Component
 class EventStatusCacheInitializer(
-    private var requestFintEventJpaRepository: RequestFintEventJpaRepository,
-    private var responseFintEventJpaRepository: ResponseFintEventJpaRepository,
+    private val requestFintEventJpaRepository: RequestFintEventJpaRepository,
+    private val responseFintEventJpaRepository: ResponseFintEventJpaRepository,
     private val eventStatusCache: EventStatusCache,
     private val mapper: MappingService
 ) {
