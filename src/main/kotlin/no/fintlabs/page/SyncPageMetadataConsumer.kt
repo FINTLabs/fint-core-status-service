@@ -33,7 +33,7 @@ class SyncPageMetadataConsumer(val pageMetadataCache: PageMetadataCache) {
     fun processEvent(consumerRecord: ConsumerRecord<String, SyncPageMetadata>) {
         val parts = consumerRecord.topic().split("-")
         val syncType = parts.getOrNull(parts.size - 2)
-        log.info("Consumed {}-sync From: {}", syncType, consumerRecord.value().adapterId)
+        log.debug("Consumed {}-sync From: {}", syncType, consumerRecord.value().adapterId)
         syncType?.let {
             pageMetadataCache.add(consumerRecord.value(), it)
         }

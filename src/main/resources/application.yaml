@@ -25,3 +25,4 @@ logging:
     org.springframework.kafka: off
     org.apache.kafka: off
     no.fintlabs.event: info
+    no.fintlabs.page: info
