@@ -19,7 +19,7 @@ class EventStatusCache {
         cache.compute(fintEvent.corrId) { _, cachedEvent ->
             cachedEvent?.updateWith(fintEvent) ?: EventStatus.from(fintEvent, topic)
         }
-        log.info("Event added to cache, current cache size is: {}", cache.size)
+        println("Event added to cache, current cache size is: ${cache.size}")
     }
 
     private fun EventStatus.updateWith(event: FintEvent): EventStatus {
