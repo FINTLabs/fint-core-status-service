@@ -29,12 +29,12 @@ class EventStatusCacheInitializer(
         val requests: List<RequestFintEventEntity> = requestFintEventJpaRepository.findAll()
         val responses: List<ResponseFintEventEntity> = responseFintEventJpaRepository.findAll()
 
-        requests.stream().forEach { requestEntity ->
+        requests.forEach { requestEntity ->
             val requestFintEvent: RequestFintEvent = mapper.mapEntityToRequestFintEvent(requestEntity)
             eventStatusCache.add(requestFintEvent, requestEntity.topic)
         }
 
-        responses.stream().forEach { responseEntity ->
+        responses.forEach { responseEntity ->
             val responseFintEvent: ResponseFintEvent = mapper.mapEntityToResponseFintEvent(responseEntity)
             eventStatusCache.add(responseFintEvent, responseEntity.topic)
         }
