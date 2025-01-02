@@ -5,6 +5,7 @@ import no.fintlabs.adapter.models.event.ResponseFintEvent
 import no.fintlabs.event.cache.EventStatusCache
 import no.fintlabs.kafka.common.topic.pattern.FormattedTopicComponentPattern
 import no.fintlabs.kafka.common.topic.pattern.ValidatedTopicComponentPattern
+import no.fintlabs.kafka.event.EventConsumerConfiguration
 import no.fintlabs.kafka.event.EventConsumerFactoryService
 import no.fintlabs.kafka.event.topic.EventTopicNamePatternParameters
 import no.fintlabs.response.ResponseFintEventJpaRepository
@@ -28,6 +29,9 @@ class ResponseFintEventConsumer(
         return eventConsumerFactoryService.createFactory(
             ResponseFintEvent::class.java,
             this::processEvent,
+            EventConsumerConfiguration.builder()
+                .seekingOffsetResetOnAssignment(true)
+                .build()
         ).createContainer(
             EventTopicNamePatternParameters.builder()
                 .orgId(FormattedTopicComponentPattern.any())
