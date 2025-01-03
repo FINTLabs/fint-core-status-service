@@ -16,11 +16,9 @@ class EventStatusCache {
     val cache: ConcurrentHashMap<String, EventStatus> = ConcurrentHashMap()
 
     fun add(fintEvent: FintEvent, topic: String) {
-        println("Adding event")
         cache.compute(fintEvent.corrId) { _, cachedEvent ->
             cachedEvent?.updateWith(fintEvent) ?: EventStatus.from(fintEvent, topic)
         }
-        println("Event added to cache, current cache size is: ${cache.size}")
     }
 
     private fun EventStatus.updateWith(event: FintEvent): EventStatus {

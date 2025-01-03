@@ -22,7 +22,7 @@ public class MappingService {
                 String.valueOf(requestEvent.getOperationType()),
                 requestEvent.getCreated(),
                 requestEvent.getTimeToLive(),
-                requestEvent.getValue()
+                ""
         );
     }
 
@@ -39,8 +39,8 @@ public class MappingService {
                 responseEvent.isConflicted(),
                 responseEvent.isRejected(),
                 responseEvent.getConflictReason(),
-                responseEvent.getValue().getIdentifier(),
-                String.valueOf(responseEvent.getValue().getResource())
+                responseEvent.getValue() == null ? "[NULL]" : responseEvent.getValue().getIdentifier(),
+                ""
         );
     }
 

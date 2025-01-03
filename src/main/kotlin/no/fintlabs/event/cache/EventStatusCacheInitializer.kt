@@ -33,12 +33,13 @@ class EventStatusCacheInitializer(
             val requestFintEvent: RequestFintEvent = mapper.mapEntityToRequestFintEvent(requestEntity)
             eventStatusCache.add(requestFintEvent, requestEntity.topic)
         }
+        log.info("Requests synced from database, count = ${requests.size}")
 
         responses.forEach { responseEntity ->
             val responseFintEvent: ResponseFintEvent = mapper.mapEntityToResponseFintEvent(responseEntity)
             eventStatusCache.add(responseFintEvent, responseEntity.topic)
         }
-        log.info("Synced with database")
+        log.info("Responses synced from database, count = ${responses.size}")
     }
 
 }

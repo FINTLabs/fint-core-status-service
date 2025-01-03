@@ -19,15 +19,11 @@ spring:
   jpa:
     properties:
       jdbc:
-        time_zone: UTC
         lob:
-          non_contextual_creation: true
-      dialect: org.hibernate.dialect.PostgreSQLDialect
       enable_lazy_load_no_trans: true
     hibernate:
       ddl-auto: update
   datasource:
-    driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5436/fint-core-status-service
     username: postgres
     password: password
@@ -35,6 +31,6 @@ spring:
       schema: public
 logging:
   level:
-    no.fintlabs.kafka: off
-    org.springframework.kafka: off
-    org.apache.kafka: off
+    no.fintlabs.kafka: info
+    org.springframework.kafka: info
+    org.apache.kafka: info
