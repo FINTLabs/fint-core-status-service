@@ -29,9 +29,6 @@ class ResponseFintEventConsumer(
         return eventConsumerFactoryService.createFactory(
             ResponseFintEvent::class.java,
             this::processEvent,
-            EventConsumerConfiguration.builder()
-                .seekingOffsetResetOnAssignment(true)
-                .build()
         ).createContainer(
             EventTopicNamePatternParameters.builder()
                 .orgId(FormattedTopicComponentPattern.any())
