@@ -21,8 +21,8 @@ spring:
 
 logging:
   level:
-    no.fintlabs.kafka: off
-    org.springframework.kafka: off
-    org.apache.kafka: off
+    no.fintlabs.kafka: warn
+    org.springframework.kafka: warn
+    org.apache.kafka: warn
     no.fintlabs.event: debug
     no.fintlabs.page: info
