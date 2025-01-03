@@ -33,10 +33,10 @@ class PageMetadataCache {
                 this.entitiesAquired += syncPageMetaData.pageSize
             }
                 ?: PageMetaData(
-                    corrId = corrId,
-                    adapterId = syncPageMetaData.adapterId,
-                    orgId = orgId,
-                    entityUrl = syncPageMetaData.uriRef,
+                    corrId = corrId ?: "",
+                    adapterId = syncPageMetaData.adapterId ?: "",
+                    orgId = orgId ?: "",
+                    entityUrl = syncPageMetaData.uriRef ?: "",
                     totalPages = syncPageMetaData.totalPages,
                     pagesAcquired = 1,
                     totalEntities = syncPageMetaData.totalSize,
