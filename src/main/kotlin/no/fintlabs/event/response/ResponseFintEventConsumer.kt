@@ -2,10 +2,10 @@ package no.fintlabs.event.response
 
 import no.fintlabs.MappingService
 import no.fintlabs.adapter.models.event.ResponseFintEvent
+import no.fintlabs.contract.ContractCache
 import no.fintlabs.event.cache.EventStatusCache
 import no.fintlabs.kafka.common.topic.pattern.FormattedTopicComponentPattern
 import no.fintlabs.kafka.common.topic.pattern.ValidatedTopicComponentPattern
-import no.fintlabs.kafka.event.EventConsumerConfiguration
 import no.fintlabs.kafka.event.EventConsumerFactoryService
 import no.fintlabs.kafka.event.topic.EventTopicNamePatternParameters
 import no.fintlabs.response.ResponseFintEventJpaRepository
@@ -19,7 +19,8 @@ import org.springframework.stereotype.Component
 class ResponseFintEventConsumer(
     val eventStatusCache: EventStatusCache,
     val responseFintEventJpaRepository: ResponseFintEventJpaRepository,
-    private val mappingService: MappingService
+    private val mappingService: MappingService,
+    private val contractCache: ContractCache
 ) {
 
     private val log = LoggerFactory.getLogger(ResponseFintEventConsumer::class.java)
@@ -41,6 +42,8 @@ class ResponseFintEventConsumer(
 
     fun processEvent(consumerRecord: ConsumerRecord<String, ResponseFintEvent>) {
         log.info("Consumed Response: {}", consumerRecord.value().corrId)
+        val responseEvent = consumerRecord.value()
+        contractCache.updateLastActivity(responseEvent.adapterId, responseEvent.handledAt)
         responseFintEventJpaRepository.save(mappingService.mapResponseFintEventToEntity(consumerRecord.value(), consumerRecord.topic()))
         eventStatusCache.add(consumerRecord.value(), consumerRecord.topic())
     }
