@@ -14,6 +14,8 @@ class ContractCache {
 
     fun save(contract: Contract) = cache.put(contract.adapterId, contract)
 
-    fun updateLastActivity(adapterId: String, time: Long) = cache[adapterId]?.let {it.lastActivity = time}
+    fun updateLastActivity(adapterId: String, time: Long) = cache[adapterId]
+        ?.takeIf { time > it.lastActivity }
+        ?.apply { lastActivity = time }
 
 }
