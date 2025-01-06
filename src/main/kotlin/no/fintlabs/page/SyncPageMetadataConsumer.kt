@@ -1,6 +1,7 @@
 package no.fintlabs.page
 
 import no.fintlabs.adapter.models.sync.SyncPageMetadata
+import no.fintlabs.contract.ContractCache
 import no.fintlabs.kafka.common.topic.pattern.FormattedTopicComponentPattern
 import no.fintlabs.kafka.common.topic.pattern.ValidatedTopicComponentPattern
 import no.fintlabs.kafka.event.EventConsumerFactoryService
@@ -12,7 +13,10 @@ import org.springframework.kafka.listener.ConcurrentMessageListenerContainer
 import org.springframework.stereotype.Component
 
 @Component
-class SyncPageMetadataConsumer(val pageMetadataCache: PageMetadataCache) {
+class SyncPageMetadataConsumer(
+    val pageMetadataCache: PageMetadataCache,
+    val contractCache: ContractCache,
+) {
 
     private val log = LoggerFactory.getLogger(SyncPageMetadataConsumer::class.java)
 
@@ -33,10 +37,9 @@ class SyncPageMetadataConsumer(val pageMetadataCache: PageMetadataCache) {
     fun processEvent(consumerRecord: ConsumerRecord<String, SyncPageMetadata>) {
         val parts = consumerRecord.topic().split("-")
         val syncType = parts.getOrNull(parts.size - 2)
-        log.debug("Consumed {}-sync From: {}", syncType, consumerRecord.value().adapterId)
-        syncType?.let {
-            pageMetadataCache.add(consumerRecord.value(), it)
-        }
+        val pageMetaData = consumerRecord.value()
+        log.debug("Consumed {}-sync From: {}", syncType, pageMetaData.adapterId)
+        contractCache.updateLastActivity(pageMetaData.adapterId, pageMetaData.time)
+        syncType?.let { pageMetadataCache.add(pageMetaData, it) }
     }
-
 }

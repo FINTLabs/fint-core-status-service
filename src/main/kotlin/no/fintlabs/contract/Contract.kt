@@ -13,7 +13,8 @@ data class Contract(
     var lastHeartbeat: Number,
     val components: Set<String>,
     var hasContact: Boolean,
-    val capabilities: Set<AdapterCapability>
+    val capabilities: Set<AdapterCapability>,
+    var lastActivity: Number
 ) {
     companion object {
         fun fromAdapterContract(adapterContract: AdapterContract): Contract {
@@ -25,7 +26,8 @@ data class Contract(
                 components = getComponents(adapterContract.capabilities),
                 hasContact = false,
                 capabilities = adapterContract.capabilities,
-                lastHeartbeat = 0
+                lastHeartbeat = 0,
+                lastActivity = 0
             )
         }
 
