@@ -16,3 +16,8 @@ spring:
     driver-class-name: org.postgresql.Driver
     hikari:
       schema: ${fint.database.username}
+
+event:
+  database:
+    cleanupTime: "0 10 12 * * ?"
+  cacheFlushAndRefill: "0 12 14 * * ?"

@@ -26,7 +26,7 @@ class EventStatusCacheService(
         fillCache()
     }
 
-    @Scheduled(cron = "0 08 13 * * ?")
+    @Scheduled(cron = "\${event.cacheFlushAndRefill}")
     private fun flushAndRefiilCache() {
         eventStatusCache.cache.clear()
         fillCache()

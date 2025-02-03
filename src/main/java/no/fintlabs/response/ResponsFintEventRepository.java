@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
 
 @Slf4j
 @Service
@@ -14,17 +13,18 @@ public class ResponsFintEventRepository {
 
     private ResponseFintEventJpaRepository responseFintEventJpaRepository;
 
-    @Scheduled(cron = "0 08 13 * * ?")
+    public ResponsFintEventRepository(ResponseFintEventJpaRepository responseFintEventJpaRepository) {
+        this.responseFintEventJpaRepository = responseFintEventJpaRepository;
+    }
+
+    @Scheduled(cron = "${event.database.cleanupTime}")
     private void removeEventsOlderThanTwoWeeks() {
         long twoWeeks = Instant.now().minus(14, ChronoUnit.DAYS).toEpochMilli();
-        List<ResponseFintEventEntity> responsesOlderThanTwoWeeks = responseFintEventJpaRepository.findOlderThan(twoWeeks);
-        responsesOlderThanTwoWeeks.forEach(responseFintEventEntity -> {
-            try {
-                responseFintEventJpaRepository.delete(responseFintEventEntity);
-            } catch (Exception e) {
-                log.error(e.getMessage(), e);
-            }
-        });
+        try {
+            responseFintEventJpaRepository.deleteRowsOlderThan(twoWeeks);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
     }
 
 }
