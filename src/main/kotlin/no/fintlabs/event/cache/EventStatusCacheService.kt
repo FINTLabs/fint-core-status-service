@@ -9,10 +9,11 @@ import no.fintlabs.request.RequestFintEventJpaRepository
 import no.fintlabs.response.ResponseFintEventEntity
 import no.fintlabs.response.ResponseFintEventJpaRepository
 import org.slf4j.LoggerFactory
+import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 
 @Component
-class EventStatusCacheInitializer(
+class EventStatusCacheService(
     private val requestFintEventJpaRepository: RequestFintEventJpaRepository,
     private val responseFintEventJpaRepository: ResponseFintEventJpaRepository,
     private val eventStatusCache: EventStatusCache,
@@ -22,6 +23,12 @@ class EventStatusCacheInitializer(
     private val log = LoggerFactory.getLogger(ResponseFintEventConsumer::class.java)
 
     init {
+        fillCache()
+    }
+
+    @Scheduled(cron = "0 08 13 * * ?")
+    private fun flushAndRefiilCache() {
+        eventStatusCache.cache.clear()
         fillCache()
     }
 

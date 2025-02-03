@@ -15,7 +15,7 @@ public class RequestFintEventRepository {
 
     private RequestFintEventJpaRepository requestFintEventJpaRepository;
 
-    @Scheduled(cron = "0 0 13 * * ?")
+    @Scheduled(cron = "0 08 13 * * ?")
     private void removeEventsOlderThanTwoWeeks(){
         long twoWeeks = Instant.now().minus(14, ChronoUnit.DAYS).toEpochMilli();
         List<RequestFintEventEntity> requests = requestFintEventJpaRepository.findOlderThan(twoWeeks);

@@ -6,23 +6,15 @@ import no.fintlabs.adapter.models.event.ResponseFintEvent
 import no.fintlabs.event.EventStatus
 import no.fintlabs.event.response.ResponseFintEventConsumer
 import org.slf4j.LoggerFactory
-import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.util.concurrent.ConcurrentHashMap
 
 @Component
-class EventStatusCache(
-    private val eventStatusCacheInitializer: EventStatusCacheInitializer
-) {
+class EventStatusCache() {
 
     private val log = LoggerFactory.getLogger(ResponseFintEventConsumer::class.java)
     val cache: ConcurrentHashMap<String, EventStatus> = ConcurrentHashMap()
 
-    @Scheduled(cron = "0 0 13 * * ?")
-    private fun flushAndRefiilCache() {
-        cache.clear()
-        eventStatusCacheInitializer.fillCache()
-    }
 
     fun add(fintEvent: FintEvent, topic: String) {
         cache.compute(fintEvent.corrId) { _, cachedEvent ->
