@@ -19,5 +19,5 @@ spring:
 
 event:
   database:
-    cleanupTime: "0 10 12 * * ?"
-  cacheFlushAndRefill: "0 12 14 * * ?"
+    cleanupTime: "0 55 14 * * ?"
+  cacheFlushAndRefill: "0 57 14 * * ?"

@@ -14,5 +14,4 @@ public interface ResponseFintEventJpaRepository extends JpaRepository<ResponseFi
     @Transactional
     @Query("DELETE FROM ResponseFintEventEntity e WHERE e.handledAt < :cutoffTimestamp")
     int deleteRowsOlderThan(@Param("cutoffTimestamp") long cutoffTimestamp);
-
 }
