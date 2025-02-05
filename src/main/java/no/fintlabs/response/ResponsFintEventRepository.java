@@ -19,9 +19,9 @@ public class ResponsFintEventRepository {
 
     @Scheduled(cron = "${event.database.cleanupTime}")
     private void removeEventsOlderThanTwoWeeks() {
-        long twoWeeks = Instant.now().minus(14, ChronoUnit.DAYS).toEpochMilli();
+        long days = Instant.now().minus(30, ChronoUnit.DAYS).toEpochMilli();
         try {
-            responseFintEventJpaRepository.deleteRowsOlderThan(twoWeeks);
+            responseFintEventJpaRepository.deleteRowsOlderThan(days);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
