@@ -17,4 +17,9 @@ class EventStatusController(val fintEventService: FintEventService) {
     fun getById(@PathVariable id: String): ResponseEntity<EventStatus> =
         fintEventService.getEventById(id)?.let { ResponseEntity.ok(it) } ?: ResponseEntity.notFound().build()
 
+    @GetMapping("/{from}/{to}")
+    fun getByTime(@PathVariable from: Long, @PathVariable to: Long): Collection<EventStatus> {
+        return fintEventService.getEventsByTime(from, to)
+    }
+
 }

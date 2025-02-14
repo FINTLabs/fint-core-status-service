@@ -11,7 +11,11 @@ class FintEventService(val eventStatusCache: EventStatusCache) {
     }
 
     fun getEventById(id: String): EventStatus? {
-        return eventStatusCache.cache[id];
+        return eventStatusCache.cache[id]
+    }
+
+    fun getEventsByTime(from: Long, to: Long): Collection<EventStatus> {
+        return eventStatusCache.cache.values.filter { it.requestEvent?.created in from..to }
     }
 
 }
