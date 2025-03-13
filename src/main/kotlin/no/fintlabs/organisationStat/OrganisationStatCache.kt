@@ -1,8 +1,9 @@
-package no.fintlabs.stats
+package no.fintlabs.organisationStat
 
-import no.fintlabs.model.OrganisastionStat
+import org.springframework.stereotype.Repository
 
-class OrganisationStatCache() {
+@Repository
+class OrganisationStatCache {
     val cache = mutableMapOf<String, OrganisastionStat>()
 
     fun add(org: String, stat: OrganisastionStat) {
@@ -12,5 +13,4 @@ class OrganisationStatCache() {
     fun get(org: String): OrganisastionStat? {
         return cache[org]
     }
-
 }
