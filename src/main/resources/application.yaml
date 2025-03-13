@@ -1,6 +1,6 @@
 fint:
   prometheus:
-    baseUrl: "http://prometheus-prometheus-stack-prometheus-0.flais-system.svc.cluster.local:9090/api/v1/query?"
+    baseUrl: "http://prometheus-prometheus-stack-prometheus-0.flais-system:9090/api/v1/query?"
     query: 'query=kube_pod_container_status_restarts_total{pod=~".*fint-core-consumer.*"}'
 
   security:
