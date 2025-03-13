@@ -9,5 +9,6 @@ data class Metric(
     val instance: String,
     val pod: String,
     val namespace: String,
-    val job: String
+    val job: String,
+    val container: String
 )
