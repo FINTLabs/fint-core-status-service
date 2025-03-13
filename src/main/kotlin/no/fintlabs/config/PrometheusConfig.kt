@@ -3,16 +3,16 @@ package no.fintlabs.config
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.web.client.RestClient
+import org.springframework.web.reactive.function.client.WebClient
 
 @Configuration
 class PrometheusConfig(
-    @Value("\${fint.prometheusUrl}") private val baseUrl: String
+    @Value("\${fint.prometheus.baseUrl}") private var baseUrl: String,
 ) {
 
     @Bean
-    fun prometheusClient(): RestClient {
-        return RestClient.builder()
+    fun prometheusClient(): WebClient {
+        return WebClient.builder()
             .baseUrl(baseUrl)
             .build()
     }
