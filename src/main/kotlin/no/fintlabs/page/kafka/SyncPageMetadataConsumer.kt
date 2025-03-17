@@ -1,4 +1,4 @@
-package no.fintlabs.page
+package no.fintlabs.page.kafka
 
 import no.fintlabs.adapter.models.sync.SyncPageMetadata
 import no.fintlabs.contract.ContractCache
@@ -6,6 +6,7 @@ import no.fintlabs.kafka.common.topic.pattern.FormattedTopicComponentPattern
 import no.fintlabs.kafka.common.topic.pattern.ValidatedTopicComponentPattern
 import no.fintlabs.kafka.event.EventConsumerFactoryService
 import no.fintlabs.kafka.event.topic.EventTopicNamePatternParameters
+import no.fintlabs.page.PageMetadataCache
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Bean

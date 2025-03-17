@@ -42,12 +42,13 @@ dependencies {
     implementation 'jakarta.servlet:jakarta.servlet-api:5.0.0'
     implementation 'org.postgresql:postgresql:42.7.5'
     implementation 'org.projectlombok:lombok'
+    implementation'io.micrometer:micrometer-registry-prometheus'
     annotationProcessor 'org.projectlombok:lombok'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'io.projectreactor:reactor-test'
 	testImplementation 'org.jetbrains.kotlin:kotlin-test-junit5'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 kotlin {
