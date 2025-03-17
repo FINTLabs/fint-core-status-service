@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class MappingService {
 
+    // TODO: Refactor to Kotlin & || make this static
+
     public RequestFintEventEntity mapRequestFintEventToEntity(RequestFintEvent requestEvent, String topic) {
         return new RequestFintEventEntity(
                 requestEvent.getCorrId(),
