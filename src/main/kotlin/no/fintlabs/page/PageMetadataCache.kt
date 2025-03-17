@@ -14,6 +14,12 @@ class PageMetadataCache(
 
     private val cache: MutableMap<String, ConcurrentHashMap<String, PageMetadata>> = ConcurrentHashMap()
 
+    fun getAll(): Collection<PageMetadata> =
+        cache.values.flatMap { it.values }
+
+    fun getByOrgId(orgId: String): Collection<PageMetadata> =
+        cache.getOrDefault(orgId, ConcurrentHashMap()).values
+
     fun add(pageMetadata: SyncPageMetadata, syncType: String) {
         requireNotNull(pageMetadata.orgId) { "orgId must be set" }
         requireNotNull(pageMetadata.corrId) { "corrId must be set" }
