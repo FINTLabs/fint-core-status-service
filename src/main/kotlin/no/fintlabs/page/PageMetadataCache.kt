@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap
 @Component
 class PageMetadataCache(
     private val pageProducer: PageProducer
+    private val pageMetric: PageMetric
 ) {
 
     private val cache: MutableMap<String, ConcurrentHashMap<String, PageMetadata>> = ConcurrentHashMap()
@@ -30,6 +31,7 @@ class PageMetadataCache(
                     val create = PageMetadata.create(pageMetadata, syncType)
                     if (create.finished){
                         pageProducer.sendPage(create)
+                        pageMetric.incrementCompletedSyncs()
                     }
                     create
                 }
