@@ -13,7 +13,8 @@ class PageMetadata(
     val totalEntities: Long,
     var entitiesAquired: Long,
     val syncType: String,
-    val pages: MutableList<Page> = mutableListOf()
+    val pages: MutableList<Page> = mutableListOf(),
+    var finished: Boolean
 ) {
     companion object {
         fun create(pageMetadata: SyncPageMetadata, syncType: String): PageMetadata {
@@ -27,7 +28,8 @@ class PageMetadata(
                 totalEntities = pageMetadata.totalSize,
                 entitiesAquired = pageMetadata.pageSize,
                 syncType = syncType,
-                pages = mutableListOf(Page.from(pageMetadata))
+                pages = mutableListOf(Page.from(pageMetadata)),
+                finished = pageMetadata.totalPages == 1L
             )
         }
     }
@@ -36,6 +38,7 @@ class PageMetadata(
         pages.add(Page.from(pageMetadata))
         pagesAcquired += 1
         entitiesAquired += pageMetadata.pageSize
+        finished = pageMetadata.totalPages == pagesAcquired
     }
 
 }
