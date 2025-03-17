@@ -20,6 +20,8 @@ class StatusTopicService(
     }
 
     fun ensureTopic(topicNameParmeter: EventTopicNameParameters, retensionTime: Long) {
+        if(topicExists(topicNameParmeter)) return
+
         log.info("Ensuring topic {} with retension time {}", topicNameParmeter.topicName, retensionTime)
         eventTopicService.ensureTopic(topicNameParmeter, retensionTime)
         topicToRetensionMap[topicNameParmeter.topicName] = retensionTime
