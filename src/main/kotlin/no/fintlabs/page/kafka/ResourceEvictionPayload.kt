@@ -9,8 +9,7 @@ data class ResourceEvictionPayload(
 ) {
     companion object {
         fun fromPageMetadata(pageMetadata: PageMetadata): ResourceEvictionPayload {
-            val (domain, pkg, resource) = pageMetadata.entityUrl.split("/")
-            return ResourceEvictionPayload(domain, pkg, resource)
+            return ResourceEvictionPayload(pageMetadata.domain, pageMetadata.`package`, pageMetadata.resource)
         }
     }
 }
