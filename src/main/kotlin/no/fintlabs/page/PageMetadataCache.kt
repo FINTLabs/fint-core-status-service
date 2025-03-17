@@ -17,7 +17,7 @@ class PageMetadataCache {
     fun getByOrgId(orgId: String): Collection<PageMetadata> =
         cache.getOrDefault(orgId, ConcurrentHashMap()).values
 
-    fun add(pageMetadata: SyncPageMetadata, syncType: SyncType) {
+    fun add(pageMetadata: SyncPageMetadata, syncType: String) {
         requireNotNull(pageMetadata.orgId) { "orgId must be set" }
         requireNotNull(pageMetadata.corrId) { "corrId must be set" }
 

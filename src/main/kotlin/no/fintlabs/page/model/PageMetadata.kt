@@ -12,11 +12,11 @@ class PageMetadata(
     var pagesAcquired: Long,
     val totalEntities: Long,
     var entitiesAquired: Long,
-    val syncType: SyncType,
+    val syncType: String,
     val pages: MutableList<Page> = mutableListOf()
 ) {
     companion object {
-        fun create(pageMetadata: SyncPageMetadata, syncType: SyncType): PageMetadata {
+        fun create(pageMetadata: SyncPageMetadata, syncType: String): PageMetadata {
             return PageMetadata(
                 corrId = pageMetadata.corrId ?: "",
                 adapterId = pageMetadata.adapterId ?: "",
