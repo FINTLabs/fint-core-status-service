@@ -29,7 +29,7 @@ class PageProducer(
         pageEventProducer.send(
             EventProducerRecord.builder<ResourceEvictionPayload>()
                 .key(page.corrId)
-                .value(ResourceEvictionPayload.fromPageMetadata(page))
+                .value(ResourceEvictionPayload(page.domain, page.`package`, page.resource))
                 .topicNameParameters(topicName)
                 .build()
         )
