@@ -16,6 +16,8 @@ class PrometheusGateway(
     @Value("\${fint.prometheus.query}") private var query: String,
 ) {
 
+    // TODO: Handle local fetching of this query
+
     val log: Logger = LoggerFactory.getLogger(PrometheusGateway::class.java)
 
     suspend fun fetchPrometheusData(): Response {
