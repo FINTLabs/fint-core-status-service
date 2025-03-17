@@ -2,6 +2,7 @@ package no.fintlabs.errors
 
 import kotlinx.coroutines.reactor.awaitSingle
 import no.fintlabs.model.Response
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.MediaType
@@ -15,7 +16,7 @@ class PrometheusGateway(
     @Value("\${fint.prometheus.query}") private var query: String,
 ) {
 
-    val log = LoggerFactory.getLogger(PrometheusGateway::class.java)
+    val log: Logger = LoggerFactory.getLogger(PrometheusGateway::class.java)
 
     suspend fun fetchPrometheusData(): Response {
         return try {
