@@ -2,59 +2,33 @@ package no.fintlabs.page
 
 import no.fintlabs.adapter.models.sync.SyncPageMetadata
 import no.fintlabs.adapter.models.sync.SyncType
-import no.fintlabs.page.model.Page
-import no.fintlabs.page.model.PageMetaData
+import no.fintlabs.page.model.PageMetadata
 import org.springframework.stereotype.Component
 import java.util.concurrent.ConcurrentHashMap
 
 @Component
 class PageMetadataCache {
 
-    // TODO: Simplify cache API
+    private val cache: MutableMap<String, ConcurrentHashMap<String, PageMetadata>> = ConcurrentHashMap()
 
-    val cache: MutableMap<String, ConcurrentHashMap<String, PageMetaData>> = ConcurrentHashMap()
+    fun getAll(): Collection<PageMetadata> =
+        cache.values.flatMap { it.values }
 
-    fun add(syncPageMetaData: SyncPageMetadata, syncType: String) {
-        val orgId = syncPageMetaData.orgId
-        val corrId = syncPageMetaData.corrId
+    fun getByOrgId(orgId: String): Collection<PageMetadata> =
+        cache.getOrDefault(orgId, ConcurrentHashMap()).values
 
-        val corrIdToPageMetaDataMap = cache.computeIfAbsent(orgId) {
-            ConcurrentHashMap()
-        }
+    fun add(pageMetadata: SyncPageMetadata, syncType: SyncType) {
+        requireNotNull(pageMetadata.orgId) { "orgId must be set" }
+        requireNotNull(pageMetadata.corrId) { "corrId must be set" }
 
-        corrIdToPageMetaDataMap.compute(corrId) { _, existingPageMetaData ->
-            val page = Page(
-                index = syncPageMetaData.page,
-                pageSize = syncPageMetaData.pageSize,
-                time = syncPageMetaData.time
-            )
-
-            existingPageMetaData?.apply {
-                this.pages.add(page)
-                this.pagesAcquired += 1
-                this.entitiesAquired += syncPageMetaData.pageSize
+        val orgCache = cache.computeIfAbsent(pageMetadata.orgId) { ConcurrentHashMap() }
+        orgCache.compute(pageMetadata.corrId) { _, existing ->
+            if (existing == null) {
+                PageMetadata.create(pageMetadata, syncType)
+            } else {
+                existing.addPage(pageMetadata)
+                existing
             }
-                ?: PageMetaData(
-                    corrId = corrId ?: "",
-                    adapterId = syncPageMetaData.adapterId ?: "",
-                    orgId = orgId ?: "",
-                    entityUrl = syncPageMetaData.uriRef ?: "",
-                    totalPages = syncPageMetaData.totalPages,
-                    pagesAcquired = 1,
-                    totalEntities = syncPageMetaData.totalSize,
-                    entitiesAquired = syncPageMetaData.pageSize,
-                    syncType = getSyncType(syncType),
-                    pages = mutableListOf(page)
-                )
-        }
-    }
-
-    private fun getSyncType(syncType: String): SyncType {
-        return when (syncType.lowercase()) {
-            "full" -> SyncType.FULL
-            "delta" -> SyncType.DELTA
-            "delete" -> SyncType.DELETE
-            else -> throw IllegalArgumentException("Unknown sync type: $syncType")
         }
     }
 
