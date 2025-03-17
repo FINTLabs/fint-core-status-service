@@ -19,7 +19,7 @@ class PageMetadata(
 ) {
     companion object {
         fun create(pageMetadata: SyncPageMetadata, syncType: String): PageMetadata {
-            val (domain, `package`, resource) = pageMetadata.uriRef.trim().split("/")
+            val (domain, `package`, resource) = parseEntityUri(pageMetadata)
             return PageMetadata(
                 corrId = pageMetadata.corrId ?: "",
                 adapterId = pageMetadata.adapterId ?: "",
@@ -35,6 +35,12 @@ class PageMetadata(
                 pages = mutableListOf(Page.from(pageMetadata)),
                 finished = pageMetadata.totalPages == 1L
             )
+        }
+
+        private fun parseEntityUri(syncPage: SyncPageMetadata): Triple<String, String, String> {
+            return syncPage.uriRef?.trim()?.split("/")?.let {
+                Triple(it.getOrNull(0) ?: "", it.getOrNull(1) ?: "", it.getOrNull(2) ?: "")
+            } ?: Triple("", "", "")
         }
     }
 
