@@ -6,8 +6,10 @@ import no.fintlabs.kafka.event.EventProducerFactory
 import no.fintlabs.kafka.event.EventProducerRecord
 import no.fintlabs.kafka.event.topic.EventTopicNameParameters
 import no.fintlabs.page.model.PageMetadata
+import org.springframework.stereotype.Service
 import java.time.Duration
 
+@Service
 class PageProducer(
     facotry: EventProducerFactory,
     private val statusTopicService: StatusTopicService,
