@@ -1,6 +1,5 @@
 package no.fintlabs.errors
 
-import kotlinx.coroutines.runBlocking
 import no.fintlabs.organisationStat.OrganisastionStat
 import no.fintlabs.organisationStat.OrganisationStatCache
 import org.slf4j.LoggerFactory
@@ -28,11 +27,9 @@ class PrometheusService(
     }
 
     @Scheduled(cron = "0 * * * * *")
-    fun populateCache() {
+    suspend fun populateCache() {
         log.info("Populating cache")
-        runBlocking {
-            getPodInfo()
-        }
+//        getPodInfo() disabled due to bug
     }
 
 }
