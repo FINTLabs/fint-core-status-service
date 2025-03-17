@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.web.reactive.function.client.WebClient
 
 @Configuration
-class PrometheusConfig(
+class PrometheusClientConfig(
     @Value("\${fint.prometheus.baseUrl}") private var baseUrl: String,
 ) {
 
