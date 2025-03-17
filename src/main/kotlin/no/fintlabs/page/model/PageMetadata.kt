@@ -1,13 +1,14 @@
 package no.fintlabs.page.model
 
 import no.fintlabs.adapter.models.sync.SyncPageMetadata
-import no.fintlabs.adapter.models.sync.SyncType
 
 class PageMetadata(
     val corrId: String,
     val adapterId: String,
     val orgId: String,
-    val entityUrl: String,
+    val domain: String,
+    val `package`: String,
+    val resource: String,
     val totalPages: Long,
     var pagesAcquired: Long,
     val totalEntities: Long,
@@ -18,11 +19,14 @@ class PageMetadata(
 ) {
     companion object {
         fun create(pageMetadata: SyncPageMetadata, syncType: String): PageMetadata {
+            val (domain, `package`, resource) = pageMetadata.uriRef.trim().split("/")
             return PageMetadata(
                 corrId = pageMetadata.corrId ?: "",
                 adapterId = pageMetadata.adapterId ?: "",
                 orgId = pageMetadata.orgId ?: "",
-                entityUrl = pageMetadata.uriRef?.trim('/') ?: "",
+                domain = domain,
+                `package` = `package`,
+                resource = resource,
                 totalPages = pageMetadata.totalPages,
                 pagesAcquired = 1,
                 totalEntities = pageMetadata.totalSize,
