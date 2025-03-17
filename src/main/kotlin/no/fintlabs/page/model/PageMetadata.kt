@@ -17,11 +17,6 @@ class PageMetadata(
 ) {
     companion object {
         fun create(pageMetadata: SyncPageMetadata, syncType: SyncType): PageMetadata {
-            val initialPage = Page(
-                index = pageMetadata.page,
-                pageSize = pageMetadata.pageSize,
-                time = pageMetadata.time
-            )
             return PageMetadata(
                 corrId = pageMetadata.corrId ?: "",
                 adapterId = pageMetadata.adapterId ?: "",
@@ -32,20 +27,15 @@ class PageMetadata(
                 totalEntities = pageMetadata.totalSize,
                 entitiesAquired = pageMetadata.pageSize,
                 syncType = syncType,
-                pages = mutableListOf(initialPage)
+                pages = mutableListOf(Page.from(pageMetadata))
             )
-        }
-
-        fun update(existing: PageMetadata, pageMetadata: SyncPageMetadata): PageMetadata {
-            val newPage = Page(
-                index = pageMetadata.page,
-                pageSize = pageMetadata.pageSize,
-                time = pageMetadata.time
-            )
-            existing.pages.add(newPage)
-            existing.pagesAcquired += 1
-            existing.entitiesAquired += pageMetadata.pageSize
-            return existing
         }
     }
+
+    fun addPage(pageMetadata: SyncPageMetadata) {
+        pages.add(Page.from(pageMetadata))
+        pagesAcquired += 1
+        entitiesAquired += pageMetadata.pageSize
+    }
+
 }
