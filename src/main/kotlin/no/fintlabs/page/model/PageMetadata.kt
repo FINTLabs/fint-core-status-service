@@ -3,7 +3,7 @@ package no.fintlabs.page.model
 import no.fintlabs.adapter.models.sync.SyncPageMetadata
 import no.fintlabs.adapter.models.sync.SyncType
 
-class PageMetaData(
+class PageMetadata(
     val corrId: String,
     val adapterId: String,
     val orgId: String,
@@ -16,13 +16,13 @@ class PageMetaData(
     val pages: MutableList<Page> = mutableListOf()
 ) {
     companion object {
-        fun create(pageMetadata: SyncPageMetadata, syncType: SyncType): PageMetaData {
+        fun create(pageMetadata: SyncPageMetadata, syncType: SyncType): PageMetadata {
             val initialPage = Page(
                 index = pageMetadata.page,
                 pageSize = pageMetadata.pageSize,
                 time = pageMetadata.time
             )
-            return PageMetaData(
+            return PageMetadata(
                 corrId = pageMetadata.corrId ?: "",
                 adapterId = pageMetadata.adapterId ?: "",
                 orgId = pageMetadata.orgId ?: "",
@@ -36,7 +36,7 @@ class PageMetaData(
             )
         }
 
-        fun update(existing: PageMetaData, pageMetadata: SyncPageMetadata): PageMetaData {
+        fun update(existing: PageMetadata, pageMetadata: SyncPageMetadata): PageMetadata {
             val newPage = Page(
                 index = pageMetadata.page,
                 pageSize = pageMetadata.pageSize,
