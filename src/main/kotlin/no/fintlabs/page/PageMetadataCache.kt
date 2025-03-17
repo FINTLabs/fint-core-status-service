@@ -1,7 +1,6 @@
 package no.fintlabs.page
 
 import no.fintlabs.adapter.models.sync.SyncPageMetadata
-import no.fintlabs.adapter.models.sync.SyncType
 import no.fintlabs.page.model.PageMetadata
 import org.springframework.stereotype.Component
 import java.util.concurrent.ConcurrentHashMap
@@ -23,12 +22,8 @@ class PageMetadataCache {
 
         val orgCache = cache.computeIfAbsent(pageMetadata.orgId) { ConcurrentHashMap() }
         orgCache.compute(pageMetadata.corrId) { _, existing ->
-            if (existing == null) {
-                PageMetadata.create(pageMetadata, syncType)
-            } else {
-                existing.addPage(pageMetadata)
-                existing
-            }
+            existing?.apply { addPage(pageMetadata) }
+                ?: PageMetadata.create(pageMetadata, syncType)
         }
     }
 
