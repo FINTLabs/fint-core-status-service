@@ -10,15 +10,15 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/page-metadata")
 class PageMetadataController(
-    val pageMetadataService: PageMetadataService
+    val pageMetadataCache: PageMetadataCache
 ) {
 
     @GetMapping
     fun getAll(): ResponseEntity<Collection<PageMetadata>> =
-        ResponseEntity.ok(pageMetadataService.getAll())
+        ResponseEntity.ok(pageMetadataCache.getAll())
 
     @GetMapping("/{orgId}")
     fun getAll(@PathVariable orgId: String): ResponseEntity<Collection<PageMetadata>> =
-        ResponseEntity.ok(pageMetadataService.getAllByOrg(orgId))
+        ResponseEntity.ok(pageMetadataCache.getByOrgId(orgId))
 
 }
