@@ -22,7 +22,7 @@ class PageMetadata(
                 corrId = pageMetadata.corrId ?: "",
                 adapterId = pageMetadata.adapterId ?: "",
                 orgId = pageMetadata.orgId ?: "",
-                entityUrl = pageMetadata.uriRef ?: "",
+                entityUrl = pageMetadata.uriRef?.trim('/') ?: "",
                 totalPages = pageMetadata.totalPages,
                 pagesAcquired = 1,
                 totalEntities = pageMetadata.totalSize,
