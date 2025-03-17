@@ -31,6 +31,6 @@ spring:
       schema: public
 logging:
   level:
-    no.fintlabs.kafka: info
+    no.fintlabs.kafka: OFF
     org.springframework.kafka: info
-    org.apache.kafka: info
+    org.apache.kafka: OFF
