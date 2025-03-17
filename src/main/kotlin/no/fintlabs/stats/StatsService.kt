@@ -7,7 +7,10 @@ import no.fintlabs.event.FintEventService
 import org.springframework.stereotype.Service
 
 @Service
-class StatsService(val fintEventService: FintEventService, val contractCache: ContractCache) {
+class StatsService(
+    val fintEventService: FintEventService,
+    val contractCache: ContractCache
+) {
 
     fun getStats(): Stats {
 
