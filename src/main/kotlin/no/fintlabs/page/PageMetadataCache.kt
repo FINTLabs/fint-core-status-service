@@ -39,7 +39,7 @@ class PageMetadataCache(
 
     fun processFinishedPage(page: PageMetadata) {
         if (page.finished) {
-            pageProducer.sendPage(page)
+//            pageProducer.sendPage(page) disabled due to bug
             pageMetric.incrementCompletedSyncs(page.domain, page.`package`, page.resource)
         }
     }
