@@ -1,7 +1,9 @@
 package no.fintlabs.page
 
 import io.micrometer.core.instrument.MeterRegistry
+import org.springframework.stereotype.Component
 
+@Component
 class PageMetric(
     private val meterRegistry: MeterRegistry
 ) {
