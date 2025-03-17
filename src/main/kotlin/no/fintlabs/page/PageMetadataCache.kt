@@ -10,6 +10,8 @@ import java.util.concurrent.ConcurrentHashMap
 @Component
 class PageMetadataCache {
 
+    // TODO: Simplify cache API
+
     val cache: MutableMap<String, ConcurrentHashMap<String, PageMetaData>> = ConcurrentHashMap()
 
     fun add(syncPageMetaData: SyncPageMetadata, syncType: String) {
