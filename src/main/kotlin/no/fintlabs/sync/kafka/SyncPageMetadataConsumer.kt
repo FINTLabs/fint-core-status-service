@@ -7,6 +7,7 @@ import no.fintlabs.kafka.common.topic.pattern.ValidatedTopicComponentPattern
 import no.fintlabs.kafka.event.EventConsumerFactoryService
 import no.fintlabs.kafka.event.topic.EventTopicNamePatternParameters
 import no.fintlabs.sync.SyncCache
+import no.fintlabs.sync.kafka.KafkaTopicConstants.Companion.ADAPTER_SYNC_TOPICS
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Bean
@@ -30,7 +31,7 @@ class SyncPageMetadataConsumer(
             EventTopicNamePatternParameters.builder()
                 .orgId(FormattedTopicComponentPattern.any())
                 .domainContext(FormattedTopicComponentPattern.containing("fint-core"))
-                .eventName(ValidatedTopicComponentPattern.endingWith("-sync"))
+                .eventName(ValidatedTopicComponentPattern.anyOf(*ADAPTER_SYNC_TOPICS))
                 .build()
         )
     }
