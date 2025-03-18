@@ -64,4 +64,46 @@ class SyncMetadataTest {
         assertEquals(metadata.pageSize, syncMetadata.pages.get(0).pageSize)
 
     }
+
+    @Test
+    fun `update SyncMetadata successfully`() {
+        val amountOfPages = 4L
+        val expectedTotalSize = 100L
+        val metadata = createSyncPageMetadata(
+            adapterId = "adapter-1",
+            corrId = "123",
+            orgId = "fintlabs-no",
+            uriRef = "utdanning/vurdering/elevfravar",
+            totalSize = expectedTotalSize,
+            page = 1,
+            pageSize = 25,
+            totalPages = amountOfPages
+        )
+
+        val syncMetadata = SyncMetadata.create(metadata, "full")
+
+        for (i in 2..amountOfPages) {
+            val newMetadata = createSyncPageMetadata(
+                adapterId = "adapter-1",
+                corrId = "123",
+                orgId = "fintlabs-no",
+                uriRef = "utdanning/vurdering/elevfravar",
+                totalSize = expectedTotalSize,
+                page = i,
+                pageSize = 25,
+                totalPages = amountOfPages
+            )
+            syncMetadata.addPage(newMetadata)
+        }
+
+        assertEquals(amountOfPages, syncMetadata.totalPages)
+        assertEquals(amountOfPages, syncMetadata.pagesAcquired)
+        assertEquals(amountOfPages, syncMetadata.pages.size.toLong())
+        assertEquals(expectedTotalSize, syncMetadata.entitiesAquired)
+
+        for (i in 1..4) {
+            assertEquals(i.toLong(), syncMetadata.pages.get(i - 1).pageNumber)
+        }
+    }
+
 }
