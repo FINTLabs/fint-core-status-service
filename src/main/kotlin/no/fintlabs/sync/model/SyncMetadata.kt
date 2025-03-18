@@ -38,7 +38,7 @@ class SyncMetadata(
         }
 
         private fun parseEntityUri(syncPage: SyncPageMetadata): Triple<String, String, String> {
-            return syncPage.uriRef?.trim()?.split("/")?.let {
+            return syncPage.uriRef?.trim('/')?.split("/")?.let {
                 Triple(it.getOrNull(0) ?: "", it.getOrNull(1) ?: "", it.getOrNull(2) ?: "")
             } ?: Triple("", "", "")
         }
