@@ -145,10 +145,34 @@ class SyncMetadataTest {
         }
 
         assertEquals(amountOfPages, syncMetadata.totalPages)
-        assertNotEquals(expectedTotalSize , syncMetadata.entitiesAquired)
-        assertEquals(actualTotalSize , syncMetadata.entitiesAquired)
+        assertNotEquals(expectedTotalSize, syncMetadata.entitiesAquired)
+        assertEquals(actualTotalSize, syncMetadata.entitiesAquired)
         assertNotEquals(amountOfPages, syncMetadata.pages.size.toLong())
         assertFalse(syncMetadata.finished)
+    }
+
+    @Test
+    fun `create SyncMetadata formats correct uriRef`() {
+        val domain = "utdanning"
+        val `package` = "vurdering"
+        val resource = "elevfravar"
+
+        val metadata = createSyncPageMetadata(
+            adapterId = "adapter-1",
+            corrId = "123",
+            orgId = "fintlabs-no",
+            uriRef = "$domain/$`package`/$resource",
+            totalSize = 1,
+            page = 1,
+            pageSize = 1,
+            totalPages = 1
+        )
+
+        val syncMetadata = SyncMetadata.create(metadata, "full")
+
+        assertEquals(domain, syncMetadata.domain)
+        assertEquals(`package`, syncMetadata.`package`)
+        assertEquals(resource, syncMetadata.resource)
     }
 
 }
