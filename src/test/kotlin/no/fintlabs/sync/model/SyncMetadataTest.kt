@@ -175,4 +175,28 @@ class SyncMetadataTest {
         assertEquals(resource, syncMetadata.resource)
     }
 
+    @Test
+    fun `create SyncMetadata formats correct uriRef with starting slash`() {
+        val domain = "utdanning"
+        val `package` = "vurdering"
+        val resource = "elevfravar"
+
+        val metadata = createSyncPageMetadata(
+            adapterId = "adapter-1",
+            corrId = "123",
+            orgId = "fintlabs-no",
+            uriRef = "/$domain/$`package`/$resource",
+            totalSize = 1,
+            page = 1,
+            pageSize = 1,
+            totalPages = 1
+        )
+
+        val syncMetadata = SyncMetadata.create(metadata, "full")
+
+        assertEquals(domain, syncMetadata.domain)
+        assertEquals(`package`, syncMetadata.`package`)
+        assertEquals(resource, syncMetadata.resource)
+    }
+
 }
