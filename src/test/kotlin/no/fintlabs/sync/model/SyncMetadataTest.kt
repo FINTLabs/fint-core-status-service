@@ -146,7 +146,7 @@ class SyncMetadataTest {
 
         assertEquals(amountOfPages, syncMetadata.totalPages)
         assertNotEquals(expectedTotalSize , syncMetadata.pagesAcquired)
-        assertEquals(actualTotalSize , syncMetadata.pagesAcquired)
+        assertEquals(actualTotalSize , syncMetadata.entitiesAquired)
         assertNotEquals(amountOfPages, syncMetadata.pages.size.toLong())
         assertEquals(expectedTotalSize, syncMetadata.entitiesAquired)
         assertFalse(syncMetadata.finished)
