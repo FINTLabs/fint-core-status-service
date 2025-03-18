@@ -1,10 +1,10 @@
-package no.fintlabs.page
+package no.fintlabs.sync
 
 import io.micrometer.core.instrument.MeterRegistry
 import org.springframework.stereotype.Component
 
 @Component
-class PageMetric(
+class SyncMetric(
     private val meterRegistry: MeterRegistry
 ) {
 

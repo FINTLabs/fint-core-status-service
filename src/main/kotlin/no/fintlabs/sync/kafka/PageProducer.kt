@@ -1,11 +1,11 @@
-package no.fintlabs.page.kafka
+package no.fintlabs.sync.kafka
 
 import no.fintlabs.StatusTopicService
 import no.fintlabs.kafka.event.EventProducer
 import no.fintlabs.kafka.event.EventProducerFactory
 import no.fintlabs.kafka.event.EventProducerRecord
 import no.fintlabs.kafka.event.topic.EventTopicNameParameters
-import no.fintlabs.page.model.PageMetadata
+import no.fintlabs.sync.model.SyncMetadata
 import org.springframework.stereotype.Service
 import java.time.Duration
 
@@ -17,7 +17,7 @@ class PageProducer(
     private val pageEventProducer: EventProducer<ResourceEvictionPayload> =
         facotry.createProducer(ResourceEvictionPayload::class.java)
 
-    fun sendPage(page: PageMetadata) {
+    fun sendPage(page: SyncMetadata) {
         val topicName = EventTopicNameParameters.builder()
             .orgId(page.orgId)
             .eventName("completed-full-sync")

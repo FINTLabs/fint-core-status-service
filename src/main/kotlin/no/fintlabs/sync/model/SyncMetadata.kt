@@ -1,8 +1,8 @@
-package no.fintlabs.page.model
+package no.fintlabs.sync.model
 
 import no.fintlabs.adapter.models.sync.SyncPageMetadata
 
-class PageMetadata(
+class SyncMetadata(
     val corrId: String,
     val adapterId: String,
     val orgId: String,
@@ -18,22 +18,22 @@ class PageMetadata(
     var finished: Boolean
 ) {
     companion object {
-        fun create(pageMetadata: SyncPageMetadata, syncType: String): PageMetadata {
-            val (domain, `package`, resource) = parseEntityUri(pageMetadata)
-            return PageMetadata(
-                corrId = pageMetadata.corrId ?: "",
-                adapterId = pageMetadata.adapterId ?: "",
-                orgId = pageMetadata.orgId ?: "",
+        fun create(syncPageMetadata: SyncPageMetadata, syncType: String): no.fintlabs.sync.model.SyncMetadata {
+            val (domain, `package`, resource) = parseEntityUri(syncPageMetadata)
+            return SyncMetadata(
+                corrId = syncPageMetadata.corrId ?: "",
+                adapterId = syncPageMetadata.adapterId ?: "",
+                orgId = syncPageMetadata.orgId ?: "",
                 domain = domain,
                 `package` = `package`,
                 resource = resource,
-                totalPages = pageMetadata.totalPages,
+                totalPages = syncPageMetadata.totalPages,
                 pagesAcquired = 1,
-                totalEntities = pageMetadata.totalSize,
-                entitiesAquired = pageMetadata.pageSize,
+                totalEntities = syncPageMetadata.totalSize,
+                entitiesAquired = syncPageMetadata.pageSize,
                 syncType = syncType,
-                pages = mutableListOf(Page.from(pageMetadata)),
-                finished = pageMetadata.totalPages == 1L
+                pages = mutableListOf(Page.from(syncPageMetadata)),
+                finished = syncPageMetadata.totalPages == 1L
             )
         }
 
@@ -44,11 +44,11 @@ class PageMetadata(
         }
     }
 
-    fun addPage(pageMetadata: SyncPageMetadata) {
-        pages.add(Page.from(pageMetadata))
+    fun addPage(syncPageMetadata: SyncPageMetadata) {
+        pages.add(Page.from(syncPageMetadata))
         pagesAcquired += 1
-        entitiesAquired += pageMetadata.pageSize
-        finished = pageMetadata.totalPages == pagesAcquired
+        entitiesAquired += syncPageMetadata.pageSize
+        finished = syncPageMetadata.totalPages == pagesAcquired
     }
 
 }

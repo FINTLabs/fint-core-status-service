@@ -1,4 +1,4 @@
-package no.fintlabs.page.kafka
+package no.fintlabs.sync.kafka
 
 data class ResourceEvictionPayload(
     val domain: String,
