@@ -8,7 +8,7 @@ class Page(
     val time: Long
 ) {
     companion object {
-        fun from(syncPageMetadata: SyncPageMetadata): Page {
+        fun fromSyncPageMetadata(syncPageMetadata: SyncPageMetadata): Page {
             return Page(
                 index = syncPageMetadata.page,
                 pageSize = syncPageMetadata.pageSize,

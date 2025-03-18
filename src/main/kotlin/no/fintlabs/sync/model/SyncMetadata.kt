@@ -32,7 +32,7 @@ class SyncMetadata(
                 totalEntities = syncPageMetadata.totalSize,
                 entitiesAquired = syncPageMetadata.pageSize,
                 syncType = syncType,
-                pages = mutableListOf(Page.from(syncPageMetadata)),
+                pages = mutableListOf(Page.fromSyncPageMetadata(syncPageMetadata)),
                 finished = syncPageMetadata.totalPages == 1L
             )
         }
@@ -42,10 +42,11 @@ class SyncMetadata(
                 Triple(it.getOrNull(0) ?: "", it.getOrNull(1) ?: "", it.getOrNull(2) ?: "")
             } ?: Triple("", "", "")
         }
+
     }
 
     fun addPage(syncPageMetadata: SyncPageMetadata) {
-        pages.add(Page.from(syncPageMetadata))
+        pages.add(Page.fromSyncPageMetadata(syncPageMetadata))
         pagesAcquired += 1
         entitiesAquired += syncPageMetadata.pageSize
         finished = syncPageMetadata.totalPages == pagesAcquired
