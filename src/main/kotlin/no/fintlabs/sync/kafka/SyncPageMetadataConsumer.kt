@@ -5,6 +5,7 @@ import no.fintlabs.contract.ContractCache
 import no.fintlabs.kafka.common.topic.pattern.FormattedTopicComponentPattern
 import no.fintlabs.kafka.common.topic.pattern.ValidatedTopicComponentPattern
 import no.fintlabs.kafka.event.EventConsumerFactoryService
+import no.fintlabs.kafka.event.topic.EventTopicNameParameters
 import no.fintlabs.kafka.event.topic.EventTopicNamePatternParameters
 import no.fintlabs.sync.SyncCache
 import no.fintlabs.sync.kafka.KafkaTopicConstants.Companion.ADAPTER_SYNC_TOPICS
@@ -29,7 +30,7 @@ class SyncPageMetadataConsumer(
             this::processEvent,
         ).createContainer(
             EventTopicNamePatternParameters.builder()
-                .orgId(FormattedTopicComponentPattern.any())
+                .orgId(FormattedTopicComponentPattern.containing("fintlabs-no"))
                 .domainContext(FormattedTopicComponentPattern.containing("fint-core"))
                 .eventName(ValidatedTopicComponentPattern.anyOf(*ADAPTER_SYNC_TOPICS))
                 .build()
