@@ -1,8 +1,10 @@
 package no.fintlabs.sync.model
 
 import no.fintlabs.adapter.models.sync.SyncPageMetadata
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 
 private fun createSyncPageMetadata(
     adapterId: String,
@@ -62,7 +64,7 @@ class SyncMetadataTest {
         assertEquals(metadata.page, syncMetadata.pages.get(0).pageNumber)
         assertEquals(metadata.time, syncMetadata.pages.get(0).time)
         assertEquals(metadata.pageSize, syncMetadata.pages.get(0).pageSize)
-
+        assertFalse(syncMetadata.finished)
     }
 
     @Test
@@ -104,6 +106,8 @@ class SyncMetadataTest {
         for (i in 1..4) {
             assertEquals(i.toLong(), syncMetadata.pages.get(i - 1).pageNumber)
         }
+
+        assertTrue(syncMetadata.finished)
     }
 
 }
