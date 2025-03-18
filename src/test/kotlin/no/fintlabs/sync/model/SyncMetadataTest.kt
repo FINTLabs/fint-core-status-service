@@ -1,6 +1,7 @@
 package no.fintlabs.sync.model
 
 import no.fintlabs.adapter.models.sync.SyncPageMetadata
+import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
@@ -108,6 +109,47 @@ class SyncMetadataTest {
         }
 
         assertTrue(syncMetadata.finished)
+    }
+
+    @Test
+    fun `update unfinished SyncMetadata`() {
+        val amountOfPages = 4L
+        val expectedTotalSize = 100L
+        val actualTotalSize = 75L
+        val pageSize = 25L
+        val metadata = createSyncPageMetadata(
+            adapterId = "adapter-1",
+            corrId = "123",
+            orgId = "fintlabs-no",
+            uriRef = "utdanning/vurdering/elevfravar",
+            totalSize = expectedTotalSize,
+            page = 1,
+            pageSize = 25,
+            totalPages = amountOfPages
+        )
+
+        val syncMetadata = SyncMetadata.create(metadata, "full")
+
+        for (i in 2..<amountOfPages) {
+            val newMetadata = createSyncPageMetadata(
+                adapterId = "adapter-1",
+                corrId = "123",
+                orgId = "fintlabs-no",
+                uriRef = "utdanning/vurdering/elevfravar",
+                totalSize = expectedTotalSize,
+                page = i,
+                pageSize = pageSize,
+                totalPages = amountOfPages
+            )
+            syncMetadata.addPage(newMetadata)
+        }
+
+        assertEquals(amountOfPages, syncMetadata.totalPages)
+        assertNotEquals(expectedTotalSize , syncMetadata.pagesAcquired)
+        assertEquals(actualTotalSize , syncMetadata.pagesAcquired)
+        assertNotEquals(amountOfPages, syncMetadata.pages.size.toLong())
+        assertEquals(expectedTotalSize, syncMetadata.entitiesAquired)
+        assertFalse(syncMetadata.finished)
     }
 
 }
