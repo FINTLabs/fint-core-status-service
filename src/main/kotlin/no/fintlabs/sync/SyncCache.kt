@@ -12,33 +12,32 @@ class SyncCache(
     private val syncMetric: SyncMetric
 ) {
 
-    private val cache: MutableMap<String, ConcurrentHashMap<String, no.fintlabs.sync.model.SyncMetadata>> =
-        ConcurrentHashMap()
+    private val cache: MutableMap<String, ConcurrentHashMap<String, SyncMetadata>> = ConcurrentHashMap()
 
-    fun getAll(): Collection<no.fintlabs.sync.model.SyncMetadata> =
+    fun getAll(): Collection<SyncMetadata> =
         cache.values.flatMap { it.values }
 
-    fun getByOrgId(orgId: String): Collection<no.fintlabs.sync.model.SyncMetadata> =
+    fun getByOrgId(orgId: String): Collection<SyncMetadata> =
         cache.getOrDefault(orgId, ConcurrentHashMap()).values
 
-    fun add(sync: SyncMetadata, syncType: String) {
-        requireNotNull(sync.orgId) { "orgId must be set" }
-        requireNotNull(sync.corrId) { "corrId must be set" }
+    fun add(syncPageMetdata: SyncPageMetadata, syncType: String) {
+        requireNotNull(syncPageMetdata.orgId) { "orgId must be set" }
+        requireNotNull(syncPageMetdata.corrId) { "corrId must be set" }
 
-        val orgCache = cache.computeIfAbsent(sync.orgId) { ConcurrentHashMap() }
-        orgCache.compute(sync.corrId) { _, existing ->
+        val orgCache = cache.computeIfAbsent(syncPageMetdata.orgId) { ConcurrentHashMap() }
+        orgCache.compute(syncPageMetdata.corrId) { _, existing ->
             existing?.apply {
-                addPage(sync)
+                addPage(syncPageMetdata)
                 processFinishedPage(this)
             } ?: run {
-                val create = SyncPageMetadata.crea(sync, syncType)
+                val create = SyncMetadata.create(syncPageMetdata, syncType)
                 processFinishedPage(create)
                 create
             }
         }
     }
 
-    fun processFinishedPage(page: no.fintlabs.sync.model.SyncMetadata) {
+    fun processFinishedPage(page: SyncMetadata) {
         if (page.finished) {
 //            pageProducer.sendPage(page) disabled due to bug
             syncMetric.incrementCompletedSyncs(page.domain, page.`package`, page.resource)
