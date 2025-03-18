@@ -28,7 +28,7 @@ class PrometheusService(
 
     @Scheduled(cron = "0 * * * * *")
     suspend fun populateCache() {
-        log.info("Populating cache")
+//        log.info("Populating cache")
 //        getPodInfo() disabled due to bug
     }
 
