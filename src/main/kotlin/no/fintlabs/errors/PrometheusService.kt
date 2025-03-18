@@ -12,7 +12,7 @@ class PrometheusService(
     private val organisationStatCache: OrganisationStatCache
 ) {
 
-    val log = LoggerFactory.getLogger(PrometheusService::class.java)
+    private val log = LoggerFactory.getLogger(PrometheusService::class.java)
 
     suspend fun getPodInfo() {
         val data = prometheusGateway.fetchPrometheusData()
