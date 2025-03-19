@@ -33,6 +33,23 @@ private fun createSyncPageMetadata(
 
 class SyncMetadataTest {
 
+    private val expectedTotalSize = 100L
+    private val pageSize = 25L
+    private val amountOfPages = 4L
+
+    val createSyncPageMetadata: (Long) -> SyncPageMetadata = { pageNumber ->
+        createSyncPageMetadata(
+            adapterId = "adapter-1",
+            corrId = "123",
+            orgId = "fintlabs-no",
+            uriRef = "utdanning/vurdering/elevfravar",
+            totalSize = expectedTotalSize,
+            page = pageNumber,
+            pageSize = pageSize,
+            totalPages = amountOfPages
+        )
+    }
+
     @Test
     fun `create SyncMetadata successfully`() {
         val metadata = createSyncPageMetadata(
@@ -70,33 +87,13 @@ class SyncMetadataTest {
 
     @Test
     fun `update SyncMetadata successfully`() {
-        val amountOfPages = 4L
-        val expectedTotalSize = 100L
-        val metadata = createSyncPageMetadata(
-            adapterId = "adapter-1",
-            corrId = "123",
-            orgId = "fintlabs-no",
-            uriRef = "utdanning/vurdering/elevfravar",
-            totalSize = expectedTotalSize,
-            page = 1,
-            pageSize = 25,
-            totalPages = amountOfPages
-        )
-
+        val metadata = createSyncPageMetadata(1)
         val syncMetadata = SyncMetadata.create(metadata, "full")
 
         for (i in 2..amountOfPages) {
-            val newMetadata = createSyncPageMetadata(
-                adapterId = "adapter-1",
-                corrId = "123",
-                orgId = "fintlabs-no",
-                uriRef = "utdanning/vurdering/elevfravar",
-                totalSize = expectedTotalSize,
-                page = i,
-                pageSize = 25,
-                totalPages = amountOfPages
-            )
-            syncMetadata.addPage(newMetadata)
+            val otherMetadata = createSyncPageMetadata(i)
+            val otherSyncMetadata = SyncMetadata.create(otherMetadata, "full")
+            syncMetadata.addPage(otherSyncMetadata)
         }
 
         assertEquals(amountOfPages, syncMetadata.totalPages)
@@ -105,7 +102,7 @@ class SyncMetadataTest {
         assertEquals(expectedTotalSize, syncMetadata.entitiesAquired)
 
         for (i in 1..4) {
-            assertEquals(i.toLong(), syncMetadata.pages.get(i - 1).pageNumber)
+            assertEquals(i.toLong(), syncMetadata.pages[i - 1].pageNumber)
         }
 
         assertTrue(syncMetadata.finished)
@@ -113,35 +110,12 @@ class SyncMetadataTest {
 
     @Test
     fun `update unfinished SyncMetadata`() {
-        val amountOfPages = 4L
-        val expectedTotalSize = 100L
         val actualTotalSize = 75L
-        val pageSize = 25L
-        val metadata = createSyncPageMetadata(
-            adapterId = "adapter-1",
-            corrId = "123",
-            orgId = "fintlabs-no",
-            uriRef = "utdanning/vurdering/elevfravar",
-            totalSize = expectedTotalSize,
-            page = 1,
-            pageSize = 25,
-            totalPages = amountOfPages
-        )
-
-        val syncMetadata = SyncMetadata.create(metadata, "full")
+        val syncMetadata = SyncMetadata.create(createSyncPageMetadata(1), "full")
 
         for (i in 2..<amountOfPages) {
-            val newMetadata = createSyncPageMetadata(
-                adapterId = "adapter-1",
-                corrId = "123",
-                orgId = "fintlabs-no",
-                uriRef = "utdanning/vurdering/elevfravar",
-                totalSize = expectedTotalSize,
-                page = i,
-                pageSize = pageSize,
-                totalPages = amountOfPages
-            )
-            syncMetadata.addPage(newMetadata)
+            val otherSyncMetadata = SyncMetadata.create(createSyncPageMetadata(i), "full")
+            syncMetadata.addPage(otherSyncMetadata)
         }
 
         assertEquals(amountOfPages, syncMetadata.totalPages)
