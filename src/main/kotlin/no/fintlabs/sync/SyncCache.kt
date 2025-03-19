@@ -1,14 +1,14 @@
 package no.fintlabs.sync
 
 import no.fintlabs.adapter.models.sync.SyncPageMetadata
-import no.fintlabs.sync.kafka.PageProducer
+import no.fintlabs.sync.kafka.CompletedFullSyncProducer
 import no.fintlabs.sync.model.SyncMetadata
 import org.springframework.stereotype.Component
 import java.util.concurrent.ConcurrentHashMap
 
 @Component
 class SyncCache(
-    private val pageProducer: PageProducer,
+    private val completedFullSyncProducer: CompletedFullSyncProducer,
     private val syncMetric: SyncMetric
 ) {
 
