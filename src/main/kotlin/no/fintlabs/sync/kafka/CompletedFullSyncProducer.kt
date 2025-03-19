@@ -17,7 +17,7 @@ class CompletedFullSyncProducer(
     private val pageEventProducer: EventProducer<ResourceEvictionPayload> =
         facotry.createProducer(ResourceEvictionPayload::class.java)
 
-    fun sendPage(page: SyncMetadata) {
+    fun publishCompletedFullSync(page: SyncMetadata) {
         val topicName = EventTopicNameParameters.builder()
             .orgId(page.orgId)
             .eventName("completed-full-sync")
