@@ -37,10 +37,10 @@ class SyncCache(
         }
     }
 
-    fun processFinishedPage(page: SyncMetadata) {
-        if (page.finished) {
-//            pageProducer.sendPage(page) disabled due to bug
-            syncMetric.incrementCompletedSyncs(page.domain, page.`package`, page.resource)
+    fun processFinishedPage(sync: SyncMetadata) {
+        if (sync.finished) {
+            completedFullSyncProducer.publishCompletedFullSync(sync)
+            syncMetric.incrementCompletedSyncs(sync.domain, sync.`package`, sync.resource)
         }
     }
 
