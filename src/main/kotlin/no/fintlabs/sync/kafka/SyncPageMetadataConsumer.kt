@@ -5,10 +5,10 @@ import no.fintlabs.contract.ContractCache
 import no.fintlabs.kafka.common.topic.pattern.FormattedTopicComponentPattern
 import no.fintlabs.kafka.common.topic.pattern.ValidatedTopicComponentPattern
 import no.fintlabs.kafka.event.EventConsumerFactoryService
-import no.fintlabs.kafka.event.topic.EventTopicNameParameters
 import no.fintlabs.kafka.event.topic.EventTopicNamePatternParameters
 import no.fintlabs.sync.SyncCache
 import no.fintlabs.sync.kafka.KafkaTopicConstants.Companion.ADAPTER_SYNC_TOPICS
+import no.fintlabs.sync.model.SyncMetadata
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Bean
@@ -41,8 +41,10 @@ class SyncPageMetadataConsumer(
         val parts = consumerRecord.topic().split("-")
         val syncType = parts.getOrNull(parts.size - 2)
         val pageMetaData = consumerRecord.value()
+        requireNotNull(syncType) { "Sync type is required" }
+
         log.debug("Consumed {}-sync From: {}", syncType, pageMetaData.adapterId)
         contractCache.updateLastActivity(pageMetaData.adapterId, pageMetaData.time)
-        syncType?.let { syncCache.add(pageMetaData, it) }
+        syncCache.add(SyncMetadata.create(pageMetaData, syncType))
     }
 }
