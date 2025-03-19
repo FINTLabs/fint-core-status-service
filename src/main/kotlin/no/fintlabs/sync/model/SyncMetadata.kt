@@ -45,11 +45,11 @@ class SyncMetadata(
 
     }
 
-    fun addPage(syncPageMetadata: SyncPageMetadata) {
-        pages.add(Page.fromSyncPageMetadata(syncPageMetadata))
+    fun addPage(sync: SyncMetadata) {
+        pages.add(sync.pages[0])
         pagesAcquired += 1
-        entitiesAquired += syncPageMetadata.pageSize
-        finished = syncPageMetadata.totalPages == pagesAcquired
+        entitiesAquired += sync.entitiesAquired
+        finished = sync.totalPages == pagesAcquired
     }
 
 }
