@@ -17,8 +17,25 @@ class SyncMetadata(
     val pages: MutableList<Page> = mutableListOf(),
     var finished: Boolean
 ) {
+
+    init {
+        require(corrId.isNotBlank()) { "corrId must not be null or blank" }
+        require(adapterId.isNotBlank()) { "adapterId must not be null or blank" }
+        require(orgId.isNotBlank()) { "orgId must not be null or blank" }
+        require(domain.isNotBlank()) { "domain must not be null or blank" }
+        require(`package`.isNotBlank()) { "package must not be null or blank" }
+        require(resource.isNotBlank()) { "resource must not be null or blank" }
+        require(syncType.isNotBlank()) { "syncType must not be null or blank" }
+
+        require(totalPages > 0) { "totalPages must be greater than 0" }
+        require(pagesAcquired > 0) { "pagesAcquired must be greater than 0" }
+        require(totalEntities > 0) { "totalEntities must be greater than 0" }
+        require(entitiesAquired > 0) { "entitiesAquired must be greater than 0" }
+        require(pages.size > 0) { "pages size must be greater than 0" }
+    }
+
     companion object {
-        fun create(syncPageMetadata: SyncPageMetadata, syncType: String): no.fintlabs.sync.model.SyncMetadata {
+        fun create(syncPageMetadata: SyncPageMetadata, syncType: String): SyncMetadata {
             val (domain, `package`, resource) = parseEntityUri(syncPageMetadata)
             return SyncMetadata(
                 corrId = syncPageMetadata.corrId ?: "",
