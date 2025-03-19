@@ -1,7 +1,7 @@
 package no.fintlabs.sync.kafka
 
 import no.fintlabs.StatusTopicService
-import no.fintlabs.adapter.models.sync.SyncPageMetadata
+import no.fintlabs.adapter.models.event.ResourceEvictionPayload
 import no.fintlabs.kafka.event.EventProducer
 import no.fintlabs.kafka.event.EventProducerFactory
 import no.fintlabs.kafka.event.EventProducerRecord
