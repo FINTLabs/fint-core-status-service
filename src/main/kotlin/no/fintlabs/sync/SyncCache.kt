@@ -24,18 +24,18 @@ class SyncCache(
             .compute(sync.corrId) { _, existing ->
                 existing?.apply {
                     addPage(sync)
-                    processFinishedPage(this)
+                    processPageProgression(this)
                 } ?: run {
-                    processFinishedPage(sync)
+                    processPageProgression(sync)
                     sync
                 }
             }
 
 
-    fun processFinishedPage(sync: SyncMetadata) {
+    fun processPageProgression(sync: SyncMetadata) {
         if (sync.finished) {
             completedFullSyncProducer.publishCompletedFullSync(sync)
-            syncMetric.incrementCompletedSyncs(sync.domain, sync.`package`, sync.resource)
+            syncMetric.incrementCompletedSyncs(sync)
         }
     }
 
