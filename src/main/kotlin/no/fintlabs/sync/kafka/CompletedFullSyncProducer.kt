@@ -1,6 +1,7 @@
 package no.fintlabs.sync.kafka
 
 import no.fintlabs.StatusTopicService
+import no.fintlabs.adapter.models.sync.SyncPageMetadata
 import no.fintlabs.kafka.event.EventProducer
 import no.fintlabs.kafka.event.EventProducerFactory
 import no.fintlabs.kafka.event.EventProducerRecord
@@ -18,20 +19,22 @@ class CompletedFullSyncProducer(
         facotry.createProducer(ResourceEvictionPayload::class.java)
 
     fun publishCompletedFullSync(page: SyncMetadata) {
-        val topicName = EventTopicNameParameters.builder()
-            .orgId(page.orgId)
-            .eventName("completed-full-sync")
-            .domainContext("fint-core")
-            .build()
-
+        val topicName = createEventTopicNameParameter()
         statusTopicService.ensureTopic(topicName, Duration.ofDays(7).toMillis())
-
         pageEventProducer.send(
             EventProducerRecord.builder<ResourceEvictionPayload>()
                 .key(page.corrId)
-                .value(ResourceEvictionPayload(page.domain, page.`package`, page.resource))
+                .value(ResourceEvictionPayload(page.domain, page.`package`, page.resource, page.orgId))
                 .topicNameParameters(topicName)
                 .build()
         )
     }
+
+    private fun createEventTopicNameParameter() =
+        EventTopicNameParameters.builder()
+            .orgId("fintlabs-no")
+            .eventName("completed-full-sync")
+            .domainContext("fint-core")
+            .build()
+
 }
