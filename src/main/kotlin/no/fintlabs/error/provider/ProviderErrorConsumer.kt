@@ -1,5 +1,6 @@
 package no.fintlabs.error.provider
 
+import no.fintlabs.error.ErrorMetricService
 import no.fintlabs.kafka.event.EventConsumerFactoryService
 import no.fintlabs.kafka.event.topic.EventTopicNameParameters
 import no.fintlabs.status.models.error.ProviderError
@@ -10,7 +11,8 @@ import org.springframework.stereotype.Component
 
 @Component
 class ProviderErrorConsumer(
-    private val providerErrorCache: ProviderErrorCache
+    private val providerErrorCache: ProviderErrorCache,
+    private val errorMetricService: ErrorMetricService
 ) {
 
     @Bean
@@ -28,6 +30,8 @@ class ProviderErrorConsumer(
     }
 
     fun processEvent(consumerRecord: ConsumerRecord<String, ProviderError>) {
-        providerErrorCache.add(consumerRecord.value())
+        val providerError = consumerRecord.value()
+        errorMetricService.incrementProviderError(providerError)
+        providerErrorCache.add(providerError)
     }
 }

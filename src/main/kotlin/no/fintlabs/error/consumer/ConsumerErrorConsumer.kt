@@ -1,5 +1,6 @@
 package no.fintlabs.error.consumer
 
+import no.fintlabs.error.ErrorMetricService
 import no.fintlabs.kafka.event.EventConsumerFactoryService
 import no.fintlabs.kafka.event.topic.EventTopicNameParameters
 import no.fintlabs.status.models.error.ConsumerError
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component
 @Component
 class ConsumerErrorConsumer(
     private val consumerErrorCache: ConsumerErrorCache,
+    private val errorMetricService: ErrorMetricService
 ) {
 
     @Bean
@@ -29,6 +31,7 @@ class ConsumerErrorConsumer(
 
     fun processEvent(consumerRecord: ConsumerRecord<String, ConsumerError>) {
         val consumerError = consumerRecord.value()
-        consumerErrorCache.add(consumerError.org, consumerError)
+        errorMetricService.incrementConsumerError(consumerError)
+        consumerErrorCache.add(consumerError)
     }
 }
