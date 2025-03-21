@@ -1,4 +1,4 @@
-package no.fintlabs.errors
+package no.fintlabs.error
 
 import kotlinx.coroutines.reactor.awaitSingle
 import no.fintlabs.model.Response

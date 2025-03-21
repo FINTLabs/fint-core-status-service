@@ -1,4 +1,4 @@
-package no.fintlabs.errors
+package no.fintlabs.error
 
 import no.fintlabs.kafka.common.topic.pattern.FormattedTopicComponentPattern
 import no.fintlabs.kafka.common.topic.pattern.ValidatedTopicComponentPattern

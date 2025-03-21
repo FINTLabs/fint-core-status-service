@@ -1,4 +1,4 @@
-package no.fintlabs.errors
+package no.fintlabs.error
 
 import no.fintlabs.organisationStat.OrganisastionStat
 import no.fintlabs.organisationStat.OrganisationStatCache
