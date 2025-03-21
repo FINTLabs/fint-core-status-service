@@ -1,7 +1,6 @@
 package no.fintlabs.sync.kafka
 
-import no.fintlabs.StatusTopicService
-import no.fintlabs.adapter.models.event.ResourceEvictionPayload
+import no.fintlabs.core.kafka.utils.CoreTopicService
 import no.fintlabs.kafka.event.EventProducer
 import no.fintlabs.kafka.event.EventProducerFactory
 import no.fintlabs.kafka.event.EventProducerRecord
@@ -14,18 +13,26 @@ import java.time.Duration
 @Service
 class CompletedFullSyncProducer(
     facotry: EventProducerFactory,
-    private val statusTopicService: StatusTopicService,
+    private val coreTopicService: CoreTopicService
 ) {
     private val pageEventProducer: EventProducer<ResourceEvictionPayload> =
         facotry.createProducer(ResourceEvictionPayload::class.java)
 
     fun publishCompletedFullSync(page: SyncMetadata) {
         val topicName = createEventTopicNameParameter()
-        statusTopicService.ensureTopic(topicName, Duration.ofDays(7).toMillis())
+        coreTopicService.ensureTopic(topicName, Duration.ofDays(7).toMillis())
         pageEventProducer.send(
             EventProducerRecord.builder<ResourceEvictionPayload>()
                 .key(page.corrId)
-                .value(ResourceEvictionPayload(page.domain, page.`package`, page.resource, page.orgId, System.currentTimeMillis()))
+                .value(
+                    ResourceEvictionPayload(
+                        page.domain,
+                        page.`package`,
+                        page.resource,
+                        page.orgId,
+                        System.currentTimeMillis()
+                    )
+                )
                 .topicNameParameters(topicName)
                 .build()
         )
