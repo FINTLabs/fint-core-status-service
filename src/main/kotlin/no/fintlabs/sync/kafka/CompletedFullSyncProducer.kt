@@ -24,7 +24,7 @@ class CompletedFullSyncProducer(
         pageEventProducer.send(
             EventProducerRecord.builder<ResourceEvictionPayload>()
                 .key(page.corrId)
-                .value(ResourceEvictionPayload(page.domain, page.`package`, page.resource, page.orgId))
+                .value(ResourceEvictionPayload(page.domain, page.`package`, page.resource, page.orgId, System.currentTimeMillis()))
                 .topicNameParameters(topicName)
                 .build()
         )
