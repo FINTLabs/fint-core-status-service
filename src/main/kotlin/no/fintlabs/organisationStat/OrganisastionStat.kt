@@ -1,7 +1,7 @@
 package no.fintlabs.organisationStat
 
 class OrganisastionStat(
-    val applications: Int = 0,
-    val restarts: Int = 0,
-    val errors: Int = 0
+    var applications: Int = 0,
+    var restarts: Int = 0,
+    var errors: Int = 0
 )
