@@ -6,6 +6,7 @@ import no.fintlabs.kafka.event.EventProducer
 import no.fintlabs.kafka.event.EventProducerFactory
 import no.fintlabs.kafka.event.EventProducerRecord
 import no.fintlabs.kafka.event.topic.EventTopicNameParameters
+import no.fintlabs.status.models.ResourceEvictionPayload
 import no.fintlabs.sync.model.SyncMetadata
 import org.springframework.stereotype.Service
 import java.time.Duration
