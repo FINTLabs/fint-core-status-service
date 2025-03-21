@@ -8,6 +8,8 @@ class ConsumerErrorCache {
 
     private val orgErrorsMap: MutableMap<String, MutableList<ConsumerError>> = mutableMapOf()
 
+    fun getAll(): List<ConsumerError> = orgErrorsMap.values.flatten()
+
     fun add(org: String, consumerError: ConsumerError) =
         orgErrorsMap.getOrPut(org) { mutableListOf() }.add(consumerError)
 
