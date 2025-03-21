@@ -33,7 +33,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
     implementation 'no.fintlabs:fint-kafka:3.2.0-rc-1'
-    implementation 'no.fintlabs:fint-core-infra-models:2.1.0-rc-6'
+    implementation 'no.fintlabs:fint-core-infra-models:2.1.0-rc-8'
 
 	implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
 	implementation 'io.projectreactor.kotlin:reactor-kotlin-extensions'
