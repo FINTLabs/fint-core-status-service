@@ -23,6 +23,12 @@ spring:
   profiles:
     include: db
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "prometheus"
+
 logging:
   level:
     no.fintlabs.kafka: warn
