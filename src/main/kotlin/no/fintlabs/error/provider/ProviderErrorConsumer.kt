@@ -9,7 +9,9 @@ import org.springframework.kafka.listener.ConcurrentMessageListenerContainer
 import org.springframework.stereotype.Component
 
 @Component
-class ProviderErrorConsumer {
+class ProviderErrorConsumer(
+    private val providerErrorCache: ProviderErrorCache
+) {
 
     @Bean
     fun registerProviderErrorConsumer(eventConsumerFactoryService: EventConsumerFactoryService): ConcurrentMessageListenerContainer<String, ProviderError> {
@@ -26,6 +28,6 @@ class ProviderErrorConsumer {
     }
 
     fun processEvent(consumerRecord: ConsumerRecord<String, ProviderError>) {
-
+        providerErrorCache.add(consumerRecord.value())
     }
 }
