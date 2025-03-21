@@ -1,8 +1,8 @@
 plugins {
-	id 'org.jetbrains.kotlin.jvm' version '2.1.0'
-	id 'org.jetbrains.kotlin.plugin.spring' version '2.1.0'
-	id 'org.springframework.boot' version '3.4.1'
-	id 'io.spring.dependency-management' version '1.1.7'
+    id 'org.jetbrains.kotlin.jvm' version '2.1.0'
+    id 'org.jetbrains.kotlin.plugin.spring' version '2.1.0'
+    id 'org.springframework.boot' version '3.4.1'
+    id 'io.spring.dependency-management' version '1.1.7'
     id 'com.github.ben-manes.versions' version '0.51.0'
     id 'se.patrikerdes.use-latest-versions' version '0.2.18'
 }
@@ -11,22 +11,22 @@ group = 'no.fintlabs'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(21)
-	}
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
 }
 
 repositories {
-	mavenLocal()
-	maven {
-		url("https://repo.fintlabs.no/releases")
-	}
-	mavenCentral()
+    mavenLocal()
+    maven {
+        url("https://repo.fintlabs.no/releases")
+    }
+    mavenCentral()
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-webflux'
-	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.kafka:spring-kafka'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
@@ -35,29 +35,29 @@ dependencies {
     implementation 'no.fintlabs:fint-kafka:3.2.0-rc-1'
     implementation 'no.fintlabs:fint-core-infra-models:2.1.0-rc-8'
 
-	implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
-	implementation 'io.projectreactor.kotlin:reactor-kotlin-extensions'
-	implementation 'org.jetbrains.kotlin:kotlin-reflect'
-	implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-reactor'
+    implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
+    implementation 'io.projectreactor.kotlin:reactor-kotlin-extensions'
+    implementation 'org.jetbrains.kotlin:kotlin-reflect'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-reactor'
 
     implementation 'jakarta.servlet:jakarta.servlet-api:5.0.0'
     implementation 'org.postgresql:postgresql:42.7.5'
     implementation 'org.projectlombok:lombok'
-    implementation'io.micrometer:micrometer-registry-prometheus'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
     annotationProcessor 'org.projectlombok:lombok'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'io.projectreactor:reactor-test'
-	testImplementation 'org.jetbrains.kotlin:kotlin-test-junit5'
+    testImplementation 'io.projectreactor:reactor-test'
+    testImplementation 'org.jetbrains.kotlin:kotlin-test-junit5'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 kotlin {
-	compilerOptions {
-		freeCompilerArgs.addAll '-Xjsr305=strict'
-	}
+    compilerOptions {
+        freeCompilerArgs.addAll '-Xjsr305=strict'
+    }
 }
 
 tasks.named('test') {
-	useJUnitPlatform()
+    useJUnitPlatform()
 }
