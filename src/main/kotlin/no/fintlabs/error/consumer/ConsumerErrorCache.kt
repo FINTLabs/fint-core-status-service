@@ -10,8 +10,8 @@ class ConsumerErrorCache {
 
     fun getAll(): List<ConsumerError> = orgErrorsMap.values.flatten()
 
-    fun add(org: String, consumerError: ConsumerError) =
-        orgErrorsMap.getOrPut(org) { mutableListOf() }.add(consumerError)
+    fun add(consumerError: ConsumerError) =
+        orgErrorsMap.getOrPut(consumerError.org) { mutableListOf() }.add(consumerError)
 
     fun size() = orgErrorsMap.values.flatten().size
     fun size(org: String) = orgErrorsMap.getOrDefault(org, mutableListOf()).size
