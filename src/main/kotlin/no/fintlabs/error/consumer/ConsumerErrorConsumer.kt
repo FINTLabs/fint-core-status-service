@@ -28,7 +28,7 @@ class ConsumerErrorConsumer(
     }
 
     fun processEvent(consumerRecord: ConsumerRecord<String, ConsumerError>) {
-        val orgId = consumerRecord.topic().split(".")[0]
-        consumerErrorCache.add(orgId, consumerRecord.value())
+        val consumerError = consumerRecord.value()
+        consumerErrorCache.add(consumerError.org, consumerError)
     }
 }
