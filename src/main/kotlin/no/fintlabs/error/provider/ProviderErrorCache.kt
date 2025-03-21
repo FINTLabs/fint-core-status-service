@@ -8,6 +8,7 @@ class ProviderErrorCache {
 
     private val errors: MutableList<ProviderError> = mutableListOf()
 
+    fun getAll(): List<ProviderError> = errors.toList()
     fun add(error: ProviderError) = errors.add(error)
 
 }
