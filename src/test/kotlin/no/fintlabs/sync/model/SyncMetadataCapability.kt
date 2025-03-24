@@ -31,7 +31,7 @@ private fun createSyncPageMetadata(
         .build()
 }
 
-class SyncMetadataTest {
+class SyncMetadataCapability {
 
     private val expectedTotalSize = 100L
     private val pageSize = 25L

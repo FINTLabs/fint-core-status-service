@@ -12,8 +12,8 @@ data class Contract(
     var lastHeartbeat: Number,
     val components: Set<String>,
     var hasContact: Boolean,
-    val capabilities: Set<AdapterCapability>,
-    var lastActivity: Long
+    val capabilities: Map<String, Capability>,
+    var lastActivity: Long,
 ) {
     companion object {
         fun fromAdapterContract(adapterContract: AdapterContract): Contract {
@@ -24,10 +24,18 @@ data class Contract(
                 heartbeatIntervalInMinutes = adapterContract.heartbeatIntervalInMinutes,
                 components = getComponents(adapterContract.capabilities),
                 hasContact = false,
-                capabilities = adapterContract.capabilities,
+                capabilities = createCapabilities(adapterContract.capabilities),
                 lastHeartbeat = 0,
                 lastActivity = 0
             )
+        }
+
+        fun createCapabilities(capabilities: Set<AdapterCapability>): Map<String, Capability> {
+            val capabilityMap = mutableMapOf<String, Capability>()
+            capabilities.forEach {
+                capabilityMap["${it.domainName}.${it.packageName}.${it.resourceName}".lowercase()] = Capability.fromCapability(it)
+            }
+            return capabilityMap
         }
 
         private fun getComponents(capabilities: Set<AdapterCapability>): Set<String> =
@@ -35,4 +43,9 @@ data class Contract(
                 .map { "${it.domainName}.${it.packageName}".lowercase() }
                 .collect(Collectors.toSet())
     }
+
+    fun getCapability(idetifier: String): Capability? {
+        return capabilities[idetifier]
+    }
+
 }

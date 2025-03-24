@@ -41,6 +41,11 @@ class SyncPageMetadataConsumer(
         val parts = consumerRecord.topic().split("-")
         val syncType = parts.getOrNull(parts.size - 2)
         val pageMetaData = consumerRecord.value()
+
+        if (syncType.equals("adapter-full-sync")) {
+            log.info("consumed fullsync")
+            contractCache.updateLastSync(pageMetaData)
+        }
         requireNotNull(syncType) { "Sync type is required" }
 
         log.debug("Consumed {}-sync From: {}", syncType, pageMetaData.adapterId)
