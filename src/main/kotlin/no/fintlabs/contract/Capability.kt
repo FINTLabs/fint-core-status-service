@@ -16,7 +16,7 @@ data class Capability(
             return Capability(
                 fullSyncIntervalInDays = capability.fullSyncIntervalInDays,
                 deltaSyncInterval = capability.deltaSyncInterval,
-                followsContract = true,
+                followsContract = false,
                 lastFullSync = 0L
             )
         }
