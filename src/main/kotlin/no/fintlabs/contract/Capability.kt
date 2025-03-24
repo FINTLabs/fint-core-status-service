@@ -30,8 +30,12 @@ data class Capability(
 
     fun updateFollowsContract(){
         val daysSinsLastFullSync = Duration.between(Instant.now(), Instant.ofEpochMilli(this.lastFullSync)).toDays()
-        if (daysSinsLastFullSync < this.fullSyncIntervalInDays)
+        if (daysSinsLastFullSync < this.fullSyncIntervalInDays) {
             this.followsContract = true
-        else this.followsContract = false
+        }
+        else if (this.lastFullSync == 0L || daysSinsLastFullSync > this.fullSyncIntervalInDays){
+         this.followsContract = false
+        }
+
     }
 }
