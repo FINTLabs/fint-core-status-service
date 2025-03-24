@@ -42,7 +42,7 @@ class SyncPageMetadataConsumer(
         val syncType = parts.getOrNull(parts.size - 2)
         val pageMetaData = consumerRecord.value()
 
-        if (syncType == "adapter-full-sync") {
+        if (consumerRecord.topic().contains("adapter-full-sync")) {
             log.info("consumed fullsync")
             contractCache.updateLastSync(pageMetaData)
         }
