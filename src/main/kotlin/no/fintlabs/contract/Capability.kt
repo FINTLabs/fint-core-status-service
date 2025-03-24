@@ -6,7 +6,7 @@ import java.time.Instant
 
 data class Capability(
     val fullSyncIntervalInDays: Int,
-    val deltaSyncInterval: AdapterCapability.DeltaSyncInterval,
+    val deltaSyncInterval: AdapterCapability.DeltaSyncInterval?,
     var followsContract: Boolean,
     var lastFullSync: Long
 ) {
