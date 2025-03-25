@@ -12,6 +12,11 @@ spec:
     acls:
       - topic: '*.fint-core.event.*'
         permission: admin
+  observability:
+    metrics:
+      enabled: true
+      port: "8080"
+      path: /api/actuator/prometheus
   database:
     database: fint-core
   ingress:
