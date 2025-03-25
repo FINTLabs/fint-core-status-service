@@ -13,8 +13,7 @@ class ErrorMetricService(
     fun incrementConsumerError(consumerError: ConsumerError) =
         this.meterRegistry.counter(
             "core.consumer.error",
-            "domain", consumerError.domain,
-            "package", consumerError.pkg,
+            "app", "${consumerError.domain}-${consumerError.pkg}",
             "org", consumerError.org,
             "name", consumerError.name
         ).increment()
