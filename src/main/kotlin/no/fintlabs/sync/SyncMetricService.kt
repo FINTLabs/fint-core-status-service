@@ -5,7 +5,7 @@ import no.fintlabs.sync.model.SyncMetadata
 import org.springframework.stereotype.Component
 
 @Component
-class SyncMetric(
+class SyncMetricService(
     private val meterRegistry: MeterRegistry
 ) {
 

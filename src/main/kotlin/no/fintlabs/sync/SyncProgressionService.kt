@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap
 
 @Service
 class SyncProgressionService(
-    private val syncMetric: SyncMetric,
+    private val syncMetricService: SyncMetricService,
     private val syncProducer: CompletedFullSyncProducer
 ) {
 
@@ -19,14 +19,14 @@ class SyncProgressionService(
     fun processPageProgression(sync: SyncMetadata) =
         if (sync.finished) {
             syncProducer.publishCompletedFullSync(sync)
-            syncMetric.incrementCompletedSyncs(sync)
+            syncMetricService.incrementCompletedSyncs(sync)
         } else scheduleTimeout(sync)
 
     fun scheduleTimeout(sync: SyncMetadata) {
         cancelTimeout(sync.corrId)
         timeoutJobs[sync.corrId] = coroutineScope.launch {
             delay(Duration.ofMinutes(3).toMillis())
-            if (sync.finished.not()) syncMetric.incrementFailedSyncs(sync)
+            if (sync.finished.not()) syncMetricService.incrementFailedSyncs(sync)
         }
     }
 
