@@ -7,20 +7,26 @@ import no.fintlabs.kafka.event.EventProducerRecord
 import no.fintlabs.kafka.event.topic.EventTopicNameParameters
 import no.fintlabs.status.models.ResourceEvictionPayload
 import no.fintlabs.sync.model.SyncMetadata
+import org.springframework.kafka.support.SendResult
 import org.springframework.stereotype.Service
 import java.time.Duration
+import java.util.concurrent.CompletableFuture
 
 @Service
 class CompletedFullSyncProducer(
     facotry: EventProducerFactory,
-    private val coreTopicService: CoreTopicService
+    coreTopicService: CoreTopicService
 ) {
+
+    private val eventTopicName = createEventTopicNameParameter()
     private val pageEventProducer: EventProducer<ResourceEvictionPayload> =
         facotry.createProducer(ResourceEvictionPayload::class.java)
 
-    fun publishCompletedFullSync(page: SyncMetadata) {
-        val topicName = createEventTopicNameParameter()
-        coreTopicService.ensureTopic(topicName, Duration.ofDays(7).toMillis())
+    init {
+        coreTopicService.ensureTopic(eventTopicName, Duration.ofDays(7).toMillis())
+    }
+
+    fun publishCompletedFullSync(page: SyncMetadata): CompletableFuture<SendResult<String, ResourceEvictionPayload>> =
         pageEventProducer.send(
             EventProducerRecord.builder<ResourceEvictionPayload>()
                 .key(page.corrId)
@@ -33,10 +39,9 @@ class CompletedFullSyncProducer(
                         System.currentTimeMillis()
                     )
                 )
-                .topicNameParameters(topicName)
+                .topicNameParameters(eventTopicName)
                 .build()
         )
-    }
 
     private fun createEventTopicNameParameter() =
         EventTopicNameParameters.builder()
