@@ -8,6 +8,6 @@ labels:
       app.kubernetes.io/instance: fint-core-status-service_fintlabs_no
       app.kubernetes.io/version: latest
       app.kubernetes.io/component: consumer
-      app.kubernetes.io/part-of: fint-core
+      app.kubernetes.io/part-of: fint-felleskomponent
       fintlabs.no/team: core
-      fintlabs.no/org-id: fintlabs.no
+      fintlabs.no/org-id: fintlabs-no
