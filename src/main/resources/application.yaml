@@ -4,6 +4,8 @@ fint:
     query: 'query=kube_pod_container_status_restarts_total{pod=~".*fint-core-consumer.*"}'
 
   security:
+    open-paths: |
+      /actuator/prometheus
     org-id: false
     component: false
   heartbeat:
