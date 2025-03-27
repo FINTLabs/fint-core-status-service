@@ -14,8 +14,6 @@ fint:
         group-id: ${fint.kafka.application-id}
 
 spring:
-  webflux:
-    base-path: /api
   jpa:
     properties:
       jdbc:
