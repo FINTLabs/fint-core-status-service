@@ -13,14 +13,16 @@ class SyncMetricService(
         meterRegistry.counter(
             "core.completed.syncs",
             "app", "${sync.domain}-${sync.`package`}",
-            "resource", sync.resource
+            "resource", sync.resource,
+            "org", sync.orgId
         ).increment()
 
     fun incrementFailedSyncs(sync: SyncMetadata) =
         meterRegistry.counter(
             "core.failed.syncs",
             "app", "${sync.domain}-${sync.`package`}",
-            "resource", sync.resource
+            "resource", sync.resource,
+            "org", sync.orgId
         ).increment()
 
 }
