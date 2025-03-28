@@ -23,14 +23,14 @@ data class Capability(
     }
 
     fun updateLastFullSync(newLastFullSync: Long) {
-        if (this.lastFullSync == null || newLastFullSync > this.lastFullSync!!) {
-            this.lastFullSync = newLastFullSync
+        if (lastFullSync == null || newLastFullSync > lastFullSync!!) {
+            lastFullSync = newLastFullSync
         }
     }
 
     fun updateFollowsContract() =
         takeIf { lastFullSync != null }?.let {
-            followsContract = lastFullSync!!.getDaysSinceNow() < fullSyncIntervalInDays
+            followsContract = lastFullSync!!.getDaysSinceNow() <= fullSyncIntervalInDays
         } ?: run { followsContract = false }
 
 
