@@ -33,7 +33,8 @@ data class Contract(
         private fun createCapabilities(capabilities: Set<AdapterCapability>): Map<String, Capability> {
             val capabilityMap = mutableMapOf<String, Capability>()
             capabilities.forEach {
-                capabilityMap["${it.domainName}.${it.packageName}.${it.resourceName}".lowercase()] = Capability.fromCapability(it)
+                capabilityMap["${it.domainName}.${it.packageName}.${it.resourceName}".lowercase()] =
+                    Capability.fromCapability(it)
             }
             return capabilityMap
         }
@@ -44,15 +45,11 @@ data class Contract(
                 .collect(Collectors.toSet())
     }
 
-    fun getCapability(domain: String, pkg: String, resource: String): Capability? {
-        return capabilities["$domain.$pkg.$resource".lowercase()]
-    }
+    fun getCapability(domain: String, pkg: String, resource: String): Capability? =
+        capabilities["$domain.$pkg.$resource".lowercase()]
 
-    fun updateLastActivity(newTime: Long): Contract {
-        if (newTime > lastActivity) {
-            lastActivity = newTime
-        }
-        return this
-    }
+
+    fun updateLastActivity(newTime: Long) =
+        takeIf { newTime > lastActivity }?.let { lastActivity = newTime }
 
 }
