@@ -13,7 +13,7 @@ class ContractCapabilityScheduler(
     @Scheduled(cron = "0 * * * * *")
     fun updateFollowsContract() {
         contractCache.getAll().onEach { contract ->
-            contract.capabilities.values.forEach { capability ->
+            contract.getCapabilities().forEach { capability ->
                 val oldFollowsContract = capability.followsContract
                 capability.updateFollowsContract()
                 compareFollowsContract(oldFollowsContract, capability.followsContract)
