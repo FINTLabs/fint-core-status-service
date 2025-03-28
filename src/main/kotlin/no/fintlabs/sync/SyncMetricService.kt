@@ -13,13 +13,8 @@ class SyncMetricService(
 
     private val absentFullSyncs = AtomicInteger(0)
 
-    fun incrementAbsentFullsyncs(){
-        absentFullSyncs.getAndIncrement()
-    }
-
-    fun decrementAbsentFullsyncs(){
-        absentFullSyncs.getAndDecrement()
-    }
+    fun incrementAbsentFullsyncs() = absentFullSyncs.getAndIncrement()
+    fun decrementAbsentFullsyncs() = absentFullSyncs.getAndDecrement()
 
     init {
         Gauge.builder("core.absent.full-syncs", absentFullSyncs) { it.get().toDouble() }
