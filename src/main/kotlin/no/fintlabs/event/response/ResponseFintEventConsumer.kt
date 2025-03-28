@@ -17,8 +17,8 @@ import org.springframework.stereotype.Component
 
 @Component
 class ResponseFintEventConsumer(
-    val eventStatusCache: EventStatusCache,
-    val responseFintEventJpaRepository: ResponseFintEventJpaRepository,
+    private val eventStatusCache: EventStatusCache,
+    private val responseFintEventJpaRepository: ResponseFintEventJpaRepository,
     private val mappingService: MappingService,
     private val contractCache: ContractCache
 ) {
