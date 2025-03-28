@@ -45,6 +45,8 @@ data class Contract(
                 .collect(Collectors.toSet())
     }
 
+    fun getCapabilities() = capabilities.values
+
     fun getCapability(domain: String, pkg: String, resource: String): Capability? =
         capabilities["$domain.$pkg.$resource".lowercase()]
 
