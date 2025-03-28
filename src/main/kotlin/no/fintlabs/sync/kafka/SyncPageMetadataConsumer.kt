@@ -1,7 +1,7 @@
 package no.fintlabs.sync.kafka
 
 import no.fintlabs.adapter.models.sync.SyncPageMetadata
-import no.fintlabs.contract.ContractCache
+import no.fintlabs.contract.ContractService
 import no.fintlabs.kafka.common.topic.pattern.FormattedTopicComponentPattern
 import no.fintlabs.kafka.common.topic.pattern.ValidatedTopicComponentPattern
 import no.fintlabs.kafka.event.EventConsumerFactoryService
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component
 @Component
 class SyncPageMetadataConsumer(
     val syncCache: SyncCache,
-    val contractCache: ContractCache,
+    val contractService: ContractService,
 ) {
 
     private val log = LoggerFactory.getLogger(SyncPageMetadataConsumer::class.java)
@@ -40,14 +40,10 @@ class SyncPageMetadataConsumer(
     fun processEvent(consumerRecord: ConsumerRecord<String, SyncPageMetadata>) {
         val topicSplit = consumerRecord.topic().split("-")
         val syncType = topicSplit[topicSplit.size - 2]
-        val pageMetaData = consumerRecord.value()
+        val syncMetadata = SyncMetadata.create(consumerRecord.value(), syncType)
 
-        log.debug("Consumed {}-sync From: {}", syncType, pageMetaData.adapterId)
-        contractCache.updateLastActivity(pageMetaData.adapterId, pageMetaData.time)
-        syncCache.add(SyncMetadata.create(pageMetaData, syncType))
-
-        if (syncType == "full") {
-            contractCache.updateLastFullSync(pageMetaData)
-        }
+        log.debug("Consumed {}-sync From: {}", syncType, syncMetadata.adapterId)
+        contractService.updateActivity(syncMetadata)
+        syncCache.add(syncMetadata)
     }
 }
