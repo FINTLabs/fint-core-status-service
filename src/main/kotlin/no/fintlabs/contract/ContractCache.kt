@@ -11,8 +11,6 @@ class ContractCache {
 
     fun getAll(): MutableCollection<Contract> = cache.values
 
-    fun add(adapterContract: AdapterContract) = cache.put(adapterContract.adapterId, Contract.fromAdapterContract(adapterContract))
-
     fun save(contract: Contract) = cache.put(contract.adapterId, contract)
 
     fun updateLastActivity(adapterId: String, time: Long) = cache[adapterId]
