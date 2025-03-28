@@ -40,9 +40,8 @@ class SyncPageMetadataConsumer(
 
     fun processEvent(consumerRecord: ConsumerRecord<String, SyncPageMetadata>) {
         val topicSplit = consumerRecord.topic().split("-")
-        val syncType = topicSplit.getOrNull(topicSplit.size - 2)
+        val syncType = topicSplit[topicSplit.size - 2]
         val pageMetaData = consumerRecord.value()
-        requireNotNull(syncType) { "Sync type is required" }
 
         log.debug("Consumed {}-sync From: {}", syncType, pageMetaData.adapterId)
         contractCache.updateLastActivity(pageMetaData.adapterId, pageMetaData.time)
