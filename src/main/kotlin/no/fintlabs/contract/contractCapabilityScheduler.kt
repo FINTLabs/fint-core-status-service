@@ -4,11 +4,13 @@ import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 
 @Service
-class ContractCapabilityScheduler(val cache: ContractCache) {
+class ContractCapabilityScheduler(
+    private val contractCache: ContractCache
+) {
 
     @Scheduled(cron = "0 * * * * *")
     fun updateFollowsContract() {
-        cache.getAll().onEach { contract ->
+        contractCache.getAll().onEach { contract ->
             contract.capabilities.values.forEach { capability ->
                 capability.updateFollowsContract()
             }
