@@ -25,9 +25,11 @@ class SyncMetricService(
 
     fun incrementCompletedSyncs(sync: SyncMetadata) {
         val tags = arrayOf(
-            "app", "${sync.domain}-${sync.`package`}",
+            "domain", sync.domain,
+            "package", sync.`package`,
             "resource", sync.resource,
-            "org", sync.orgId
+            "org", sync.orgId,
+            "type", sync.syncType
         )
 
         meterRegistry.counter("core.completed.syncs", *tags).increment()
@@ -36,13 +38,14 @@ class SyncMetricService(
 
     fun incrementFailedSyncs(sync: SyncMetadata) {
         val tags = arrayOf(
-            "app", "${sync.domain}-${sync.`package`}",
+            "domain", sync.domain,
+            "package", sync.`package`,
             "resource", sync.resource,
-            "org", sync.orgId
+            "org", sync.orgId,
+            "type", sync.syncType
         )
         
         meterRegistry.counter("core.failed.syncs", *tags).increment()
     }
-
 
 }
