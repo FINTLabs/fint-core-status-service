@@ -48,4 +48,11 @@ data class Contract(
         return capabilities["$domain.$pkg.$resource".lowercase()]
     }
 
+    fun updateLastActivity(newTime: Long): Contract {
+        if (newTime > lastActivity) {
+            lastActivity = newTime
+        }
+        return this
+    }
+
 }
