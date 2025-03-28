@@ -44,8 +44,8 @@ data class Contract(
                 .collect(Collectors.toSet())
     }
 
-    fun getCapability(idetifier: String): Capability? {
-        return capabilities[idetifier]
+    fun getCapability(domain: String, pkg: String, resource: String): Capability? {
+        return capabilities["$domain.$pkg.$resource".lowercase()]
     }
 
 }

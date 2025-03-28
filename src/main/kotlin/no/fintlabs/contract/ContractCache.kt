@@ -22,7 +22,7 @@ class ContractCache {
     fun updateLastSync(syncPage: SyncPageMetadata) {
         val (domain, pkg, resource) = syncPage.uriRef?.trim('/')!!.split('/')
         cache[syncPage.adapterId]?.let {
-            it.getCapability("${domain}.${pkg}.${resource}".lowercase())!!.updateLastFullSync(syncPage.time)
+            it.getCapability(domain, pkg, resource)!!.updateLastFullSync(syncPage.time)
         }
     }
 }
