@@ -25,6 +25,8 @@ repositories {
 }
 
 dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.kafka:spring-kafka'
@@ -34,7 +36,6 @@ dependencies {
     implementation 'no.fintlabs:fint-core-kafka-utils:1.0.0-rc-1'
     implementation 'no.fintlabs:fint-core-infra-models:2.1.0'
     implementation 'no.fintlabs:fint-core-status-models:1.0.0-rc-2'
-    implementation 'no.fintlabs:fint-core-resource-server-security:2.1.0'
 
     implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
     implementation 'io.projectreactor.kotlin:reactor-kotlin-extensions'
