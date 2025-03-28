@@ -1,6 +1,7 @@
 package no.fintlabs.sync.model
 
 import no.fintlabs.adapter.models.sync.SyncPageMetadata
+import no.fintlabs.adapter.models.sync.SyncType
 
 class SyncMetadata(
     val corrId: String,
@@ -13,7 +14,7 @@ class SyncMetadata(
     var pagesAcquired: Long,
     val totalEntities: Long,
     var entitiesAquired: Long,
-    val syncType: String,
+    val syncType: SyncType,
     val pages: MutableList<Page> = mutableListOf(),
     var finished: Boolean
 ) {
@@ -25,7 +26,6 @@ class SyncMetadata(
         require(domain.isNotBlank()) { "domain must not be null or blank" }
         require(`package`.isNotBlank()) { "package must not be null or blank" }
         require(resource.isNotBlank()) { "resource must not be null or blank" }
-        require(syncType.isNotBlank()) { "syncType must not be null or blank" }
 
         require(totalPages > 0) { "totalPages must be greater than 0" }
         require(pagesAcquired > 0) { "pagesAcquired must be greater than 0" }
@@ -48,7 +48,7 @@ class SyncMetadata(
                 pagesAcquired = 1,
                 totalEntities = syncPageMetadata.totalSize,
                 entitiesAquired = syncPageMetadata.pageSize,
-                syncType = syncType,
+                syncType = SyncType.fromString(syncType),
                 pages = mutableListOf(Page.fromSyncPageMetadata(syncPageMetadata)),
                 finished = syncPageMetadata.totalPages == 1L
             )
