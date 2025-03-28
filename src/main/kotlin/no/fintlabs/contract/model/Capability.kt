@@ -28,11 +28,11 @@ data class Capability(
         }
     }
 
-    fun updateFollowsContract() =
-        takeIf { lastFullSync != null }?.let {
-            followsContract = lastFullSync!!.getDaysSinceNow() <= fullSyncIntervalInDays
-        } ?: run { followsContract = false }
-
+    fun updateFollowsContract() {
+        followsContract = if (lastFullSync != null) {
+            lastFullSync!!.getDaysSinceNow() <= fullSyncIntervalInDays
+        } else false
+    }
 
     private fun Long.getDaysSinceNow(): Long =
         this.let { Duration.between(Instant.ofEpochMilli(it), Instant.now()) }.toDays()
