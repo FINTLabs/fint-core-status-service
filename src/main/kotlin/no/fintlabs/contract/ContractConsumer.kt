@@ -35,8 +35,7 @@ class ContractConsumer(val contractCache: ContractCache) {
         )
     }
 
-    fun processEvent(consumerRecord: ConsumerRecord<String, AdapterContract>) {
-        contractCache.add(consumerRecord.value())
-    }
+    fun processEvent(consumerRecord: ConsumerRecord<String, AdapterContract>) =
+        contractCache.save(Contract.fromAdapterContract(consumerRecord.value()))
 
 }
