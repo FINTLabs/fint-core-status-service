@@ -7,7 +7,6 @@ import no.fintlabs.kafka.common.topic.pattern.ValidatedTopicComponentPattern
 import no.fintlabs.kafka.event.EventConsumerFactoryService
 import no.fintlabs.kafka.event.topic.EventTopicNamePatternParameters
 import no.fintlabs.sync.SyncCache
-import no.fintlabs.sync.kafka.KafkaTopicConstants.Companion.ADAPTER_FULL_SYNC
 import no.fintlabs.sync.kafka.KafkaTopicConstants.Companion.ADAPTER_SYNC_TOPICS
 import no.fintlabs.sync.model.SyncMetadata
 import org.apache.kafka.clients.consumer.ConsumerRecord
@@ -47,8 +46,8 @@ class SyncPageMetadataConsumer(
         contractCache.updateLastActivity(pageMetaData.adapterId, pageMetaData.time)
         syncCache.add(SyncMetadata.create(pageMetaData, syncType))
 
-        if (consumerRecord.topic().endsWith(ADAPTER_FULL_SYNC)) {
-            contractCache.updateLastSync(pageMetaData)
+        if (syncType == "full") {
+            contractCache.updateLastFullSync(pageMetaData)
         }
     }
 }
