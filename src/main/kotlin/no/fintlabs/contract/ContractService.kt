@@ -30,4 +30,7 @@ class ContractService(
         } ?: logger.warn("Contract not found when attempting to update activity")
     }
 
+    fun updateActivity(adapterId: String, time: Long) =
+        contractCache.get(adapterId)?.apply { updateLastActivity(time) }
+
 }
