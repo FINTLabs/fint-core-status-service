@@ -1,4 +1,4 @@
-package no.fintlabs.contract
+package no.fintlabs.contract.model
 
 import no.fintlabs.adapter.models.AdapterCapability
 import java.time.Duration
@@ -22,9 +22,9 @@ data class Capability(
         }
     }
 
-    fun updateLastFullSync(lastFullSync: Long): Capability {
-        return this.apply {
-            this.lastFullSync = lastFullSync
+    fun updateLastFullSync(newLastFullSync: Long) {
+        if (this.lastFullSync == null || newLastFullSync > this.lastFullSync!!) {
+            this.lastFullSync = newLastFullSync
         }
     }
 

@@ -1,6 +1,7 @@
 package no.fintlabs.contract
 
 import no.fintlabs.adapter.models.AdapterContract
+import no.fintlabs.contract.model.Contract
 import no.fintlabs.kafka.common.topic.pattern.FormattedTopicComponentPattern
 import no.fintlabs.kafka.common.topic.pattern.ValidatedTopicComponentPattern
 import no.fintlabs.kafka.event.EventConsumerConfiguration

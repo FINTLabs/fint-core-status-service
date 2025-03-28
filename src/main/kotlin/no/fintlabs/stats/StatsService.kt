@@ -1,6 +1,6 @@
 package no.fintlabs.stats
 
-import no.fintlabs.contract.Contract
+import no.fintlabs.contract.model.Contract
 import no.fintlabs.contract.ContractCache
 import no.fintlabs.event.EventStatus
 import no.fintlabs.event.FintEventService

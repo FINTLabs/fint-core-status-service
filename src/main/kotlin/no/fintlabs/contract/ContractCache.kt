@@ -1,7 +1,6 @@
 package no.fintlabs.contract
 
-import no.fintlabs.adapter.models.AdapterContract
-import no.fintlabs.adapter.models.sync.SyncPageMetadata
+import no.fintlabs.contract.model.Contract
 import org.springframework.stereotype.Component
 
 @Component

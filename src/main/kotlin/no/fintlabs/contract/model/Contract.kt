@@ -1,4 +1,4 @@
-package no.fintlabs.contract
+package no.fintlabs.contract.model
 
 import no.fintlabs.adapter.models.AdapterCapability
 import no.fintlabs.adapter.models.AdapterContract
@@ -30,7 +30,7 @@ data class Contract(
             )
         }
 
-        fun createCapabilities(capabilities: Set<AdapterCapability>): Map<String, Capability> {
+        private fun createCapabilities(capabilities: Set<AdapterCapability>): Map<String, Capability> {
             val capabilityMap = mutableMapOf<String, Capability>()
             capabilities.forEach {
                 capabilityMap["${it.domainName}.${it.packageName}.${it.resourceName}".lowercase()] = Capability.fromCapability(it)
