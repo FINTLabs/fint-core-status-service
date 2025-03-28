@@ -13,6 +13,9 @@ class ContractCapabilityScheduler(
         contractCache.getAll().onEach { contract ->
             contract.capabilities.values.forEach { capability ->
                 capability.updateFollowsContract()
+                if (capability.followsContract.not()) {
+
+                }
             }
         }
     }
