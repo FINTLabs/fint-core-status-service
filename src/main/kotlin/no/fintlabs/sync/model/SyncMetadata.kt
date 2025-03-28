@@ -69,4 +69,6 @@ class SyncMetadata(
         finished = sync.totalPages == pagesAcquired
     }
 
+    fun getLastPageTime() = pages.last().time
+
 }
