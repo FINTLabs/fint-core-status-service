@@ -7,6 +7,7 @@ import no.fintlabs.kafka.common.topic.pattern.ValidatedTopicComponentPattern
 import no.fintlabs.kafka.event.EventConsumerFactoryService
 import no.fintlabs.kafka.event.topic.EventTopicNamePatternParameters
 import no.fintlabs.sync.SyncCache
+import no.fintlabs.sync.kafka.KafkaTopicConstants.Companion.ADAPTER_FULL_SYNC
 import no.fintlabs.sync.kafka.KafkaTopicConstants.Companion.ADAPTER_SYNC_TOPICS
 import no.fintlabs.sync.model.SyncMetadata
 import org.apache.kafka.clients.consumer.ConsumerRecord
@@ -38,18 +39,17 @@ class SyncPageMetadataConsumer(
     }
 
     fun processEvent(consumerRecord: ConsumerRecord<String, SyncPageMetadata>) {
-        val parts = consumerRecord.topic().split("-")
-        val syncType = parts.getOrNull(parts.size - 2)
+        val topicSplit = consumerRecord.topic().split("-")
+        val syncType = topicSplit.getOrNull(topicSplit.size - 2)
         val pageMetaData = consumerRecord.value()
-
-        if (consumerRecord.topic().contains("adapter-full-sync")) {
-            log.info("consumed fullsync")
-            contractCache.updateLastSync(pageMetaData)
-        }
         requireNotNull(syncType) { "Sync type is required" }
 
         log.debug("Consumed {}-sync From: {}", syncType, pageMetaData.adapterId)
         contractCache.updateLastActivity(pageMetaData.adapterId, pageMetaData.time)
         syncCache.add(SyncMetadata.create(pageMetaData, syncType))
+
+        if (consumerRecord.topic().endsWith(ADAPTER_FULL_SYNC)) {
+            contractCache.updateLastSync(pageMetaData)
+        }
     }
 }
