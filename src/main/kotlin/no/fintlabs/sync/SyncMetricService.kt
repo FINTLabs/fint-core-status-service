@@ -11,7 +11,7 @@ class SyncMetricService(
     private val meterRegistry: MeterRegistry
 ) {
 
-    private val absentFullSyncs = AtomicInteger(0)
+    private final val absentFullSyncs = AtomicInteger(0)
 
     fun incrementAbsentFullsyncs() = absentFullSyncs.getAndIncrement()
     fun decrementAbsentFullsyncs() = absentFullSyncs.getAndDecrement()
