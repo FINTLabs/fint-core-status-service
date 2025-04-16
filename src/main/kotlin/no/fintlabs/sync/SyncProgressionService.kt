@@ -1,6 +1,7 @@
 package no.fintlabs.sync
 
 import kotlinx.coroutines.*
+import no.fintlabs.adapter.models.sync.SyncType
 import no.fintlabs.sync.kafka.CompletedFullSyncProducer
 import no.fintlabs.sync.model.SyncMetadata
 import org.springframework.stereotype.Service
@@ -18,7 +19,9 @@ class SyncProgressionService(
 
     fun processPageProgression(sync: SyncMetadata) =
         if (sync.finished) {
-            syncProducer.publishCompletedFullSync(sync)
+            if (sync.syncType == SyncType.FULL) {
+                syncProducer.publishCompletedFullSync(sync)
+            }
             syncMetricService.incrementCompletedSyncs(sync)
         } else scheduleTimeout(sync)
 
