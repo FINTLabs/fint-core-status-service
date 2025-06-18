@@ -5,6 +5,7 @@ import java.time.Duration
 import java.time.Instant
 
 data class Capability(
+    val resourceName: String,
     val fullSyncIntervalInDays: Int,
     val deltaSyncInterval: AdapterCapability.DeltaSyncInterval?,
     var followsContract: Boolean,
@@ -14,6 +15,7 @@ data class Capability(
     companion object {
         fun fromCapability(capability: AdapterCapability): Capability {
             return Capability(
+                resourceName = capability.resourceName,
                 fullSyncIntervalInDays = capability.fullSyncIntervalInDays,
                 deltaSyncInterval = capability.deltaSyncInterval,
                 followsContract = true,
