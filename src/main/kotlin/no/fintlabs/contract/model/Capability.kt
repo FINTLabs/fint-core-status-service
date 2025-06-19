@@ -12,7 +12,7 @@ data class Capability(
     val deltaSyncInterval: AdapterCapability.DeltaSyncInterval?,
     var followsContract: Boolean,
     var lastFullSync: Long?,
-    var lastFullSyncTime: String? = null,
+    var lastFullSyncTime: String?,
 ) {
 
     companion object {
