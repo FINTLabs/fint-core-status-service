@@ -12,7 +12,7 @@ data class Capability(
     val deltaSyncInterval: AdapterCapability.DeltaSyncInterval?,
     var followsContract: Boolean,
     var lastFullSync: Long?,
-    var lastFullSyncTime: String?
+    var lastFullSyncTime: String? = null,
 ) {
 
     companion object {
@@ -23,17 +23,17 @@ data class Capability(
                 deltaSyncInterval = capability.deltaSyncInterval,
                 followsContract = true,
                 lastFullSync = null,
-                lastFullSyncTime = "unknown"
+                lastFullSyncTime = null
             )
         }
     }
 
-    fun formatLastFullSync(lastFullSync: Long?): String {
+    fun formatLastFullSync(lastFullSync: Long?): String? {
         return lastFullSync?.let {
             Instant.ofEpochMilli(it)
                 .atZone(ZoneId.of("Europe/Oslo"))
                 .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
-        } ?: "Unknown"
+        }
     }
 
     fun updateLastFullSync(newLastFullSync: Long) {
