@@ -28,8 +28,8 @@ data class Capability(
         }
     }
 
-    fun formatLastFullSync(lastFullSync: Long?): String? {
-        return lastFullSync?.let {
+    fun formatLastFullSync(lastFullSync: Long): String {
+        return lastFullSync.let {
             Instant.ofEpochMilli(it)
                 .atZone(ZoneId.of("Europe/Oslo"))
                 .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
