@@ -39,7 +39,7 @@ data class Capability(
     fun updateLastFullSync(newLastFullSync: Long) {
         if (lastFullSync == null || newLastFullSync > lastFullSync!!) {
             lastFullSync = newLastFullSync
-            lastFullSyncTime == formatLastFullSync(newLastFullSync)
+            lastFullSyncTime = formatLastFullSync(newLastFullSync)
         }
     }
 
