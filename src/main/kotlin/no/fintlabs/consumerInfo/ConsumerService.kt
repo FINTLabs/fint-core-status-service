@@ -45,7 +45,7 @@ class ConsumerService(
         return organisationStatCache.cache
     }
 
-    @Scheduled(cron = "0 * * * * *")
+    @Scheduled(cron = "0 * * * * *", initialDelay = 10000)
     fun populateCache() {
         runBlocking {
             getAndMapConsumerInfo()

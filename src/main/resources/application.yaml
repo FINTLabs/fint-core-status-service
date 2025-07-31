@@ -1,6 +1,6 @@
 fint:
   prometheus:
-    baseUrl: "http://prometheus-prometheus-stack-prometheus.flais-system:9090"
+    baseUrl: "http://prometheus-prometheus-stack-prometheus-0.flais-system:9090"
     query:
       memory: 'sum by (pod, namespace) (container_memory_usage_bytes{pod=~".*fint-core-consumer.*"}) * on (pod, namespace) group_left (uid) kube_pod_info{pod=~".*fint-core-consumer.*"}'
       restarts: 'sum by (pod, namespace) (  kube_pod_container_status_restarts_total{pod=~".*fint-core-consumer.*"})* on (pod, namespace) group_left(uid) (  kube_pod_info{pod=~".*fint-core-consumer.*"})'
