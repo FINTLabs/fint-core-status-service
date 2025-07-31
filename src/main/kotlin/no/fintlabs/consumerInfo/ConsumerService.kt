@@ -16,7 +16,7 @@ class ConsumerService(
 
     private val log = LoggerFactory.getLogger(ConsumerService::class.java)
 
-    suspend fun getPodInfo() {
+    suspend fun getAndMapConsumerInfo() {
         val data = prometheusGateway.getPodInfo()
         val restarts = prometheusGateway.getRestarts()
         data.data.result.forEach {
@@ -48,9 +48,7 @@ class ConsumerService(
     @Scheduled(cron = "0 * * * * *")
     fun populateCache() {
         runBlocking {
-            log.info("Populating cache")
-            getPodInfo()
-            log.info("Info: {}", organisationStatCache.getAll())
+            getAndMapConsumerInfo()
         }
     }
 
