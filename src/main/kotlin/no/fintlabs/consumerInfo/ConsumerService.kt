@@ -49,6 +49,7 @@ class ConsumerService(
     fun populateCache() {
         runBlocking {
             getAndMapConsumerInfo()
+            log.info("Populating cache for ${organisationStatCache.cache}")
         }
     }
 
