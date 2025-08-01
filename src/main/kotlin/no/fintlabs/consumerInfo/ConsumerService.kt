@@ -1,9 +1,7 @@
 package no.fintlabs.consumerInfo
 
+import jakarta.annotation.PostConstruct
 import kotlinx.coroutines.runBlocking
-import no.fintlabs.organisationStat.OrganisationStatCache
-import no.fintlabs.organisationStat.consumerInfo
-import no.fintlabs.organisationStat.convertBytesToMegabytes
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
@@ -11,7 +9,7 @@ import org.springframework.stereotype.Service
 @Service
 class ConsumerService(
     private val prometheusGateway: PrometheusGateway,
-    private val organisationStatCache: OrganisationStatCache
+    private val consumerInfoCache: ConsumerInfoCache,
 ) {
 
     private val log = LoggerFactory.getLogger(ConsumerService::class.java)
@@ -19,37 +17,39 @@ class ConsumerService(
     suspend fun getAndMapConsumerInfo() {
         val data = prometheusGateway.getPodInfo()
         val restarts = prometheusGateway.getRestarts()
-        data.data.result.forEach {
-            it.metric
-            organisationStatCache.add(
-                it.metric.uid,
-                consumerInfo(
-                    it.metric.uid,
-                    it.metric.pod,
-                    it.metric.namespace,
-                    "",
-                    convertBytesToMegabytes(it.value.get(1))
-                )
+
+        val podToRestarts: Map<String, String> = restarts.data.result.associate {
+            it.metric.pod to it.value[1]
+        }
+
+        val consumers = data.data.result.map {
+            val pod = it.metric.pod
+            consumerInfo(
+                uid = it.metric.uid,
+                podName = pod,
+                organisation = it.metric.namespace,
+                restarts = podToRestarts[pod] ?: "0",
+                memoryUsage = it.value[1]
             )
         }
 
-        restarts.data.result.forEach { restarts ->
-            val consumerInfo = organisationStatCache.get(restarts.metric.uid)
-            consumerInfo?.let {
-                it.restarts = restarts.value.get(1)
-            }
+        val groupedByOrg = consumers.groupBy { it.organisation }
+
+        groupedByOrg.forEach { (org, list) ->
+            consumerInfoCache.cache.put(org, list)
         }
+
     }
 
-    fun getCache(): MutableMap<String, consumerInfo> {
-        return organisationStatCache.cache
+    fun getCache(): MutableMap<String, List<consumerInfo>> {
+        return consumerInfoCache.cache
     }
 
     @Scheduled(cron = "0 * * * * *")
     fun populateCache() {
         runBlocking {
             getAndMapConsumerInfo()
-            log.info("Populating cache for ${organisationStatCache.cache}")
+            log.info("Populating cache for ${consumerInfoCache.cache}")
         }
     }
 
