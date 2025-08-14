@@ -39,7 +39,7 @@ class ContractService(
         contractCache.get(adapterId)?.apply { updateLastActivity(time) }
 
 
-    fun inactiveContracts(): MutableList<Contract> {
+    fun inactiveContracts(): List<Contract> {
         val aWeekAgo = now().minusMillis(604800000L)
         val inactiveContractsList = mutableListOf<Contract>()
         contractCache.getAll()?.forEach { contract ->
