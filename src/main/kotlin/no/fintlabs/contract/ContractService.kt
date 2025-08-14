@@ -41,7 +41,7 @@ class ContractService(
     fun inactiveContract(): MutableList<Contract> {
         var inactiveContractsList = mutableListOf<Contract>()
         contractCache.getAll()?.forEach { contract ->
-            if (ofEpochMilli(contract.lastActivity).isAfter(getTimeStampFromAWeekAgo()) || !contract.hasContact)
+            if (ofEpochMilli(contract.lastActivity).isAfter(getTimeStampFromAWeekAgo()) && !contract.hasContact)
                 logger.info("Inactive contract: {}", contract.username)
             inactiveContractsList.add(contract)
         }
