@@ -6,6 +6,7 @@ import no.fintlabs.sync.model.SyncMetadata
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
+import java.time.Instant
 import java.time.Instant.now
 import java.time.Instant.ofEpochMilli
 
@@ -38,15 +39,14 @@ class ContractService(
         contractCache.get(adapterId)?.apply { updateLastActivity(time) }
 
 
-    fun inactiveContract(): MutableList<Contract> {
-        var inactiveContractsList = mutableListOf<Contract>()
+    fun inactiveContracts(): MutableList<Contract> {
+        val aWeekAgo = now().minusMillis(604800000L)
+        val inactiveContractsList = mutableListOf<Contract>()
         contractCache.getAll()?.forEach { contract ->
-            if (ofEpochMilli(contract.lastActivity).isAfter(getTimeStampFromAWeekAgo()) && !contract.hasContact)
-                logger.info("Inactive contract: {}", contract.username)
-            inactiveContractsList.add(contract)
+            if (Instant.ofEpochMilli(contract.lastActivity).isBefore(aWeekAgo) && !contract.hasContact) {
+                inactiveContractsList.add(contract)
+            }
         }
         return inactiveContractsList
     }
-
-    private fun getTimeStampFromAWeekAgo() = now().minusMillis(604800000L)
 }
