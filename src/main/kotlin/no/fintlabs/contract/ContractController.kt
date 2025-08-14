@@ -9,10 +9,14 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/contract")
 class ContractController(
-    val adapterContractCache: ContractCache
+    val adapterContractCache: ContractCache,
+    private val contractService: ContractService
 ) {
 
     @GetMapping
     fun getContracts(): ResponseEntity<MutableCollection<Contract>> = ResponseEntity.ok(adapterContractCache.getAll())
+
+    @GetMapping("/{inactive}")
+    fun getInactiveContracts(): ResponseEntity<MutableCollection<Contract>> = ResponseEntity.ok(contractService.inactiveContract())
 
 }
