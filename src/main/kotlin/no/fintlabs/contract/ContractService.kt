@@ -4,11 +4,9 @@ import no.fintlabs.adapter.models.sync.SyncType
 import no.fintlabs.contract.model.Contract
 import no.fintlabs.sync.model.SyncMetadata
 import org.slf4j.LoggerFactory
-import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import java.time.Instant
 import java.time.Instant.now
-import java.time.Instant.ofEpochMilli
 
 @Service
 class ContractService(
