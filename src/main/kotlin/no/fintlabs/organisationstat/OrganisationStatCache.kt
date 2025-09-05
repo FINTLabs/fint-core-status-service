@@ -1,4 +1,4 @@
-package no.fintlabs.organisationStat
+package no.fintlabs.organisationstat
 
 import no.fintlabs.consumerInfo.consumerInfo
 import org.springframework.stereotype.Repository

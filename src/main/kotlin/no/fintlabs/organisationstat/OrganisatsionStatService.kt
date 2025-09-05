@@ -1,4 +1,4 @@
-package no.fintlabs.organisationStat
+package no.fintlabs.organisationstat
 
 import org.springframework.stereotype.Service
 
