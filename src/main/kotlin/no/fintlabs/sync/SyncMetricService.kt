@@ -43,5 +43,4 @@ class SyncMetricService(
             "type", sync.syncType.name.lowercase()
         ).increment()
 
-
 }
