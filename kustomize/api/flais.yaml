@@ -23,8 +23,6 @@ spec:
     routes:
       - host: core-status.fintlabs.no
         path: /api
-      - host: kunde.felleskomponent.no
-        path: /status
   env:
     - name: JAVA_TOOL_OPTIONS
       value: '-XX:+ExitOnOutOfMemoryError -Xmx525M'
