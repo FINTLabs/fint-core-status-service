@@ -16,7 +16,7 @@ class ContractController(
     @GetMapping
     fun getContracts(): ResponseEntity<MutableCollection<Contract>> = ResponseEntity.ok(adapterContractCache.getAll())
 
-    @GetMapping("/{inactive}")
+    @GetMapping("/inactive")
     fun getInactiveContracts(): ResponseEntity<List<Contract>> = ResponseEntity.ok(contractService.inactiveContracts())
 
 }

@@ -3,6 +3,7 @@ package no.fintlabs.consumerInfo
 import jakarta.annotation.PostConstruct
 import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 
@@ -46,6 +47,11 @@ class ConsumerService(
     }
 
     @Scheduled(cron = "0 * * * * *")
+    @ConditionalOnProperty(
+        name = ["fintlabs.prometheus.enabled"],
+        havingValue = "true",
+        matchIfMissing = false
+    )
     fun populateCache() {
         runBlocking {
             getAndMapConsumerInfo()

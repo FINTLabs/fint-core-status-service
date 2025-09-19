@@ -1,5 +1,6 @@
 fint:
   prometheus:
+    enabled: "false"
     baseUrl: "http://localhost:52517"
     query:
       memory: 'sum by (pod, namespace) (container_memory_usage_bytes{pod=~".*fint-core-consumer.*"}) * on (pod, namespace) group_left (uid) kube_pod_info{pod=~".*fint-core-consumer.*"}'
