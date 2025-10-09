@@ -1,9 +1,15 @@
 name: CI
 
 on:
-  pull_request:
-  push:
-    branches: [main]
+  workflow_call:
+    inputs:
+      cluster:
+        required: true
+        type: string
+      orgs:
+        required: true
+        type: string # JSON array of strings
+
 
 jobs:
   build:
