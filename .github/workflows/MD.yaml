@@ -1,0 +1,37 @@
+# Lets user manually trigger a deployment to a selected cluster for all organizations.
+name: manual-deployment
+on:
+  workflow_dispatch:
+    inputs:
+      cluster:
+        description: 'Select an environment'
+        required: true
+        type: choice
+        options:
+          - aks-alpha-fint-2021-11-18
+          - aks-beta-fint-2021-11-23
+          - aks-api-fint-2022-02-08
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/CD.yaml
+    with:
+      cluster: ${{ github.event.inputs.cluster }}
+      # Needs to be a string that can be parsed as a JSON array
+      orgs: '[
+          "trondelagfylke-no",
+          "nfk-no",
+          "tromsfylke-no",
+          "vestfoldfylke-no",
+          "telemarkfylke-no",
+          "mrfylke-no",
+          "rogfk-no",
+          "afk-no",
+          "agderfk-no",
+          "bfk-no",
+          "ffk-no",
+          "innlandetfylke-no",
+          "ofk-no",
+          "ude-oslo-kommune-no",
+          "vlfk-no"
+        ]'
