@@ -2,6 +2,7 @@ package no.fintlabs.adapterdata
 
 import no.fintlabs.contract.ContractCache
 import no.fintlabs.contract.model.Contract
+import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 
 @Service
@@ -17,10 +18,10 @@ class AdapterDataCache(
     }
 
     fun getAll(): MutableCollection<MutableList<AdapterData>> {
-        fillCache()
         return adapterDataCache.values
     }
 
+    @Scheduled(initialDelay = 10000, fixedDelay = 10000)
     fun fillCache() {
         val all = contractCache.getAll()
         all.forEach { add(it) }
