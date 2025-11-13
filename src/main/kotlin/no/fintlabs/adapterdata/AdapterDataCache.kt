@@ -18,7 +18,6 @@ class AdapterDataCache(
 
     fun getAll(): MutableCollection<MutableList<AdapterData>> {
         fillCache()
-        Thread.sleep(20000)
         return adapterDataCache.values
     }
 
