@@ -24,10 +24,9 @@ class HeartbeatChecker(
                 if (timeSinceLastHeartbeat <= expectedIntervalSeconds) {
                     contract.hasContact = true
                     contract.lastHeartbeat = timeInSeconds
-                }else if(timeSinceLastHeartbeat >= expectedIntervalSeconds){
+                }else {
                     contract.hasContact = false
                 }
-
                 contractCache.save(contract)
             }
         }

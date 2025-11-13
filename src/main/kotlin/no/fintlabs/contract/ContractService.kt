@@ -21,8 +21,7 @@ class ContractService(
             contract.updateLastActivity(lastPageTime)
             if (syncMetadata.syncType == SyncType.FULL) {
                 contract.getCapability(syncMetadata.domain, syncMetadata.`package`, syncMetadata.resource)
-                    ?.updateLastFullSync(lastPageTime)
-                    ?: logger.warn(
+                logger.warn(
                         "Capability not found for adapterId: {} with domain: {}, package: {}, resource: {}",
                         syncMetadata.adapterId,
                         syncMetadata.domain,
