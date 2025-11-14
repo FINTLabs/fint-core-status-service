@@ -42,9 +42,11 @@ class LastSyncService(
     }
 
     private fun getlastSyncTime(lastFullSync: List<SyncMetadata>): Long {
-        return lastFullSync.map {
-            it.getLastPageTime()
-        }.last()
+        if (lastFullSync.isNotEmpty()) {
+            return lastFullSync.map {
+                it.getLastPageTime()
+            }.last()
+        } else return 0L
     }
 
     private fun findNextExpectedFullSync(contract: Contract, component: String): Long {

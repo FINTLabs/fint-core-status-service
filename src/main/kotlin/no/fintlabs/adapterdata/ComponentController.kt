@@ -11,8 +11,8 @@ class ComponentController(
     private val adapterDataCache: AdapterDataCache
 ) {
 
-    @GetMapping()
-    fun getComponents(): ResponseEntity<MutableCollection<MutableList<AdapterData>>?> {
+    @GetMapping
+    fun getComponents(): ResponseEntity<MutableList<AdapterData>> {
         return ResponseEntity.ok(adapterDataCache.getAll())
     }
 

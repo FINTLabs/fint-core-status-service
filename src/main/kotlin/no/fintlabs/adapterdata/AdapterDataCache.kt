@@ -11,14 +11,14 @@ class AdapterDataCache(
     private val contractCache: ContractCache
 ) {
 
-    val adapterDataCache = mutableMapOf<String, MutableList<AdapterData>>()
+    val adapterDataCache = mutableListOf<AdapterData>()
 
     fun add(contract: Contract) {
-        adapterDataCache[contract.orgId] = mutableListOf(adapterDataService.createAdapterData(contract))
+        adapterDataCache.add(adapterDataService.createAdapterData(contract))
     }
 
-    fun getAll(): MutableCollection<MutableList<AdapterData>> {
-        return adapterDataCache.values
+    fun getAll():MutableList<AdapterData> {
+        return adapterDataCache
     }
 
     @Scheduled(initialDelay = 10000, fixedDelay = 10000)
