@@ -4,6 +4,7 @@ import no.fintlabs.adapter.models.sync.SyncPageMetadata
 import no.fintlabs.contract.ContractService
 import no.fintlabs.kafka.common.topic.pattern.FormattedTopicComponentPattern
 import no.fintlabs.kafka.common.topic.pattern.ValidatedTopicComponentPattern
+import no.fintlabs.kafka.event.EventConsumerConfiguration
 import no.fintlabs.kafka.event.EventConsumerFactoryService
 import no.fintlabs.kafka.event.topic.EventTopicNamePatternParameters
 import no.fintlabs.sync.SyncCache
@@ -28,6 +29,9 @@ class SyncPageMetadataConsumer(
         return eventConsumerFactoryService.createFactory(
             SyncPageMetadata::class.java,
             this::processEvent,
+            EventConsumerConfiguration.builder() //Added so i dont have to publish new messages on every restart
+                .seekingOffsetResetOnAssignment(true)
+                .build()
         ).createContainer(
             EventTopicNamePatternParameters.builder()
                 .orgId(FormattedTopicComponentPattern.containing("fintlabs-no"))
