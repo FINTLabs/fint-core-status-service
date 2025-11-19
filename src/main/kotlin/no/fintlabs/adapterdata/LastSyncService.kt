@@ -22,7 +22,7 @@ class LastSyncService(
         return lastDelta?.let {
             DeltaSync(
                 healty = healthService.calculateHealth(contract, contract.adapterId),
-                date = lastDelta.getLastPageTime()
+                date = getlastSyncTime(lastDeltas)
             )
         }
     }
@@ -41,9 +41,9 @@ class LastSyncService(
         )
     }
 
-    private fun getlastSyncTime(lastFullSync: List<SyncMetadata>): Long {
-        if (lastFullSync.isNotEmpty()) {
-            return lastFullSync.map {
+    private fun getlastSyncTime(lastSyncs: List<SyncMetadata>): Long {
+        if (lastSyncs.isNotEmpty()) {
+            return lastSyncs.map {
                 it.getLastPageTime()
             }.last()
         } else return 0L

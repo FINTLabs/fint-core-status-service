@@ -1,6 +1,7 @@
 package no.fintlabs.adapterdata
 
 import no.fintlabs.contract.model.Contract
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
 @Service
@@ -9,9 +10,10 @@ class ComponentDataService(
     private val healthService: HealthService,
 ) {
 
+    private val logger = LoggerFactory.getLogger(javaClass)
+
     fun createComponentData(contract: Contract): MutableList<ComponentData> {
-        var components = mutableListOf<ComponentData>()
-        contract.components.forEach { component ->
+        return contract.components.map { component ->
             ComponentData(
                 packageName = component,
                 healty = healthService.calculateHealth(contract),
@@ -19,7 +21,6 @@ class ComponentDataService(
                 lastDelta = lastSyncService.findAndCreateLastDelta(contract, component),
                 lastFull = lastSyncService.findAndCreateLastFull(contract, component)
             )
-        }
-        return components
+        }.toMutableList()
     }
 }

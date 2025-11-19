@@ -19,9 +19,11 @@ class ContractService(
 
         contractCache.get(syncMetadata.adapterId)?.let { contract ->
             contract.updateLastActivity(lastPageTime)
-            if (syncMetadata.syncType == SyncType.FULL) {
+            if (syncMetadata.syncType == SyncType.FULL
+                || syncMetadata.syncType == SyncType.DELTA
+                || syncMetadata.syncType == SyncType.DELETE) {
                 contract.getCapability(syncMetadata.domain, syncMetadata.`package`, syncMetadata.resource)
-                logger.warn(
+                    ?: logger.warn(
                         "Capability not found for adapterId: {} with domain: {}, package: {}, resource: {}",
                         syncMetadata.adapterId,
                         syncMetadata.domain,

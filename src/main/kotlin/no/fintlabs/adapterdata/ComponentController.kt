@@ -12,7 +12,7 @@ class ComponentController(
 ) {
 
     @GetMapping
-    fun getComponents(): ResponseEntity<MutableList<AdapterData>> {
+    fun getComponents(): ResponseEntity<MutableMap<String, MutableList<ComponentData>>> {
         return ResponseEntity.ok(adapterDataCache.getAll())
     }
 

@@ -1,18 +1,19 @@
 package no.fintlabs.adapterdata
 
 import no.fintlabs.contract.model.Contract
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
 @Service
 class AdapterDataService(
-    private val componentDataService: ComponentDataService
+    private val componentDataService: ComponentDataService,
 ) {
+    private val logger = LoggerFactory.getLogger(javaClass)
 
     fun createAdapterData(contract: Contract): AdapterData {
-        val map = mutableMapOf<String, MutableList<ComponentData>>()
         val componentData = componentDataService.createComponentData(contract)
-        map.getOrPut(contract.orgId) { mutableListOf() }
-            .addAll(componentData)
-        return AdapterData(map)
+        val orgMap: MutableMap<String, MutableList<ComponentData>> =
+            mutableMapOf(contract.orgId to componentData)
+        return AdapterData(organization = orgMap)
     }
 }
