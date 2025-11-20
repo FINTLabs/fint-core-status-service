@@ -24,7 +24,7 @@ class LastSyncService(
                 healty = healthService.calculateHealth(lastDelta.corrId),
                 date = getlastSyncTime(lastDeltas)
             )
-        } ?: DeltaSync("No status found", 0L)
+        }
     }
 
     fun findAndCreateLastFull(contract: Contract, component: String): FullSync? {
