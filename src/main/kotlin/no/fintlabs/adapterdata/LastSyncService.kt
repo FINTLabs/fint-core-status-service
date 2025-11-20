@@ -21,24 +21,26 @@ class LastSyncService(
 
         return lastDelta?.let {
             DeltaSync(
-                healty = healthService.calculateHealth(contract, contract.adapterId),
+                healty = healthService.calculateHealth(lastDelta.corrId),
                 date = getlastSyncTime(lastDeltas)
             )
-        }
+        } ?: DeltaSync("No status found", 0L)
     }
 
-    fun findAndCreateLastFull(contract: Contract, component: String): FullSync {
-        return FullSync(
-            healty = healthService.calculateHealth(contract, component),
-            date = getlastSyncTime(
-                syncService.getLastFullSync(
-                    contract.orgId,
-                    component,
-                    adapterId = contract.adapterId
-                )
-            ),
-            expectedDate = findNextExpectedFullSync(contract, component)
-        )
+    fun findAndCreateLastFull(contract: Contract, component: String): FullSync? {
+        val lastSync = syncService.getLastFullSync(
+            contract.orgId,
+            component,
+            adapterId = contract.adapterId
+        ).lastOrNull()
+
+        return lastSync?.let {
+            FullSync(
+                healthService.calculateHealth(lastSync.corrId),
+                date = lastSync.getLastPageTime(),
+                findNextExpectedFullSync(contract, component)
+            )
+        }
     }
 
     private fun getlastSyncTime(lastSyncs: List<SyncMetadata>): Long {

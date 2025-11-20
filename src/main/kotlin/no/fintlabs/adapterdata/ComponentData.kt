@@ -11,12 +11,12 @@ data class ComponentData(
 )
 
 data class FullSync(
-    val healty: Boolean,
+    val healty: String?,
     val date: Long,
     val expectedDate: Long,
 )
 
 data class DeltaSync(
-    val healty: Boolean,
+    val healty: String?,
     val date: Long
 )
