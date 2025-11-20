@@ -28,10 +28,7 @@ class SyncPageMetadataConsumer(
     fun registerSyncPageConsumer(eventConsumerFactoryService: EventConsumerFactoryService): ConcurrentMessageListenerContainer<String, SyncPageMetadata> {
         return eventConsumerFactoryService.createFactory(
             SyncPageMetadata::class.java,
-            this::processEvent,
-            EventConsumerConfiguration.builder() //Added so i dont have to publish new messages on every restart
-                .seekingOffsetResetOnAssignment(true)
-                .build()
+            this::processEvent
         ).createContainer(
             EventTopicNamePatternParameters.builder()
                 .orgId(FormattedTopicComponentPattern.containing("fintlabs-no"))
