@@ -16,7 +16,7 @@ class ComponentDataService(
         return contract.components.map { component ->
             ComponentData(
                 packageName = component,
-                healty = healthService.calculateHealth(contract),
+                healty = healthService.getStatus(contract),
                 heartBeat = contract.hasContact,
                 lastDelta = lastSyncService.findAndCreateLastDelta(contract, component),
                 lastFull = lastSyncService.findAndCreateLastFull(contract, component)

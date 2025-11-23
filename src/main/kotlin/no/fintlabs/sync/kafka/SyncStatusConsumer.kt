@@ -2,6 +2,7 @@ package no.fintlabs.sync.kafka
 
 import no.fintlabs.kafka.common.topic.pattern.FormattedTopicComponentPattern
 import no.fintlabs.kafka.common.topic.pattern.ValidatedTopicComponentPattern
+import no.fintlabs.kafka.event.EventConsumerConfiguration
 import no.fintlabs.kafka.event.EventConsumerFactoryService
 import no.fintlabs.kafka.event.topic.EventTopicNamePatternParameters
 import no.fintlabs.sync.SyncStatusCache
@@ -23,7 +24,10 @@ class SyncStatusConsumer(
     fun registerSyncStatusConsumer(eventConsumerFactoryService: EventConsumerFactoryService): ConcurrentMessageListenerContainer<String, SyncStatus> {
         return eventConsumerFactoryService.createFactory(
             SyncStatus::class.java,
-            this::processEvent
+            this::processEvent,
+            EventConsumerConfiguration.builder() //Added so i dont have to publish new messages on every restart
+                .seekingOffsetResetOnAssignment(true)
+                .build()
         ).createContainer(
             EventTopicNamePatternParameters.builder()
                 .orgId(FormattedTopicComponentPattern.containing("fintlabs-no"))

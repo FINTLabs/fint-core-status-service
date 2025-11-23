@@ -1,6 +1,5 @@
 package no.fintlabs.adapterdata
 
-import com.nimbusds.jose.util.health.HealthStatus
 
 data class ComponentData(
     val packageName: String,

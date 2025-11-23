@@ -4,6 +4,8 @@ import no.fintlabs.contract.model.Contract
 import no.fintlabs.sync.SyncService
 import no.fintlabs.sync.model.SyncMetadata
 import org.springframework.stereotype.Service
+import java.time.Duration
+import java.time.Instant
 
 @Service
 class LastSyncService(
@@ -21,7 +23,7 @@ class LastSyncService(
 
         return lastDelta?.let {
             DeltaSync(
-                healty = healthService.calculateHealth(lastDelta.corrId),
+                healty = healthService.getStatus(lastDelta.corrId),
                 date = getlastSyncTime(lastDeltas)
             )
         }
@@ -36,9 +38,9 @@ class LastSyncService(
 
         return lastSync?.let {
             FullSync(
-                healthService.calculateHealth(lastSync.corrId),
+                healthService.getStatus(lastSync.corrId),
                 date = lastSync.getLastPageTime(),
-                findNextExpectedFullSync(contract, component)
+                findNextExpectedFullSync(contract, component, lastSync.getLastPageTime()).toLong()
             )
         }
     }
@@ -51,8 +53,21 @@ class LastSyncService(
         } else return 0L
     }
 
-    private fun findNextExpectedFullSync(contract: Contract, component: String): Long {
-        return 0L
+    private fun findNextExpectedFullSync(contract: Contract, component: String, lastSync: Long): Int {
+        val fullSyncIntervalInDays = contract.capabilities[component]?.fullSyncIntervalInDays
+        val daysSinceLastSync = daysSince(lastSync)
+        if (fullSyncIntervalInDays != null && daysSinceLastSync > 0) {
+            return fullSyncIntervalInDays - daysSinceLastSync
+        }
+        return 0
+    }
+
+    private fun daysSince(lastSync: Long): Int {
+        val then = Instant.ofEpochSecond(lastSync)
+        val now = Instant.now()
+
+        val duration = Duration.between(then, now)
+        return Math.round(duration.seconds / 86400.0).toInt()
     }
 
 }
