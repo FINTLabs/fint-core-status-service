@@ -1,4 +1,4 @@
-package no.fintlabs.adapterdata
+package no.fintlabs.component
 
 enum class HealthStatus {
     HAS_CONTACT_AND_FOLLOWS_CONTRACT, FOLLOWS_CONTRACT, DONT_HAVE_CONTACT, DONT_FOLLOWS_CONTRACT, NO_STATUS_FOUND, DONT_HAVE_CONTACT_AND_DOES_NOT_FOLLOW_CONTRACT

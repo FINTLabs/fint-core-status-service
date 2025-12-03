@@ -8,6 +8,7 @@ import java.time.format.DateTimeFormatter
 
 data class Capability(
     val resourceName: String,
+    val componentName: String,
     val fullSyncIntervalInDays: Int,
     val deltaSyncInterval: AdapterCapability.DeltaSyncInterval?,
     var followsContract: Boolean,
@@ -15,9 +16,10 @@ data class Capability(
 ) {
 
     companion object {
-        fun fromCapability(capability: AdapterCapability): Capability {
+        fun fromCapability(capability: AdapterCapability, componentName: String): Capability {
             return Capability(
                 resourceName = capability.resourceName,
+                componentName = componentName,
                 fullSyncIntervalInDays = capability.fullSyncIntervalInDays,
                 deltaSyncInterval = capability.deltaSyncInterval,
                 followsContract = true,

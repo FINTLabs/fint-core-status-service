@@ -1,8 +1,9 @@
-package no.fintlabs.adapterdata
+package no.fintlabs.component
 
 
 data class ComponentData(
-    val packageName: String,
+    val componentName: String,
+    val adapterId: String,
     val healty: Enum<HealthStatus>,
     val heartBeat: Boolean,
     val lastDelta: DeltaSync?,
@@ -12,7 +13,7 @@ data class ComponentData(
 data class FullSync(
     val healty: String?,
     val date: Long,
-    val expectedDate: Long,
+    val expectedNextFullSyncInDays: Long,
 )
 
 data class DeltaSync(

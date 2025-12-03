@@ -45,7 +45,7 @@ data class Contract(
             val capabilityMap = mutableMapOf<String, Capability>()
             capabilities.forEach {
                 capabilityMap["${it.domainName}.${it.packageName}.${it.resourceName}".lowercase()] =
-                    Capability.fromCapability(it)
+                    Capability.fromCapability(it, "${it.domainName}-${it.packageName}")
             }
             return capabilityMap
         }

@@ -15,32 +15,32 @@ class ConsumerService(
 
     private val log = LoggerFactory.getLogger(ConsumerService::class.java)
 
-    suspend fun getAndMapConsumerInfo() {
-        val data = prometheusGateway.getPodInfo()
-        val restarts = prometheusGateway.getRestarts()
-
-        val podToRestarts: Map<String, String> = restarts.data.result.associate {
-            it.metric.pod to it.value[1]
-        }
-
-        val consumers = data.data.result.map {
-            val pod = it.metric.pod
-            consumerInfo(
-                uid = it.metric.uid,
-                podName = pod,
-                organisation = it.metric.namespace,
-                restarts = podToRestarts[pod] ?: "0",
-                memoryUsage = it.value[1]
-            )
-        }
-
-        val groupedByOrg = consumers.groupBy { it.organisation }
-
-        groupedByOrg.forEach { (org, list) ->
-            consumerInfoCache.cache.put(org, list)
-        }
-
-    }
+//    suspend fun getAndMapConsumerInfo() {
+//        val data = prometheusGateway.getPodInfo()
+//        val restarts = prometheusGateway.getRestarts()
+//
+//        val podToRestarts: Map<String, String> = restarts.data.result.associate {
+//            it.metric.pod to it.value[1]
+//        }
+//
+//        val consumers = data.data.result.map {
+//            val pod = it.metric.pod
+//            consumerInfo(
+//                uid = it.metric.uid,
+//                podName = pod,
+//                organisation = it.metric.namespace,
+//                restarts = podToRestarts[pod] ?: "0",
+//                memoryUsage = it.value[1]
+//            )
+//        }
+//
+//        val groupedByOrg = consumers.groupBy { it.organisation }
+//
+//        groupedByOrg.forEach { (org, list) ->
+//            consumerInfoCache.cache.put(org, list)
+//        }
+//
+//    }
 
     fun getCache(): MutableMap<String, List<consumerInfo>> {
         return consumerInfoCache.cache
@@ -54,9 +54,8 @@ class ConsumerService(
     )
     fun populateCache() {
         runBlocking {
-            getAndMapConsumerInfo()
+//            getAndMapConsumerInfo()
             log.info("Populating cache for ${consumerInfoCache.cache}")
         }
     }
-
 }

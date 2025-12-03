@@ -19,17 +19,17 @@ class PrometheusGateway(
 
     val log: Logger = LoggerFactory.getLogger(PrometheusGateway::class.java)
 
-    suspend fun getPodInfo(): Response {
-        return try {
-            prometheusClient.get()
-                .uri("/api/v1/query?query={query}", mapOf("query" to memoryQuery))
-                .retrieve()
-                .awaitBody<Response>()
-        } catch (e: WebClientResponseException) {
-            log.error("Failed to fetch prometheus data", e)
-            throw e
-        }
-    }
+//    suspend fun getPodInfo(): Response {
+//        return try {
+//            prometheusClient.get()
+//                .uri("/api/v1/query?query={query}", mapOf("query" to memoryQuery))
+//                .retrieve()
+//                .awaitBody<Response>()
+//        } catch (e: WebClientResponseException) {
+//            log.error("Failed to fetch prometheus data", e)
+//            throw e
+//        }
+//    }
 
     suspend fun getRestarts(): RestartsInfo {
         try {

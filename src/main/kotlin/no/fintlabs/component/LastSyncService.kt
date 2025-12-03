@@ -1,19 +1,23 @@
-package no.fintlabs.adapterdata
+package no.fintlabs.component
 
 import no.fintlabs.contract.model.Contract
-import no.fintlabs.sync.SyncService
+import no.fintlabs.sync.SyncCacheService
 import no.fintlabs.sync.model.SyncMetadata
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.time.Duration
 import java.time.Instant
 
 @Service
 class LastSyncService(
-    private val syncService: SyncService,
+    private val syncCacheService: SyncCacheService,
     private val healthService: HealthService,
 ) {
+
+    private val logger = LoggerFactory.getLogger(javaClass)
+
     fun findAndCreateLastDelta(contract: Contract, component: String): DeltaSync? {
-        val lastDeltas = syncService.getLastDeltaSync(
+        val lastDeltas = syncCacheService.getLastDeltaSync(
             contract.orgId,
             component,
             adapterId = contract.adapterId
@@ -30,7 +34,7 @@ class LastSyncService(
     }
 
     fun findAndCreateLastFull(contract: Contract, component: String): FullSync? {
-        val lastSync = syncService.getLastFullSync(
+        val lastSync = syncCacheService.getLastFullSync(
             contract.orgId,
             component,
             adapterId = contract.adapterId
@@ -40,7 +44,7 @@ class LastSyncService(
             FullSync(
                 healthService.getStatus(lastSync.corrId),
                 date = lastSync.getLastPageTime(),
-                findNextExpectedFullSync(contract, component, lastSync.getLastPageTime()).toLong()
+                0L//findNextExpectedFullSync(contract, component, lastSync.getLastPageTime()).toLong()
             )
         }
     }
@@ -53,14 +57,15 @@ class LastSyncService(
         } else return 0L
     }
 
-    private fun findNextExpectedFullSync(contract: Contract, component: String, lastSync: Long): Int {
-        val fullSyncIntervalInDays = contract.capabilities[component]?.fullSyncIntervalInDays
-        val daysSinceLastSync = daysSince(lastSync)
-        if (fullSyncIntervalInDays != null && daysSinceLastSync > 0) {
-            return fullSyncIntervalInDays - daysSinceLastSync
-        }
-        return 0
-    }
+//    private fun findNextExpectedFullSync(contract: Contract, component: String, lastSync: Long): Int {
+//        val interval = contract.capabilities[component]?.fullSyncIntervalInDays
+//        val daysSinceLastSync = daysSince(lastSync)
+//        logger.info("interval: $interval")
+//        if (daysSinceLastSync >= interval) {
+//            return 0
+//        }
+//        return interval - daysSinceLastSync
+//    }
 
     private fun daysSince(lastSync: Long): Int {
         val then = Instant.ofEpochSecond(lastSync)

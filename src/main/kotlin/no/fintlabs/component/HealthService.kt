@@ -1,4 +1,4 @@
-package no.fintlabs.adapterdata
+package no.fintlabs.component
 
 import no.fintlabs.contract.model.Contract
 import no.fintlabs.sync.SyncStatusCache

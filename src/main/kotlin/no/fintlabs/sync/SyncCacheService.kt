@@ -2,12 +2,11 @@ package no.fintlabs.sync
 
 import no.fintlabs.adapter.models.sync.SyncType
 import no.fintlabs.sync.model.SyncMetadata
-import org.hibernate.query.Order
 import org.springframework.stereotype.Service
 import kotlin.collections.firstOrNull
 
 @Service
-class SyncService (
+class SyncCacheService (
     private val syncCache: SyncCache
 ) {
     fun getAll(): List<SyncMetadata> = syncCache.getAll().toList()
