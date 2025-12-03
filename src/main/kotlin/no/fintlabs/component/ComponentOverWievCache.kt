@@ -1,6 +1,5 @@
 package no.fintlabs.component
 
-import no.fintlabs.contract.model.Capability
 import no.fintlabs.contract.model.Contract
 import no.fintlabs.sync.SyncCacheService
 import org.slf4j.LoggerFactory
@@ -14,44 +13,110 @@ class ComponentOverWievCache(
     private val logger = LoggerFactory.getLogger(javaClass)
 
     private val componentOverWievCache:
-            MutableMap<String, MutableMap<String, MutableMap<String, MutableList<ComponentOverWiev>>>> = mutableMapOf()
+            MutableMap<String, MutableMap<String, MutableMap<String, MutableList<ComponentOverWiev>>>> =
+        mutableMapOf()
+
+    data class ResourceDto(
+        val orgId: String,
+        val componentName: String,
+        val resourceName: String,
+        val heartbeat: Boolean,
+        val followsContract: Boolean,
+        val lastDelta: Long?,
+        val lastFull: Long?
+    )
+
+    data class ComponentDto(
+        val orgId: String,
+        val component: String,
+        val resources: List<ResourceDto>
+    )
+
+    data class ComponentsResponse(
+        val components: List<ComponentDto>
+    )
 
     fun getByOrgAndComponent(
         orgId: String,
         componentName: String
-    ): Map<String, List<ComponentOverWiev>> {
-        return componentOverWievCache[orgId]?.get(componentName) ?: emptyMap()
+    ): ComponentsResponse {
+        val orgMap = componentOverWievCache[orgId] ?: return ComponentsResponse(emptyList())
+        val componentMap = orgMap[componentName] ?: return ComponentsResponse(emptyList())
+
+        val resources = componentMap.map { (resourceName, overviewList) ->
+            val merged = mergeOverviews(overviewList)
+
+            ResourceDto(
+                orgId = merged.orgId,
+                componentName = merged.componentName,
+                resourceName = resourceName,
+                heartbeat = merged.heartbeat,
+                followsContract = merged.followsContract,
+                lastDelta = merged.lastDelta,
+                lastFull = merged.lastFull
+            )
+        }.sortedBy { it.resourceName }
+
+        val componentDto = ComponentDto(
+            orgId = orgId,
+            component = componentName,
+            resources = resources
+        )
+
+        return ComponentsResponse(components = listOf(componentDto))
     }
 
+    private fun mergeOverviews(
+        list: List<ComponentOverWiev>
+    ): ComponentOverWiev {
+        require(list.isNotEmpty()) { "Cannot merge empty list of ComponentOverWiev" }
+
+        return list.reduce { acc, next ->
+            ComponentOverWiev(
+                orgId = acc.orgId,
+                componentName = acc.componentName,
+                heartbeat = acc.heartbeat || next.heartbeat,
+                followsContract = acc.followsContract && next.followsContract,
+                lastDelta = listOfNotNull(acc.lastDelta, next.lastDelta).maxOrNull(),
+                lastFull = listOfNotNull(acc.lastFull, next.lastFull).maxOrNull()
+            )
+        }
+    }
 
     fun add(contract: Contract) {
         val orgId = contract.orgId
+        val adapterId = contract.adapterId
+        val hasContact = contract.hasContact
+
+        logger.info("Mapping contract for orgId=$orgId, adapterId=$adapterId")
 
         val orgMap = componentOverWievCache.getOrPut(orgId) { mutableMapOf() }
 
-        contract.capabilities.forEach { capability ->
-            val componentName = capability.value.componentName
-            val resourceName = capability.value.resourceName
+        contract.capabilities.values.forEach { capability ->
+            val componentName = capability.componentName
+            val resourceName = capability.resourceName
+
             val componentMap = orgMap.getOrPut(componentName) { mutableMapOf() }
+
             val overview = mapComponentOverWiev(
-                capability = capability.value,
                 orgId = orgId,
+                adapterId = adapterId,
                 componentName = componentName,
-                adapterId = contract.adapterId,
-                hasContact = contract.hasContact
+                hasContact = hasContact,
+                followsContract = capability.followsContract
             )
+
             val listForResource = componentMap.getOrPut(resourceName) { mutableListOf() }
             listForResource += overview
         }
     }
 
-
     private fun mapComponentOverWiev(
-        capability: Capability,
         orgId: String,
-        componentName: String,
         adapterId: String,
-        hasContact: Boolean
+        componentName: String,
+        hasContact: Boolean,
+        followsContract: Boolean
     ): ComponentOverWiev {
 
         val lastDelta = syncCacheService
@@ -68,10 +133,9 @@ class ComponentOverWievCache(
             orgId = orgId,
             componentName = componentName,
             heartbeat = hasContact,
-            followsContract = capability.followsContract,
+            followsContract = followsContract,
             lastDelta = lastDelta,
             lastFull = lastFull
         )
     }
 }
-
