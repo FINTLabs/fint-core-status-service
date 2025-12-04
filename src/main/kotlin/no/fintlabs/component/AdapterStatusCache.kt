@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service
 @Service
 class AdapterStatusCache{
 
-    private val adapterStatusCache: MutableList<AdapterStatusview> = mutableListOf()
+    private val adapterStatusCache: MutableSet<AdapterStatusview> = mutableSetOf()
 
 
     fun add(contract: Contract) {
