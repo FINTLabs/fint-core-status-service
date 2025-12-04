@@ -1,5 +1,8 @@
 package no.fintlabs.component
 
+import no.fintlabs.component.dto.ComponentDto
+import no.fintlabs.component.dto.ComponentsResponse
+import no.fintlabs.component.dto.ResourceDto
 import no.fintlabs.contract.model.Contract
 import no.fintlabs.sync.SyncCacheService
 import org.slf4j.LoggerFactory
@@ -16,26 +19,6 @@ class ComponentOverWievCache(
             MutableMap<String, MutableMap<String, MutableMap<String, MutableList<ComponentOverWiev>>>> =
         mutableMapOf()
 
-    data class ResourceDto(
-        val orgId: String,
-        val componentName: String,
-        val resourceName: String,
-        val heartbeat: Boolean,
-        val followsContract: Boolean,
-        val lastDelta: Long?,
-        val lastFull: Long?
-    )
-
-    data class ComponentDto(
-        val orgId: String,
-        val component: String,
-        val resources: List<ResourceDto>
-    )
-
-    data class ComponentsResponse(
-        val components: List<ComponentDto>
-    )
-
     fun getByOrgAndComponent(
         orgId: String,
         componentName: String
@@ -47,8 +30,6 @@ class ComponentOverWievCache(
             val merged = mergeOverviews(overviewList)
 
             ResourceDto(
-                orgId = merged.orgId,
-                componentName = merged.componentName,
                 resourceName = resourceName,
                 heartbeat = merged.heartbeat,
                 followsContract = merged.followsContract,
