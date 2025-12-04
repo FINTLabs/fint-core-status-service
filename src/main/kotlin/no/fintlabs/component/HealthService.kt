@@ -12,16 +12,9 @@ class HealthService(
     fun getStatus(contract: Contract): HealthStatus {
         for (capability in contract.capabilities.values) {
             return when {
-                capability.followsContract && contract.hasContact ->
-                    HealthStatus.FOLLOWS_CONTRACT_AND_HAS_HEARTBEAT
-
                 capability.followsContract -> HealthStatus.FOLLOWS_CONTRACT
 
                 !capability.followsContract -> HealthStatus.DO_NOT_FOLLOW_CONTRACT
-
-                !contract.hasContact -> HealthStatus.NO_HEARTBEAT
-
-
 
                 else -> HealthStatus.NO_HEALT_STATUS
             }

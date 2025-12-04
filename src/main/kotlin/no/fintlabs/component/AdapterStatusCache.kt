@@ -21,6 +21,7 @@ class AdapterStatusCache(
         return AdapterStatusview(
             contract.orgId,
             getDomain(contract),
+            contract.hasContact,
             healthService.getStatus(contract),
         )
     }

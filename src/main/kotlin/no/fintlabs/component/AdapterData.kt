@@ -3,7 +3,8 @@ package no.fintlabs.component
 data class AdapterStatusview(
     val organzation: String,
     val domain: String,
-    val status: Enum<HealthStatus>
+    val heartBeat: Boolean,
+    val followsContract: Enum<HealthStatus>
 )
 
 data class ComponentOverWiev(
