@@ -4,7 +4,9 @@ import no.fintlabs.contract.model.Contract
 import org.springframework.stereotype.Service
 
 @Service
-class AdapterStatusCache{
+class AdapterStatusCache(
+    private val healthService: HealthService
+){
 
     private val adapterStatusCache: MutableSet<AdapterStatusview> = mutableSetOf()
 
@@ -19,7 +21,7 @@ class AdapterStatusCache{
         return AdapterStatusview(
             contract.orgId,
             getDomain(contract),
-            AdapterStatus.OK
+            healthService.getStatus(contract),
         )
     }
 

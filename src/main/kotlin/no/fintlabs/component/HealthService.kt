@@ -13,18 +13,20 @@ class HealthService(
         for (capability in contract.capabilities.values) {
             return when {
                 capability.followsContract && contract.hasContact ->
-                    HealthStatus.FOLLOWS_CONTRACT
+                    HealthStatus.FOLLOWS_CONTRACT_AND_HAS_HEARTBEAT
 
-                !capability.followsContract && !contract.hasContact ->
-                    HealthStatus.DONT_HAVE_CONTACT_AND_DOES_NOT_FOLLOW_CONTRACT
+                capability.followsContract -> HealthStatus.FOLLOWS_CONTRACT
 
-                capability.followsContract ->
-                    HealthStatus.FOLLOWS_CONTRACT
+                !capability.followsContract -> HealthStatus.DO_NOT_FOLLOW_CONTRACT
 
-                else -> HealthStatus.NO_STATUS_FOUND
+                !contract.hasContact -> HealthStatus.NO_HEARTBEAT
+
+
+
+                else -> HealthStatus.NO_HEALT_STATUS
             }
         }
-        return HealthStatus.NO_STATUS_FOUND
+        return HealthStatus.NO_HEALT_STATUS
     }
 
     fun getStatus(corrId: String) = syncStatusCache.getSyncStatus(corrId)?.status ?: "No Status Ready"
