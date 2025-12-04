@@ -12,7 +12,7 @@ class ComponentDetailsCache {
 
     }
 
-    fun getComponentDetails() = componentDetailsCache
+    fun getComponentDetails(orgId: String) = componentDetailsCache.get(orgId)
 
     private fun mapComponentDetails(contract: Contract): List<ComponentDetails> {
         return contract.components.map { component ->
