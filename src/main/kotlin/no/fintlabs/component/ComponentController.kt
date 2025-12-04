@@ -14,7 +14,7 @@ class ComponentController(
 ) {
 
     @GetMapping
-    fun getAdapters(): List<AdapterStatusview> = adapterStatusCache.getAdapterStatus()
+    fun getAdapters(): Set<AdapterStatusview> = adapterStatusCache.getAdapterStatus()
 
     @GetMapping("/{orgId}/{component}")
     fun getAdaptersForComponents(
@@ -23,9 +23,9 @@ class ComponentController(
     ) = componentOverWiev.getByOrgAndComponent(orgId, component)
 
 
-    //Skal kunne søke etter komponent og Adapterid
-    @GetMapping("/details")
+    @GetMapping("{orgId}/details")
     fun getComponentDetails(
-    ) = componentDetailsCache.getComponentDetails()
+        @PathVariable orgId: String,
+    ) = componentDetailsCache.getComponentDetails(orgId)
 
 }
