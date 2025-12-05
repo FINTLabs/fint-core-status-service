@@ -10,7 +10,6 @@ class AdapterStatusCache(
 
     private val adapterStatusCache: MutableSet<AdapterStatusview> = mutableSetOf()
 
-
     fun add(contract: Contract) {
         adapterStatusCache.add(mapAdapterData(contract))
     }
@@ -21,8 +20,7 @@ class AdapterStatusCache(
         return AdapterStatusview(
             contract.orgId,
             getDomain(contract),
-            contract.hasContact,
-            healthService.getStatus(contract),
+            contract.hasContact
         )
     }
 

@@ -10,17 +10,10 @@ import org.springframework.web.bind.annotation.RestController
 class ComponentController(
     private val adapterStatusCache: AdapterStatusCache,
     private val componentDetailsCache: ComponentDetailsCache,
-    private val componentOverWiev: ComponentOverWievCache,
 ) {
 
     @GetMapping
     fun getAdapters(): Set<AdapterStatusview> = adapterStatusCache.getAdapterStatus()
-
-    @GetMapping("/{orgId}/{component}")
-    fun getAdaptersForComponents(
-        @PathVariable orgId: String,
-        @PathVariable component: String,
-    ) = componentOverWiev.getByOrgAndComponent(orgId, component)
 
 
     @GetMapping("{orgId}/details")

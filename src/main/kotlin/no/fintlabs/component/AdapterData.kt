@@ -4,7 +4,6 @@ data class AdapterStatusview(
     val organzation: String,
     val domain: String,
     val heartBeat: Boolean,
-    val followsContract: Enum<HealthStatus>
 )
 
 data class ComponentOverWiev(
@@ -19,5 +18,7 @@ data class ComponentOverWiev(
 data class ComponentDetails(
     val componentName: String,
     val adapterId: String,
-    val heartbeat: Boolean
+    val heartbeat: Boolean,
+    val lastDeltaSync: Long?,
+    val lastFull: Long?
 )
