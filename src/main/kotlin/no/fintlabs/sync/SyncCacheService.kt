@@ -13,6 +13,10 @@ class SyncCacheService (
 
     fun getByOrgId(orgId: String): List<SyncMetadata> = syncCache.getByOrgId(orgId).toList()
 
+    fun getLastFyllbyAdapterId(adapterId: String): SyncMetadata? = syncCache.getAll().firstOrNull { it.adapterId == adapterId && it.syncType.isFull() }
+
+    fun getLastdeltabyAdapterId(adapterId: String): SyncMetadata? = syncCache.getAll().firstOrNull { it.adapterId == adapterId && it.syncType.isDelta() }
+
     fun getByCorrId(id: String): SyncMetadata? = syncCache.getAll().firstOrNull { it.corrId == id }
 
     fun getByComponent(orgId: String, component: String) = getByOrgId(orgId).filter { component == "${it.domain}-${it.`package`}" }
