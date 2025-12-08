@@ -72,14 +72,14 @@ class ContractService(
         )
     }
 
-    fun getStatus(): Set<AdapterStatus> {
+    fun getStatus(): List<AdapterStatus> {
         return contractCache.getAll().map { contract ->
             AdapterStatus(
                 organzation = contract.orgId,
                 domain = getDomain(contract),
                 heartBeat = contract.hasContact
             )
-        }.toSet()
+        }
     }
 
     fun getDomain(contract: Contract): String {

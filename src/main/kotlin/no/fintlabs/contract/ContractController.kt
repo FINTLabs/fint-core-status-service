@@ -28,5 +28,5 @@ class ContractController(
     }
 
     @GetMapping("/status")
-    fun getAdapters(): Set<AdapterStatus> = contractService.getStatus()
+    fun getAdapters(): List<AdapterStatus> = contractService.getStatus()
 }
