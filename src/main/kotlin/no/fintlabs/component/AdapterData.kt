@@ -1,11 +1,5 @@
 package no.fintlabs.component
 
-data class AdapterStatusview(
-    val organzation: String,
-    val domain: String,
-    val heartBeat: Boolean,
-)
-
 data class ComponentOverWiev(
     val orgId: String,
     val componentName: String,

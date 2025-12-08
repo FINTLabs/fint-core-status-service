@@ -8,13 +8,8 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/component")
 class ComponentController(
-    private val adapterStatusCache: AdapterStatusCache,
     private val componentDetailsCache: ComponentDetailsCache,
 ) {
-
-    @GetMapping
-    fun getAdapters(): Set<AdapterStatusview> = adapterStatusCache.getAdapterStatus()
-
 
     @GetMapping("{orgId}/details")
     fun getComponentDetails(

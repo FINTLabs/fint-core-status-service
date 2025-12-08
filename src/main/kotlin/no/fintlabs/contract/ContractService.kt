@@ -1,6 +1,7 @@
 package no.fintlabs.contract
 
 import no.fintlabs.adapter.models.sync.SyncType
+import no.fintlabs.contract.model.AdapterStatus
 import no.fintlabs.contract.model.Contract
 import no.fintlabs.contract.model.ContractDto
 import no.fintlabs.sync.SyncCacheService
@@ -70,4 +71,22 @@ class ContractService(
             lastFull = syncCacheService.getLastFyllbyAdapterId(contract.adapterId)?.getLastPageTime() ?: 0
         )
     }
+
+    fun getStatus(): Set<AdapterStatus> {
+        return contractCache.getAll().map { contract ->
+            AdapterStatus(
+                organzation = contract.orgId,
+                domain = getDomain(contract),
+                heartBeat = contract.hasContact
+            )
+        }.toSet()
+    }
+
+    fun getDomain(contract: Contract): String {
+        return contract.components.map { component ->
+            component.substringBefore("-")
+        }.first()
+    }
+
+
 }
