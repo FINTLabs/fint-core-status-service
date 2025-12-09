@@ -4,6 +4,7 @@ import no.fintlabs.adapter.models.sync.SyncType
 import no.fintlabs.contract.model.AdapterStatus
 import no.fintlabs.contract.model.Contract
 import no.fintlabs.contract.model.ContractDto
+import no.fintlabs.contract.model.DomainStatus
 import no.fintlabs.sync.SyncCacheService
 import no.fintlabs.sync.model.SyncMetadata
 import org.slf4j.LoggerFactory
@@ -41,7 +42,6 @@ class ContractService(
 
     fun updateActivity(adapterId: String, time: Long) =
         contractCache.get(adapterId)?.apply { updateLastActivity(time) }
-
 
     fun inactiveContracts(): List<Contract> {
         val aWeekAgo = now().minusMillis(604800000L)
@@ -82,11 +82,44 @@ class ContractService(
         }
     }
 
-    fun getDomain(contract: Contract): String {
+    fun getDomainStatus(orgId: String, domain: String): List<DomainStatus> {
+        var domainStatusList = mutableListOf<DomainStatus>()
+        getByOrIdAndComponent(orgId, domain).map { contract ->
+                domainStatusList.add(DomainStatus(
+                    domain = domain,
+                    hasContact = contract.hasContact,
+                    answersEvents = getFollowsContract(contract, domain),
+                    lastDeltaSync = syncCacheService.getLastdeltabyAdapterId(contract.adapterId)?.getLastPageTime() ?: 0,
+                    lastFullSync = syncCacheService.getLastFyllbyAdapterId(contract.adapterId)?.getLastPageTime() ?: 0
+                )
+            )
+        }
+        return domainStatusList
+    }
+
+    private fun getByOrIdAndComponent(orgid: String, component: String): MutableList<Contract> {
+        val contracts = mutableListOf<Contract>()
+        contractCache.getByOrgId(orgid)?.forEach { contract ->
+            val domain = contract.components.any { comp ->
+                comp.substringBefore("-") == component
+            }
+            if (domain) contracts.add(contract)
+        }
+        return contracts
+    }
+
+
+    private fun getDomain(contract: Contract): String {
         return contract.components.map { component ->
             component.substringBefore("-")
         }.first()
     }
 
-
+    private fun getFollowsContract(contract: Contract, domain: String): Boolean {
+        contract.capabilities.values.forEach { capability ->
+            if (capability.componentName == domain)
+                return capability.followsContract
+        }
+        return false
+    }
 }
