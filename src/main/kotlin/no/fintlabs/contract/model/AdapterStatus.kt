@@ -7,7 +7,7 @@ data class AdapterStatus(
 )
 
 data class DomainStatus(
-    val domain: String,
+    val component: String,
     val hasContact: Boolean,
     val answersEvents: Boolean,
     val lastDeltaSync: Long,

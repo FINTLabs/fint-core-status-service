@@ -86,7 +86,7 @@ class ContractService(
         var domainStatusList = mutableListOf<DomainStatus>()
         getByOrIdAndComponent(orgId, domain).map { contract ->
                 domainStatusList.add(DomainStatus(
-                    domain = domain,
+                    component = contract.components.toString(),
                     hasContact = contract.hasContact,
                     answersEvents = getFollowsContract(contract, domain),
                     lastDeltaSync = syncCacheService.getLastdeltabyAdapterId(contract.adapterId)?.getLastPageTime() ?: 0,
