@@ -28,7 +28,7 @@ class ContractController(
         @PathVariable domain: String
     ) = contractService.getDomainStatus(orgId, domain)
 
-    @GetMapping("/{orgId}/{component}")
+    @GetMapping("/{orgId}/component/{component}")
     fun getByOrgAndComponent(
         @PathVariable orgId: String,
         @PathVariable component: String
