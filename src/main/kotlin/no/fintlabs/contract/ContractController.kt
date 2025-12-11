@@ -22,6 +22,9 @@ class ContractController(
         return ResponseEntity.ok(adapterContractCache.getAll())
     }
 
+    @GetMapping("/inactive}")
+    fun getInactiveContracts(): List<Contract> = contractService.inactiveContracts()
+
     @GetMapping("/{orgId}/domain/{domain}")
     fun getDomainStatus(
         @PathVariable orgId: String,

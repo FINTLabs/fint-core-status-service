@@ -9,10 +9,8 @@ import no.fintlabs.sync.SyncCacheService
 import no.fintlabs.sync.model.SyncMetadata
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import java.awt.Component
 import java.time.Instant
 import java.time.Instant.now
-import javax.swing.text.StyleConstants.getComponent
 
 @Service
 class ContractService(
@@ -87,11 +85,13 @@ class ContractService(
     fun getDomainStatus(orgId: String, domain: String): List<DomainStatus> {
         var domainStatusList = mutableListOf<DomainStatus>()
         getByOrIdAndComponent(orgId, domain).map { contract ->
-                domainStatusList.add(DomainStatus(
+            domainStatusList.add(
+                DomainStatus(
                     component = getComponent(domain, contract),
                     hasContact = contract.hasContact,
                     answersEvents = getFollowsContract(contract, domain),
-                    lastDeltaSync = syncCacheService.getLastdeltabyAdapterId(contract.adapterId)?.getLastPageTime() ?: 0,
+                    lastDeltaSync = syncCacheService.getLastdeltabyAdapterId(contract.adapterId)?.getLastPageTime()
+                        ?: 0,
                     lastFullSync = syncCacheService.getLastFyllbyAdapterId(contract.adapterId)?.getLastPageTime() ?: 0
                 )
             )

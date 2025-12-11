@@ -1,5 +1,0 @@
-package no.fintlabs.component
-
-enum class HealthStatus {
-    FOLLOWS_CONTRACT_AND_HAS_HEARTBEAT, FOLLOWS_CONTRACT, NO_HEALT_STATUS, NO_HEARTBEAT, DO_NOT_FOLLOW_CONTRACT
-}
