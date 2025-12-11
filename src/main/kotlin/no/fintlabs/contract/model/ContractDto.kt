@@ -5,6 +5,4 @@ data class ContractDto(
     val heartbeat: Boolean,
     val lastDelta: Long?,
     val lastFull: Long?
-) {
-
-}
+)
