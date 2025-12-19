@@ -3,7 +3,6 @@ package no.fintlabs.contract
 import no.fintlabs.contract.model.AdapterStatus
 import no.fintlabs.contract.model.Contract
 import no.fintlabs.contract.model.ContractDto
-import no.fintlabs.contract.model.DomainStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -18,7 +17,7 @@ class ContractController(
 ) {
 
     @GetMapping
-    fun getContracts(): ResponseEntity<MutableCollection<Contract>>{
+    fun getContracts(): ResponseEntity<MutableCollection<Contract>> {
         return ResponseEntity.ok(adapterContractCache.getAll())
     }
 
@@ -40,5 +39,5 @@ class ContractController(
     }
 
     @GetMapping("/status")
-    fun getAdapters(): List<AdapterStatus> = contractService.getStatus()
+    fun getAdapters(): Set<AdapterStatus> = contractService.getStatus()
 }
