@@ -13,10 +13,8 @@ class StatsService(
 ) {
 
     fun getStats(): Stats {
-
         val contracts = contractCache.getAll()
         val events = fintEventService.getAllEvents()
-
         val adapterContractAmount = contracts.count()
         val hasContectAmount = getHasContactAmount(contracts)
         val eventAmount = events.count()

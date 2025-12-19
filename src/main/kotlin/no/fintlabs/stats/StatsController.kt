@@ -13,5 +13,4 @@ class StatsController(val service: StatsService) {
     fun getStats(): Stats {
         return service.getStats()
     }
-
 }
