@@ -1,10 +1,7 @@
 package no.fintlabs.contract
 
 import no.fintlabs.adapter.models.sync.SyncType
-import no.fintlabs.contract.model.AdapterStatus
-import no.fintlabs.contract.model.Contract
-import no.fintlabs.contract.model.ContractDto
-import no.fintlabs.contract.model.DomainStatus
+import no.fintlabs.contract.model.*
 import no.fintlabs.sync.SyncCacheService
 import no.fintlabs.sync.model.SyncMetadata
 import org.slf4j.LoggerFactory
@@ -77,7 +74,7 @@ class ContractService(
             AdapterStatus(
                 organzation = contract.orgId,
                 domain = getDomain(contract),
-                heartBeat = contract.hasContact
+                status = calculateHealth(contract)
             )
         }.toSet()
     }
@@ -89,7 +86,7 @@ class ContractService(
                 DomainStatus(
                     component = getComponent(domain, contract),
                     hasContact = contract.hasContact,
-                    answersEvents = getFollowsContract(contract, domain),
+                    answersEvents = getFollowsContractForDomain(contract, domain),
                     lastDeltaSync = syncCacheService.getLastdeltabyAdapterId(contract.adapterId)?.getLastPageTime()
                         ?: 0,
                     lastFullSync = syncCacheService.getLastFyllbyAdapterId(contract.adapterId)?.getLastPageTime() ?: 0
@@ -124,11 +121,25 @@ class ContractService(
         }.first()
     }
 
-    private fun getFollowsContract(contract: Contract, domain: String): Boolean {
+    private fun getFollowsContractForDomain(contract: Contract, domain: String): Boolean {
         contract.capabilities.values.forEach { capability ->
             if (capability.componentName == domain)
                 return capability.followsContract
         }
         return false
+    }
+
+    private fun getFollowsContract(contract: Contract): Boolean {
+        contract.capabilities.values.forEach { capability ->
+            return capability.followsContract
+        }
+        return false
+    }
+
+    private fun calculateHealth(contract: Contract): Enum<AdapterStatusEnum> {
+        if(contract.hasContact && getFollowsContract(contract)) return AdapterStatusEnum.HEALTHY
+        if(!contract.hasContact) return AdapterStatusEnum.NO_HEARTBEAT
+        if (!getFollowsContract(contract)) return AdapterStatusEnum.NOT_FOLLOWING_CONTRACT
+        return AdapterStatusEnum.UNOWN_STATUS
     }
 }
