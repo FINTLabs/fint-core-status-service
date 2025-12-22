@@ -130,13 +130,21 @@ class ContractService(
     }
 
     private fun getFollowsContract(contract: Contract): Boolean {
-        return contract.capabilities.values.none { it.followsContract }
+        return contract.capabilities.values.none { !it.followsContract }
     }
 
-    private fun calculateHealth(contract: Contract): Enum<AdapterStatusEnum> {
-        if(contract.hasContact && getFollowsContract(contract)) return AdapterStatusEnum.HEALTHY
-        if(!contract.hasContact) return AdapterStatusEnum.NO_HEARTBEAT
-        if (!getFollowsContract(contract)) return AdapterStatusEnum.NOT_FOLLOWING_CONTRACT
-        return AdapterStatusEnum.UNOWN_STATUS
-    }
+    private fun calculateHealth(contract: Contract): AdapterStatusEnum =
+        when {
+            contract.hasContact && getFollowsContract(contract) ->
+                AdapterStatusEnum.HEALTHY
+
+            !contract.hasContact ->
+                AdapterStatusEnum.NO_HEARTBEAT
+
+            !getFollowsContract(contract) ->
+                AdapterStatusEnum.NOT_FOLLOWING_CONTRACT
+
+            else ->
+                AdapterStatusEnum.UNOWN_STATUS
+        }
 }
