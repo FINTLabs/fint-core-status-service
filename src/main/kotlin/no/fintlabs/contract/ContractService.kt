@@ -130,10 +130,7 @@ class ContractService(
     }
 
     private fun getFollowsContract(contract: Contract): Boolean {
-        contract.capabilities.values.forEach { capability ->
-            return capability.followsContract
-        }
-        return false
+        return contract.capabilities.values.none { it.followsContract }
     }
 
     private fun calculateHealth(contract: Contract): Enum<AdapterStatusEnum> {
