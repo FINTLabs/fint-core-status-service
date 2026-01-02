@@ -79,8 +79,8 @@ class ContractService(
         }.toSet()
     }
 
-    fun getDomainStatus(orgId: String, domain: String): List<DomainStatus> {
-        var domainStatusList = mutableListOf<DomainStatus>()
+    fun getDomainStatus(orgId: String, domain: String): Set<DomainStatus> {
+        var domainStatusList = mutableSetOf<DomainStatus>()
         getByOrIdAndComponent(orgId, domain).map { contract ->
             domainStatusList.add(
                 DomainStatus(
