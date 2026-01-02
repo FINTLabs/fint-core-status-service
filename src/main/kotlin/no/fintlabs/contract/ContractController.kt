@@ -34,9 +34,7 @@ class ContractController(
     fun getByOrgAndComponent(
         @PathVariable orgId: String,
         @PathVariable component: String
-    ): ResponseEntity<MutableSet<ContractDto>> {
-        return ResponseEntity.ok(contractService.getByOrgAndComponent(orgId, component))
-    }
+    ) = contractService.getByOrgAndComponent(orgId, component)
 
     @GetMapping("/status")
     fun getAdapters(): Set<AdapterStatus> = contractService.getStatus()

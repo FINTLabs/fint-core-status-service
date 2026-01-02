@@ -55,7 +55,7 @@ class ContractService(
         var contracts = mutableSetOf<ContractDto>()
         for (contract in contractCache.getByOrgId(orgId)) {
             if (contract.components.contains(component))
-                contracts.plus(mapContractDto(contract))
+                contracts.add(mapContractDto(contract))
         }
         return contracts
     }
@@ -87,8 +87,7 @@ class ContractService(
                     component = getComponent(domain, contract),
                     hasContact = contract.hasContact,
                     answersEvents = getFollowsContractForDomain(contract, domain),
-                    lastDeltaSync = syncCacheService.getLastdeltabyAdapterId(contract.adapterId)?.getLastPageTime()
-                        ?: 0,
+                    lastDeltaSync = syncCacheService.getLastdeltabyAdapterId(contract.adapterId)?.getLastPageTime() ?: 0,
                     lastFullSync = syncCacheService.getLastFyllbyAdapterId(contract.adapterId)?.getLastPageTime() ?: 0
                 )
             )
