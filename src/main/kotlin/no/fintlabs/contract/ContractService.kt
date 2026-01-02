@@ -51,11 +51,11 @@ class ContractService(
         return inactiveContractsList
     }
 
-    fun getByOrgAndComponent(orgId: String, component: String): MutableList<ContractDto> {
-        var contracts = mutableListOf<ContractDto>()
+    fun getByOrgAndComponent(orgId: String, component: String): MutableSet<ContractDto> {
+        var contracts = mutableSetOf<ContractDto>()
         for (contract in contractCache.getByOrgId(orgId)) {
             if (contract.components.contains(component))
-                contracts.add(mapContractDto(contract))
+                contracts.plus(mapContractDto(contract))
         }
         return contracts
     }

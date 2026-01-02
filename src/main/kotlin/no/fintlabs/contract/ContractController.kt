@@ -34,7 +34,7 @@ class ContractController(
     fun getByOrgAndComponent(
         @PathVariable orgId: String,
         @PathVariable component: String
-    ): ResponseEntity<MutableList<ContractDto>> {
+    ): ResponseEntity<MutableSet<ContractDto>> {
         return ResponseEntity.ok(contractService.getByOrgAndComponent(orgId, component))
     }
 
