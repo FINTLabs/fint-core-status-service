@@ -28,7 +28,10 @@ class SyncPageMetadataConsumer(
     fun registerSyncPageConsumer(eventConsumerFactoryService: EventConsumerFactoryService): ConcurrentMessageListenerContainer<String, SyncPageMetadata> {
         return eventConsumerFactoryService.createFactory(
             SyncPageMetadata::class.java,
-            this::processEvent
+            this::processEvent,
+            EventConsumerConfiguration.builder()
+                .seekingOffsetResetOnAssignment(true)
+                .build()
         ).createContainer(
             EventTopicNamePatternParameters.builder()
                 .orgId(FormattedTopicComponentPattern.containing("fintlabs-no"))
