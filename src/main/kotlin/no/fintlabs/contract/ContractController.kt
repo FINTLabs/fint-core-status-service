@@ -2,7 +2,6 @@ package no.fintlabs.contract
 
 import no.fintlabs.contract.model.AdapterStatus
 import no.fintlabs.contract.model.Contract
-import no.fintlabs.contract.model.ContractDto
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -28,7 +27,7 @@ class ContractController(
     fun getDomainStatus(
         @PathVariable orgId: String,
         @PathVariable domain: String
-    ) = contractService.getDomainStatus(orgId, domain)
+    ) = contractService.getDomainForOrg(orgId, domain)
 
     @GetMapping("/{orgId}/component/{component}")
     fun getByOrgAndComponent(

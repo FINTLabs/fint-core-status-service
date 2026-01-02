@@ -66,6 +66,7 @@ class ContractService(
             heartbeat = contract.hasContact,
             lastDelta = syncCacheService.getLastdeltabyAdapterId(contract.adapterId)?.getLastPageTime() ?: 0,
             lastFull = syncCacheService.getLastFyllbyAdapterId(contract.adapterId)?.getLastPageTime() ?: 0
+
         )
     }
 
@@ -79,10 +80,9 @@ class ContractService(
         }.toSet()
     }
 
-    fun getDomainStatus(orgId: String, domain: String): Set<DomainStatus> {
-        var domainStatusList = mutableSetOf<DomainStatus>()
-        getByOrIdAndComponent(orgId, domain).map { contract ->
-            domainStatusList.add(
+    fun getDomainForOrg(orgId: String, domain: String): Set<DomainStatus> {
+        return getByOrIdAndComponent(orgId, domain)
+            .map { contract ->
                 DomainStatus(
                     component = getComponent(domain, contract),
                     hasContact = contract.hasContact,
@@ -90,10 +90,11 @@ class ContractService(
                     lastDeltaSync = syncCacheService.getLastdeltabyAdapterId(contract.adapterId)?.getLastPageTime() ?: 0,
                     lastFullSync = syncCacheService.getLastFyllbyAdapterId(contract.adapterId)?.getLastPageTime() ?: 0
                 )
-            )
-        }
-        return domainStatusList
+            }
+            .distinctBy { it.component }
+            .toSet()
     }
+
 
     private fun getComponent(domain: String, contract: Contract): String {
         contract.components.map { component ->
