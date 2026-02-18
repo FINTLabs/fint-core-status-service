@@ -21,7 +21,7 @@ class ContractCapabilityScheduler(
         }
     }
 
-    fun compareFollowsContract(old: Boolean, new: Boolean) {
+    private fun compareFollowsContract(old: Boolean, new: Boolean) {
         if (!old && new) {
             syncMetricService.decrementAbsentFullsyncs()
         } else if (old == !new){
