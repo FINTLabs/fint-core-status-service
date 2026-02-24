@@ -35,9 +35,9 @@ data class Capability(
     }
 
     fun updateFollowsContract() {
-        followsContract = if (lastFullSync != null) {
-            lastFullSync!!.getDaysSinceNow() <= fullSyncIntervalInDays
-        } else false
+        followsContract = lastFullSync?.getDaysSinceNow()
+            ?.let { it <= fullSyncIntervalInDays }
+            ?: false
     }
 
     private fun Long.getDaysSinceNow(): Long =
