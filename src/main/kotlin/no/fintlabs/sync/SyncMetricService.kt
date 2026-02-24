@@ -15,7 +15,7 @@ class SyncMetricService(
 ) {
     private val contractGauges = ConcurrentHashMap<String, AtomicInteger>()
 
-    fun checkContract(capabilities: List<Capability>, orgId: String) {
+    fun publishContractMetrics(capabilities: List<Capability>, orgId: String) {
         capabilities.forEach { cap ->
             val resource = cap.resourceName
             val key = "$orgId|$resource"
