@@ -18,23 +18,23 @@ class ContractService(
 
     fun updateActivity(syncMetadata: SyncMetadata) {
         val lastPageTime = syncMetadata.getLastPageTime()
-
-        contractCache.get(syncMetadata.adapterId)?.let { contract ->
-            contract.updateLastActivity(lastPageTime)
-            if (syncMetadata.syncType == SyncType.FULL
-                || syncMetadata.syncType == SyncType.DELTA
-                || syncMetadata.syncType == SyncType.DELETE
-            ) {
-                contract.getCapability(syncMetadata.domain, syncMetadata.`package`, syncMetadata.resource)
-                    ?: logger.warn(
-                        "Capability not found for adapterId: {} with domain: {}, package: {}, resource: {}",
-                        syncMetadata.adapterId,
-                        syncMetadata.domain,
-                        syncMetadata.`package`,
-                        syncMetadata.resource
-                    )
-            }
-        } ?: logger.warn("Contract not found when attempting to update activity")
+        val contract = contractCache.get(syncMetadata.adapterId)
+        if (contract == null) {
+            logger.warn("Contract not found when attempting to update activity")
+            return
+        }
+        contract.updateLastActivity(lastPageTime)
+        if (syncMetadata.syncType in setOf(SyncType.FULL, SyncType.DELTA, SyncType.DELETE)) {
+            contract.getCapability(syncMetadata.domain, syncMetadata.`package`, syncMetadata.resource)
+                ?.updateLastFullSync(lastPageTime)
+                ?: logger.warn(
+                    "Capability not found for adapterId: {} with domain: {}, package: {}, resource: {}",
+                    syncMetadata.adapterId,
+                    syncMetadata.domain,
+                    syncMetadata.`package`,
+                    syncMetadata.resource
+                )
+        }
     }
 
     fun updateActivity(adapterId: String, time: Long) =
