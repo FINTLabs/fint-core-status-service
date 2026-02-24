@@ -13,10 +13,10 @@ class ContractCapabilityScheduler(
     @Scheduled(cron = "0 * * * * *")
     fun updateFollowsContract() {
         contractCache.getAll().onEach { contract ->
-            syncMetricService.publishContractMetrics(contract.capabilities.values.toList(), contract.orgId)
             contract.getCapabilities().forEach { capability ->
                 capability.updateFollowsContract()
             }
+            syncMetricService.publishContractMetrics(contract.capabilities.values.toList(), contract.orgId)
         }
     }
 }
