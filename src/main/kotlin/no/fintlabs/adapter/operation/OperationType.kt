@@ -1,6 +1,6 @@
 package no.fintlabs.adapter.operation
 
-public enum class OperationType {
+enum class OperationType {
     CREATE,
     UPDATE,
     VALIDATE,
