@@ -84,6 +84,6 @@ public class MappingService {
         } else if (operationTypeValue == "VALIDATE") {
             return OperationType.VALIDATE;
         }
-        return OperationType.DELETE;
+        return OperationType.UNKNOWN;
     }
 }
