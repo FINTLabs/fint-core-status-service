@@ -1,6 +1,5 @@
 package no.fintlabs.sync
 
-import no.fintlabs.sync.model.SyncEntity
 import no.fintlabs.sync.model.SyncMetadata
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
@@ -18,12 +17,12 @@ class SyncCache(
     fun getByOrgId(orgId: String): Collection<SyncMetadata> =
         repository.findByOrgId(orgId).map { it.toDomain() }
 
-    fun add(syncMetadata: SyncMetadata){
+    fun add(syncMetadata: SyncMetadata) {
         var syncEntity = repository.findByCorrId(syncMetadata.corrId)
         if (syncEntity != null) {
-            syncEntity.addPage(syncMetadata.toEntity())
             syncMetadata.addPage(syncMetadata)
             syncProgressionService.processPageProgression(syncMetadata)
+            repository.save(syncMetadata.toEntity())
         } else {
             repository.save(syncMetadata.toEntity())
             syncProgressionService.processPageProgression(syncMetadata)

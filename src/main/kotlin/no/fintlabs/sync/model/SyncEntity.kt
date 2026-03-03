@@ -1,14 +1,11 @@
 package no.fintlabs.sync.model
 
-import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
-import jakarta.persistence.OneToMany
 import no.fintlabs.adapter.models.sync.SyncType
 import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.type.SqlTypes
-import org.springframework.transaction.annotation.Transactional
 
 @Entity
 open class SyncEntity(
