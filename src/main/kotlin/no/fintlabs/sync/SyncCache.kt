@@ -1,5 +1,6 @@
 package no.fintlabs.sync
 
+import no.fintlabs.sync.model.SyncEntity
 import no.fintlabs.sync.model.SyncMetadata
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
@@ -20,12 +21,19 @@ class SyncCache(
     fun add(syncMetadata: SyncMetadata) {
         var syncEntity = repository.findByCorrId(syncMetadata.corrId)
         if (syncEntity != null) {
-            syncMetadata.addPage(syncMetadata)
+            addPage(syncEntity)
             syncProgressionService.processPageProgression(syncMetadata)
             repository.save(syncMetadata.toEntity())
         } else {
             repository.save(syncMetadata.toEntity())
             syncProgressionService.processPageProgression(syncMetadata)
         }
+    }
+
+    fun addPage(sync: SyncEntity) {
+        sync.pages.add(sync.pages[0])
+        sync.pagesAcquired += 1
+        sync.entitiesAquired += sync.entitiesAquired
+        sync.finished = sync.totalPages == sync.pagesAcquired
     }
 }
