@@ -1,32 +1,32 @@
 package no.fintlabs.sync
 
+import no.fintlabs.sync.model.SyncEntity
 import no.fintlabs.sync.model.SyncMetadata
 import org.springframework.stereotype.Component
-import java.util.concurrent.ConcurrentHashMap
+import org.springframework.transaction.annotation.Transactional
 
 @Component
 class SyncCache(
-    private val syncProgressionService: SyncProgressionService
+    private val syncProgressionService: SyncProgressionService,
+    private val repository: SyncJpaRepository
 ) {
 
-    private val cache: MutableMap<String, ConcurrentHashMap<String, SyncMetadata>> = ConcurrentHashMap()
-
+    @Transactional(readOnly = true)
     fun getAll(): Collection<SyncMetadata> =
-        cache.values.flatMap { it.values }
+        repository.findAll().map { it.toDomain() }
 
     fun getByOrgId(orgId: String): Collection<SyncMetadata> =
-        cache.getOrDefault(orgId, ConcurrentHashMap()).values
+        repository.findByOrgId(orgId).map { it.toDomain() }
 
-    fun add(sync: SyncMetadata) =
-        cache.getOrPut(sync.orgId) { ConcurrentHashMap() }
-            .compute(sync.corrId) { _, existing ->
-                existing?.apply {
-                    addPage(sync)
-                    syncProgressionService.processPageProgression(this)
-                } ?: run {
-                    syncProgressionService.processPageProgression(sync)
-                    sync
-                }
-            }
-
+    fun add(syncMetadata: SyncMetadata){
+        var syncEntity = repository.findByCorrId(syncMetadata.corrId)
+        if (syncEntity != null) {
+            syncEntity.addPage(syncMetadata.toEntity())
+            syncMetadata.addPage(syncMetadata)
+            syncProgressionService.processPageProgression(syncMetadata)
+        } else {
+            repository.save(syncMetadata.toEntity())
+            syncProgressionService.processPageProgression(syncMetadata)
+        }
+    }
 }

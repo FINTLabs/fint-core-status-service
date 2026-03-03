@@ -10,12 +10,13 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/page-metadata")
 class SyncController(
-    val syncCacheService: SyncCacheService
+    val syncCacheService: SyncCacheService,
+    private val syncCache: SyncCache
 ) {
 
     @GetMapping
     fun getAll(): ResponseEntity<Collection<SyncMetadata>> =
-        ResponseEntity.ok(syncCacheService.getAll())
+        ResponseEntity.ok(syncCache.getAll())
 
     @GetMapping("/org/{orgId}")
     fun getByOrg(@PathVariable orgId: String): ResponseEntity<Collection<SyncMetadata>> =
