@@ -77,11 +77,11 @@ public class MappingService {
     }
 
     private OperationType setOperationType(String operationTypeValue) {
-        if (operationTypeValue == "CREATE") {
+        if (operationTypeValue.equals("CREATE")) {
             return OperationType.CREATE;
-        } else if (operationTypeValue == "UPDATE") {
+        } else if (operationTypeValue.equals("UPDATE")) {
             return OperationType.UPDATE;
-        } else if (operationTypeValue == "VALIDATE") {
+        } else if (operationTypeValue.equals("VALIDATE")) {
             return OperationType.VALIDATE;
         }
         return OperationType.UNKNOWN;
