@@ -21,7 +21,7 @@ public class MappingService {
                 requestEvent.getDomainName(),
                 requestEvent.getPackageName(),
                 requestEvent.getResourceName(),
-                String.valueOf(requestEvent.getOperationType()),
+                requestEvent.getOperationType().name(),
                 requestEvent.getCreated(),
                 requestEvent.getTimeToLive(),
                 ""
