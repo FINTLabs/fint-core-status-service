@@ -1,5 +1,6 @@
 package no.fintlabs.sync
 
+import no.fintlabs.sync.model.Page
 import no.fintlabs.sync.model.SyncEntity
 import no.fintlabs.sync.model.SyncMetadata
 import org.springframework.stereotype.Component
@@ -18,22 +19,27 @@ class SyncCache(
     fun getByOrgId(orgId: String): Collection<SyncMetadata> =
         repository.findByOrgId(orgId).map { it.toDomain() }
 
-    fun add(syncMetadata: SyncMetadata) {
-        var syncEntity = repository.findByCorrId(syncMetadata.corrId)
-        if (syncEntity != null) {
-            addPage(syncEntity)
-            syncProgressionService.processPageProgression(syncMetadata)
-            repository.save(syncEntity)
+    @Transactional
+    fun add(sync: SyncMetadata) {
+        val existing = repository.findByCorrId(sync.corrId)
+
+        val sync = if (existing != null) {
+            addPage(existing, sync)
+            existing
         } else {
-            syncProgressionService.processPageProgression(syncMetadata)
-            repository.save(syncMetadata.toEntity())
+            sync.toEntity()
         }
+        syncProgressionService.processPageProgression(existing?.toDomain() ?: sync.toDomain())
+
+        repository.save(sync)
     }
 
-    fun addPage(sync: SyncEntity) {
-        sync.pages.add(sync.pages[0])
-        sync.pagesAcquired += 1
-        sync.entitiesAquired += sync.entitiesAquired
-        sync.finished = sync.totalPages == sync.pagesAcquired
+    fun addPage(existing: SyncEntity, sync: SyncMetadata) {
+        val newPage = sync.pages[0]
+        existing.pages = ((existing.pages ?: emptyList()) + newPage) as MutableList<Page>
+
+        existing.pagesAcquired += 1
+        existing.entitiesAquired += sync.entitiesAquired
+        existing.finished = existing.totalPages == existing.pagesAcquired
     }
 }
