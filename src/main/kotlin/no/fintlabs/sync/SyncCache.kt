@@ -23,10 +23,10 @@ class SyncCache(
         if (syncEntity != null) {
             addPage(syncEntity)
             syncProgressionService.processPageProgression(syncMetadata)
-            repository.save(syncMetadata.toEntity())
+            repository.save(syncEntity)
         } else {
-            repository.save(syncMetadata.toEntity())
             syncProgressionService.processPageProgression(syncMetadata)
+            repository.save(syncMetadata.toEntity())
         }
     }
 
