@@ -19,27 +19,22 @@ class SyncCache(
     fun getByOrgId(orgId: String): Collection<SyncMetadata> =
         repository.findByOrgId(orgId).map { it.toDomain() }
 
-    @Transactional
-    fun add(sync: SyncMetadata) {
-        val existing = repository.findByCorrId(sync.corrId)
-
-        val sync = if (existing != null) {
-            addPage(existing, sync)
-            existing
+    fun add(syncMetadata: SyncMetadata) {
+        var syncEntity = repository.findByCorrId(syncMetadata.corrId)
+        if (syncEntity != null) {
+            addPage(syncEntity)
+            syncProgressionService.processPageProgression(syncMetadata)
+            repository.save(syncEntity)
         } else {
-            sync.toEntity()
+            syncProgressionService.processPageProgression(syncMetadata)
+            repository.save(syncMetadata.toEntity())
         }
-        syncProgressionService.processPageProgression(existing?.toDomain() ?: sync.toDomain())
-
-        repository.save(sync)
     }
 
-    fun addPage(existing: SyncEntity, sync: SyncMetadata) {
-        val newPage = sync.pages[0]
-        existing.pages = ((existing.pages ?: emptyList()) + newPage) as MutableList<Page>
-
-        existing.pagesAcquired += 1
-        existing.entitiesAquired += sync.entitiesAquired
-        existing.finished = existing.totalPages == existing.pagesAcquired
+    fun addPage(sync: SyncEntity) {
+        sync.pages.add(sync.pages[0])
+        sync.pagesAcquired += 1
+        sync.entitiesAquired += sync.entitiesAquired
+        sync.finished = sync.totalPages == sync.pagesAcquired
     }
 }
