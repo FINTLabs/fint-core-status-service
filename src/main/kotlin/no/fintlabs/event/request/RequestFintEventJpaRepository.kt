@@ -1,7 +1,6 @@
-package no.fintlabs.sync
+package no.fintlabs.event.request
 
 import jakarta.transaction.Transactional
-import no.fintlabs.sync.model.SyncEntity
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
@@ -9,15 +8,11 @@ import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 
 @Repository
-interface SyncJpaRepository : JpaRepository<SyncEntity, Long> {
-
-    fun findByOrgId(orgId: String): List<SyncEntity>
-
-    fun findByCorrId(corrId: String): SyncEntity?
+interface RequestFintEventJpaRepository : JpaRepository<RequestFintEventEntity, Long> {
 
     @Modifying
     @Transactional
-    @Query("DELETE FROM SyncEntity e WHERE e.savedAtTimeStamp < :cutoffTimestamp")
+    @Query("DELETE FROM RequestFintEventEntity e WHERE e.created < :cutoffTimestamp")
     fun deleteRowsOlderThan(@Param("cutoffTimestamp") cutoffTimestamp: Long): Int
 
 }

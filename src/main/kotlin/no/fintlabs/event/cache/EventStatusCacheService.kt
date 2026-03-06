@@ -1,13 +1,12 @@
 package no.fintlabs.event.cache
 
-import no.fintlabs.MappingService
 import no.fintlabs.adapter.models.event.RequestFintEvent
 import no.fintlabs.adapter.models.event.ResponseFintEvent
 import no.fintlabs.event.response.ResponseFintEventConsumer
-import no.fintlabs.request.RequestFintEventEntity
-import no.fintlabs.request.RequestFintEventJpaRepository
-import no.fintlabs.response.ResponseFintEventEntity
-import no.fintlabs.response.ResponseFintEventJpaRepository
+import no.fintlabs.event.request.RequestFintEventEntity
+import no.fintlabs.event.request.RequestFintEventJpaRepository
+import no.fintlabs.event.response.ResponseFintEventEntity
+import no.fintlabs.event.response.ResponseFintEventJpaRepository
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
@@ -16,8 +15,7 @@ import org.springframework.stereotype.Component
 class EventStatusCacheService(
     private val requestFintEventJpaRepository: RequestFintEventJpaRepository,
     private val responseFintEventJpaRepository: ResponseFintEventJpaRepository,
-    private val eventStatusCache: EventStatusCache,
-    private val mapper: MappingService
+    private val eventStatusCache: EventStatusCache
 ) {
 
     private val log = LoggerFactory.getLogger(ResponseFintEventConsumer::class.java)
@@ -37,14 +35,14 @@ class EventStatusCacheService(
         val responses: List<ResponseFintEventEntity> = responseFintEventJpaRepository.findAll()
 
         requests.forEach { requestEntity ->
-            val requestFintEvent: RequestFintEvent = mapper.mapEntityToRequestFintEvent(requestEntity)
-            eventStatusCache.add(requestFintEvent, requestEntity.topic)
+            val requestFintEvent: RequestFintEvent = requestEntity.toRequestEvent()
+            eventStatusCache.add(requestFintEvent, requestEntity.topic!!)
         }
         log.info("Requests synced from database, count = ${requests.size}")
 
         responses.forEach { responseEntity ->
-            val responseFintEvent: ResponseFintEvent = mapper.mapEntityToResponseFintEvent(responseEntity)
-            eventStatusCache.add(responseFintEvent, responseEntity.topic)
+            val responseFintEvent: ResponseFintEvent = responseEntity.toResponseEvent()
+            eventStatusCache.add(responseFintEvent, responseEntity.topic!!)
         }
         log.info("Responses synced from database, count = ${responses.size}")
     }

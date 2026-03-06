@@ -23,6 +23,7 @@ open class SyncEntity(
     var entitiesAquired: Long,
     var syncType: SyncType,
     var finished: Boolean = false,
+    val savedAtTimeStamp: Long = System.currentTimeMillis(),
 
 
     @JdbcTypeCode(SqlTypes.JSON)
@@ -32,7 +33,7 @@ open class SyncEntity(
     protected constructor() : this(
         "", "", "", "", "", "",
         0L, 0L, 0L, 0L,
-        SyncType.FULL, false, mutableListOf()
+        SyncType.FULL, false, System.currentTimeMillis(),mutableListOf()
     )
 
     open fun toDomain() = SyncMetadata(
@@ -50,12 +51,4 @@ open class SyncEntity(
         pages = pages.map { it }.toMutableList(),
         finished = finished
     )
-
-    fun addPage(sync: SyncEntity) {
-        pages.add(sync.pages[0])
-        pagesAcquired += 1
-        entitiesAquired += sync.entitiesAquired
-        finished = sync.totalPages == pagesAcquired
-    }
-
 }
