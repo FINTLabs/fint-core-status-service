@@ -15,7 +15,7 @@ class SyncController(
     fun getAll(): ResponseEntity<Collection<SyncMetadata>> =
         ResponseEntity.ok(syncCache.getAll())
 
-    @GetMapping("")
+    @GetMapping("/from/{from}/to/{to}")
     fun get(
         @RequestParam(required = false) from: Long?,
         @RequestParam(required = false) to: Long?
