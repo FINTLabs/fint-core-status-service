@@ -36,9 +36,7 @@ class SyncCache(
     }
 
     fun addPage(existing: SyncEntity, sync: SyncMetadata) {
-        val newPage = sync.pages[0]
-        existing.pages = ((existing.pages ?: emptyList()) + newPage) as MutableList<Page>
-
+        existing.pages.add(sync.pages.first())
         existing.pagesAcquired += 1
         existing.entitiesAquired += sync.entitiesAquired
         existing.finished = existing.totalPages == existing.pagesAcquired
