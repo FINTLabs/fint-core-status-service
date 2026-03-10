@@ -20,4 +20,14 @@ interface SyncJpaRepository : JpaRepository<SyncEntity, Long> {
     @Query("DELETE FROM SyncEntity e WHERE e.savedAtTimeStamp < :cutoffTimestamp")
     fun deleteRowsOlderThan(@Param("cutoffTimestamp") cutoffTimestamp: Long): Int
 
+    @Query("""
+    SELECT s 
+    FROM SyncEntity s
+    WHERE s.savedAtTimeStamp BETWEEN :before AND :after
+""")
+    fun findByTime(
+        @Param("before") before: Long,
+        @Param("after") after: Long
+    ): Collection<SyncEntity>
+
 }

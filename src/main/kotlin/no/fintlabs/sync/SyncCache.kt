@@ -31,4 +31,9 @@ class SyncCache(
         repository.save(entity)
     }
 
+    fun getByTimeRange(from: Long?, to: Long?): Collection<SyncMetadata> {
+        var sixHoursAgo = System.currentTimeMillis() - 6 * 60 * 60 * 1000
+        if (from != null && to != null) return repository.findByTime(from, to).map { it.toDomain() }
+        else return repository.findByTime(sixHoursAgo, System.currentTimeMillis()).map { it.toDomain() }
+    }
 }
