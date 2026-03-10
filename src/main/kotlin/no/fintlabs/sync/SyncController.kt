@@ -12,16 +12,16 @@ class SyncController(
 ) {
 
     @GetMapping
-    fun getAll(): ResponseEntity<Collection<SyncMetadata>> =
-        ResponseEntity.ok(syncCache.getAll())
-
-    @GetMapping("/from/{from}/to/{to}")
     fun get(
-        @RequestParam(required = false) from: Long?,
-        @RequestParam(required = false) to: Long?
+        @RequestHeader(required = false) from: Long?,
+        @RequestHeader(required = false) to: Long?
     ): ResponseEntity<Collection<SyncMetadata>> {
         return ResponseEntity.ok(syncCache.getByTimeRange(from, to))
     }
+
+    @GetMapping("/all")
+    fun getAll(): ResponseEntity<Collection<SyncMetadata>> =
+        ResponseEntity.ok(syncCache.getAll())
 
     @GetMapping("/org/{orgId}")
     fun getByOrg(@PathVariable orgId: String): ResponseEntity<Collection<SyncMetadata>> =
