@@ -18,15 +18,16 @@ class SyncCache(
         repository.findByOrgId(orgId).map { it.toDomain() }
 
     @Transactional
-    fun add(newSync: SyncMetadata) {
-        val existing = repository.findByCorrId(newSync.corrId)
+    fun add(incoming: SyncMetadata) {
+        val existing = repository.findByCorrId(incoming.corrId)
         val entity = if (existing != null) {
-            existing.addPage(newSync)
+            existing.addPage(incoming)
             existing
         } else {
-            newSync.toEntity()
+            incoming.toEntity()
         }
-        repository.save(entity)
         syncProgressionService.processPageProgression(entity.toDomain())
+        repository.save(entity)
     }
+
 }

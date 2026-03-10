@@ -57,6 +57,11 @@ open class SyncEntity(
         pages.add(newPage)
         pagesAcquired += 1
         entitiesAquired += sync.entitiesAquired
-        finished = totalPages == pagesAcquired
+        updateFinished()
     }
+
+    fun updateFinished() {
+        finished = pagesAcquired == totalPages
+    }
+
 }
