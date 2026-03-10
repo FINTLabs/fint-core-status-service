@@ -61,6 +61,9 @@ open class SyncEntity(
 
     fun updateFinished() {
         finished = pagesAcquired == totalPages
+        if (totalPages == 1L) {
+            finished = true
+        }
     }
 
 }
