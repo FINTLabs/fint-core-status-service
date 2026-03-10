@@ -27,6 +27,7 @@ class SyncCache(
             incoming.toEntity()
         }
         syncProgressionService.processPageProgression(entity.toDomain())
+        entity.updateFinished()
         repository.save(entity)
     }
 
