@@ -24,7 +24,7 @@ class SyncCache(
         val existing = repository.findByCorrId(sync.corrId)
 
         val sync = if (existing != null) {
-            addPage(existing, sync)
+            existing.addPage(existing, sync)
             existing
         } else {
             sync.toEntity()
@@ -33,12 +33,5 @@ class SyncCache(
         syncProgressionService.processPageProgression(existing?.toDomain() ?: sync.toDomain())
 
         repository.save(sync)
-    }
-
-    fun addPage(existing: SyncEntity, sync: SyncMetadata) {
-        existing.pages.add(sync.pages.first())
-        existing.pagesAcquired += 1
-        existing.entitiesAquired += sync.entitiesAquired
-        existing.finished = existing.totalPages == existing.pagesAcquired
     }
 }
