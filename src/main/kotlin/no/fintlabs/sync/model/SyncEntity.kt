@@ -52,10 +52,11 @@ open class SyncEntity(
         finished = finished
     )
 
-    fun addPage(existing: SyncEntity, sync: SyncMetadata) {
-        existing.pages.add(sync.pages.first())
-        existing.pagesAcquired += 1
-        existing.entitiesAquired += sync.entitiesAquired
-        existing.finished = existing.totalPages == existing.pagesAcquired
+    fun addPage(sync: SyncMetadata) {
+        val newPage = sync.pages.first()
+        pages.add(newPage)
+        pagesAcquired += 1
+        entitiesAquired += sync.entitiesAquired
+        finished = totalPages == pagesAcquired
     }
 }
