@@ -13,8 +13,8 @@ class SyncController(
 
     @GetMapping
     fun get(
-        @RequestHeader(required = false) from: Long?,
-        @RequestHeader(required = false) to: Long?
+        @RequestParam(required = false) from: Long?,
+        @RequestParam(required = false) to: Long?
     ): ResponseEntity<Collection<SyncMetadata>> {
         return ResponseEntity.ok(syncCache.getByTimeRange(from, to))
     }
