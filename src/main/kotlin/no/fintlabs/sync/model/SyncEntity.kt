@@ -23,7 +23,7 @@ open class SyncEntity(
     var entitiesAquired: Long,
     var syncType: SyncType,
     var finished: Boolean = false,
-    val savedAtTimeStamp: Long = System.currentTimeMillis(),
+    val savedAtTimeStamp: Long,
 
 
     @JdbcTypeCode(SqlTypes.JSON)

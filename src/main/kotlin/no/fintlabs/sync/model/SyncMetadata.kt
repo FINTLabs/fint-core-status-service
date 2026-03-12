@@ -86,7 +86,8 @@ open class SyncMetadata(
         entitiesAquired = entitiesAquired,
         syncType = syncType,
         pages = pages.map { it }.toMutableList(),
-        finished = false
+        finished = false,
+        savedAtTimeStamp = System.currentTimeMillis()
     )
 
 }
