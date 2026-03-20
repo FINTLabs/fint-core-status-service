@@ -15,7 +15,7 @@ class RequestFintEventRepository(
 
     @Scheduled(cron = "\${event.database.cleanupTime}")
     private fun removeEventsOlderThanTwoWeeks() {
-        val days = Instant.now().minus(30, ChronoUnit.DAYS).toEpochMilli()
+        val days = Instant.now().minus(14, ChronoUnit.DAYS).toEpochMilli()
         try {
             requestFintEventJpaRepository.deleteRowsOlderThan(days)
         } catch (e: Exception) {
