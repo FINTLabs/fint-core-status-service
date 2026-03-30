@@ -13,6 +13,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Bean
 import org.springframework.kafka.listener.ConcurrentMessageListenerContainer
+import org.springframework.kafka.listener.ListenerExecutionFailedException
 import org.springframework.stereotype.Component
 
 @Component
@@ -49,7 +50,7 @@ class ResponseFintEventConsumer(
             contractService.updateActivity(responseEvent.adapterId, responseEvent.handledAt)
             responseFintEventJpaRepository.save(mappingService.mapResponseFintEventToEntity(responseEvent, consumerRecord.topic()))
             eventStatusCache.add(responseEvent, consumerRecord.topic())
-        } catch (e: Exception) {
+        } catch (e: ListenerExecutionFailedException) {
             log.error("Failed processing ResponseFintEvent corrId={}", responseEvent.corrId, e)
         }
     }
