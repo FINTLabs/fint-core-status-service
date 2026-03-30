@@ -7,6 +7,8 @@ import java.util.*
 @Service
 class FintEventService(val eventStatusCache: EventStatusCache) {
 
+    private val aDayAgo = 24 * 60 * 60 * 1000
+
     fun getAllEvents(): Collection<EventStatus> {
         return eventStatusCache.cache.values.toList()
     }
@@ -17,19 +19,14 @@ class FintEventService(val eventStatusCache: EventStatusCache) {
 
     fun getEventsByTime(from: Long?, to: Long?): Collection<EventStatus> {
         val current = Date().time
-        return when {
-            from != null && to != null -> {
-                eventStatusCache.cache.values.filter { it.requestEvent?.created in from..to }
-            }
-            from != null -> {
-                eventStatusCache.cache.values.filter { it.requestEvent?.created in from..current }
-            }
-            to != null -> {
-                eventStatusCache.cache.values.filter { it.requestEvent?.created in 0L..to }
-            }
-            else -> {
-                eventStatusCache.cache.values
-            }
+        val defaultFrom = current - aDayAgo
+
+        val f = from ?: defaultFrom
+        val t = to ?: current
+
+        return eventStatusCache.cache.values.filter {
+            val created = it.requestEvent?.created ?: return@filter false
+            created in f..t
         }
     }
 }

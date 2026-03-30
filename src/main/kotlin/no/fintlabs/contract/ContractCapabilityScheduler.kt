@@ -14,19 +14,9 @@ class ContractCapabilityScheduler(
     fun updateFollowsContract() {
         contractCache.getAll().onEach { contract ->
             contract.getCapabilities().forEach { capability ->
-                val oldFollowsContract = capability.followsContract
                 capability.updateFollowsContract()
-                compareFollowsContract(oldFollowsContract, capability.followsContract)
             }
+            syncMetricService.publishContractMetrics(contract.capabilities.values.toList(), contract.orgId)
         }
     }
-
-    fun compareFollowsContract(old: Boolean, new: Boolean) {
-        if (!old && new) {
-            syncMetricService.decrementAbsentFullsyncs()
-        } else if (old == !new){
-            syncMetricService.incrementAbsentFullsyncs()
-        }
-    }
-
 }

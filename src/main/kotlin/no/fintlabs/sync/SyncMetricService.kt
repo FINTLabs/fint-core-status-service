@@ -2,25 +2,36 @@ package no.fintlabs.sync
 
 import io.micrometer.core.instrument.Gauge
 import io.micrometer.core.instrument.MeterRegistry
+import io.micrometer.core.instrument.Tags
+import no.fintlabs.contract.model.Capability
 import no.fintlabs.sync.model.SyncMetadata
 import org.springframework.stereotype.Component
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicInteger
 
 @Component
 class SyncMetricService(
     private val meterRegistry: MeterRegistry
 ) {
+    private val contractGauges = ConcurrentHashMap<String, AtomicInteger>()
 
-    private final val absentFullSyncs = AtomicInteger(0)
+    fun publishContractMetrics(capabilities: List<Capability>, orgId: String) {
+        capabilities.forEach { cap ->
+            val resource = cap.resourceName
+            val key = "$orgId|$resource"
 
-    fun incrementAbsentFullsyncs() = absentFullSyncs.getAndIncrement()
-    fun decrementAbsentFullsyncs() = absentFullSyncs.getAndDecrement()
-
-    init {
-        Gauge.builder("core.absent.full-syncs", absentFullSyncs) { it.get().toDouble() }
-            .description("Absent full syncs for capabilities")
-            .register(meterRegistry)
+            val backing = contractGauges.computeIfAbsent(key) {
+                val ai = AtomicInteger(0)
+                Gauge.builder("adapter_contract_gauge") { ai.get().toDouble() }
+                    .description("Adapter contract status")
+                    .tags(Tags.of("org", orgId, "resource", resource))
+                    .register(meterRegistry)
+                ai
+            }
+            backing.set(if (cap.followsContract) 1 else 0)
+        }
     }
+
 
     fun incrementCompletedSyncs(sync: SyncMetadata) =
         meterRegistry.counter(

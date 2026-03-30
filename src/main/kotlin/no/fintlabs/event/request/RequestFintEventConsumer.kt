@@ -1,6 +1,5 @@
 package no.fintlabs.event.request
 
-import no.fintlabs.MappingService
 import no.fintlabs.adapter.models.event.RequestFintEvent
 import no.fintlabs.contract.ContractCache
 import no.fintlabs.event.cache.EventStatusCache
@@ -8,7 +7,6 @@ import no.fintlabs.kafka.common.topic.pattern.FormattedTopicComponentPattern
 import no.fintlabs.kafka.common.topic.pattern.ValidatedTopicComponentPattern
 import no.fintlabs.kafka.event.EventConsumerFactoryService
 import no.fintlabs.kafka.event.topic.EventTopicNamePatternParameters
-import no.fintlabs.request.RequestFintEventJpaRepository
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Bean
@@ -19,7 +17,6 @@ import org.springframework.stereotype.Component
 class RequestFintEventConsumer(
     val eventStatusCache: EventStatusCache,
     val requestFintEventJpaRepository: RequestFintEventJpaRepository,
-    private val mappingService: MappingService,
     private val contractCache: ContractCache
 ) {
 
@@ -43,7 +40,7 @@ class RequestFintEventConsumer(
         var requestEventValue = consumerRecord.value()
         log.info("Consumed Request: {} from topic name: {}", requestEventValue.corrId, consumerRecord.topic())
         requestFintEventJpaRepository.save(
-            mappingService.mapRequestFintEventToEntity(
+            RequestFintEventEntity.fromRequestEvent(
                 requestEventValue,
                 consumerRecord.topic()
             )

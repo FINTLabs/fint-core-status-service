@@ -12,8 +12,7 @@ class EventStatusController(val fintEventService: FintEventService) {
         @RequestParam(required = false) from: Long?,
         @RequestParam(required = false) to: Long?
     ): Collection<EventStatus>{
-        if (from != null || to != null) return fintEventService.getEventsByTime(from, to)
-        return fintEventService.getAllEvents()
+        return fintEventService.getEventsByTime(from, to)
     }
 
     @GetMapping("/{id}")

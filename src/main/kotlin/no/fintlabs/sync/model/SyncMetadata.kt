@@ -2,8 +2,9 @@ package no.fintlabs.sync.model
 
 import no.fintlabs.adapter.models.sync.SyncPageMetadata
 import no.fintlabs.adapter.models.sync.SyncType
+import org.springframework.transaction.annotation.Transactional
 
-class SyncMetadata(
+open class SyncMetadata(
     val corrId: String,
     val adapterId: String,
     val orgId: String,
@@ -70,5 +71,23 @@ class SyncMetadata(
     }
 
     fun getLastPageTime() = pages.last().time
+
+    @Transactional(readOnly = true)
+    open fun toEntity() = SyncEntity(
+        corrId = corrId,
+        adapterId = adapterId,
+        orgId = orgId,
+        domain = domain,
+        `package` = `package`,
+        resource = resource,
+        totalPages = totalPages,
+        pagesAcquired = pagesAcquired,
+        totalEntities = totalEntities,
+        entitiesAquired = entitiesAquired,
+        syncType = syncType,
+        pages = pages.map { it }.toMutableList(),
+        finished = false,
+        savedAtTimeStamp = System.currentTimeMillis()
+    )
 
 }

@@ -1,11 +1,8 @@
 package no.fintlabs.sync.model
 
 import no.fintlabs.adapter.models.sync.SyncPageMetadata
-import org.junit.jupiter.api.Assertions.assertNotEquals
-import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
 
 private fun createSyncPageMetadata(
     adapterId: String,

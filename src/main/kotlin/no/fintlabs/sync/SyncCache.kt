@@ -2,31 +2,38 @@ package no.fintlabs.sync
 
 import no.fintlabs.sync.model.SyncMetadata
 import org.springframework.stereotype.Component
-import java.util.concurrent.ConcurrentHashMap
+import org.springframework.transaction.annotation.Transactional
 
 @Component
 class SyncCache(
-    private val syncProgressionService: SyncProgressionService
+    private val syncProgressionService: SyncProgressionService,
+    private val repository: SyncJpaRepository
 ) {
 
-    private val cache: MutableMap<String, ConcurrentHashMap<String, SyncMetadata>> = ConcurrentHashMap()
-
+    @Transactional(readOnly = true)
     fun getAll(): Collection<SyncMetadata> =
-        cache.values.flatMap { it.values }
+        repository.findAll().map { it.toDomain() }
 
     fun getByOrgId(orgId: String): Collection<SyncMetadata> =
-        cache.getOrDefault(orgId, ConcurrentHashMap()).values
+        repository.findByOrgId(orgId).map { it.toDomain() }
 
-    fun add(sync: SyncMetadata) =
-        cache.getOrPut(sync.orgId) { ConcurrentHashMap() }
-            .compute(sync.corrId) { _, existing ->
-                existing?.apply {
-                    addPage(sync)
-                    syncProgressionService.processPageProgression(this)
-                } ?: run {
-                    syncProgressionService.processPageProgression(sync)
-                    sync
-                }
-            }
+    @Transactional
+    fun add(incoming: SyncMetadata) {
+        val existing = repository.findByCorrId(incoming.corrId)
+        val entity = if (existing != null) {
+            existing.addPage(incoming)
+            existing
+        } else {
+            incoming.toEntity()
+        }
+        entity.updateFinished()
+        syncProgressionService.processPageProgression(entity.toDomain())
+        repository.save(entity)
+    }
 
+    fun getByTimeRange(from: Long?, to: Long?): Collection<SyncMetadata> {
+        var sixHoursAgo = System.currentTimeMillis() - 6 * 60 * 60 * 1000
+        if (from != null && to != null) return repository.findByTime(from, to).map { it.toDomain() }
+        else return repository.findByTime(sixHoursAgo, System.currentTimeMillis()).map { it.toDomain() }
+    }
 }
