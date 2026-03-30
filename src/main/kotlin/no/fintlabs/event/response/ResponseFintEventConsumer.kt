@@ -40,6 +40,8 @@ class ResponseFintEventConsumer(
     fun processEvent(consumerRecord: ConsumerRecord<String, ResponseFintEvent>) {
         log.info("Consumed Response: {}", consumerRecord.value().corrId)
         val responseEvent = consumerRecord.value()
+        //TODO: Write function to validate responseEvent
+        if(responseEvent.adapterId.isEmpty() || responseEvent.adapterId == "") throw IllegalArgumentException()
         contractService.updateActivity(responseEvent.adapterId, responseEvent.handledAt)
         responseFintEventJpaRepository.save(
             ResponseFintEventEntity.fromResponseEvent(
