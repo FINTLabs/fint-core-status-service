@@ -36,23 +36,22 @@ class ResponseFintEventConsumer(
                 .domainContext(FormattedTopicComponentPattern.containing("fint-core"))
                 .eventName(ValidatedTopicComponentPattern.endingWith("-response"))
                 .build()
-
         )
     }
 
     fun processEvent(consumerRecord: ConsumerRecord<String, ResponseFintEvent>) {
-        log.info("Consumed Response: {}", consumerRecord.value().corrId)
         val responseEvent = consumerRecord.value()
-        //TODO: Write function to validate responseEvent
-        if(responseEvent.adapterId.isEmpty() || responseEvent.adapterId == "") throw IllegalArgumentException()
-        contractService.updateActivity(responseEvent.adapterId, responseEvent.handledAt)
-        responseFintEventJpaRepository.save(
-            mappingService.mapResponseFintEventToEntity(
-                consumerRecord.value(),
-                consumerRecord.topic()
-            )
-        )
-        eventStatusCache.add(consumerRecord.value(), consumerRecord.topic())
+        try {
+            log.info("Consumed Response: {}", responseEvent.corrId)
+            require(responseEvent.adapterId.isNotBlank()) {
+                "adapterId is missing for corrId=${responseEvent.corrId}"
+            }
+            contractService.updateActivity(responseEvent.adapterId, responseEvent.handledAt)
+            responseFintEventJpaRepository.save(mappingService.mapResponseFintEventToEntity(responseEvent, consumerRecord.topic()))
+            eventStatusCache.add(responseEvent, consumerRecord.topic())
+        } catch (e: Exception) {
+            log.error("Failed processing ResponseFintEvent corrId={}", responseEvent.corrId, e)
+        }
     }
 
 }
