@@ -51,7 +51,7 @@ class ResponseFintEventConsumer(
             responseFintEventJpaRepository.save(mappingService.mapResponseFintEventToEntity(responseEvent, consumerRecord.topic()))
             eventStatusCache.add(responseEvent, consumerRecord.topic())
         } catch (e: ListenerExecutionFailedException) {
-            log.error("Failed processing ResponseFintEvent corrId={}", responseEvent.corrId, e)
+            log.error("AdapterId missing on event with corrId={}", responseEvent.corrId, e)
         }
     }
 
