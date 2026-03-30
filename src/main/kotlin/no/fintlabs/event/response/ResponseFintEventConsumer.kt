@@ -13,6 +13,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Bean
 import org.springframework.kafka.listener.ConcurrentMessageListenerContainer
+import org.springframework.kafka.listener.ListenerExecutionFailedException
 import org.springframework.stereotype.Component
 
 @Component
@@ -36,21 +37,22 @@ class ResponseFintEventConsumer(
                 .domainContext(FormattedTopicComponentPattern.containing("fint-core"))
                 .eventName(ValidatedTopicComponentPattern.endingWith("-response"))
                 .build()
-
         )
     }
 
     fun processEvent(consumerRecord: ConsumerRecord<String, ResponseFintEvent>) {
-        log.info("Consumed Response: {}", consumerRecord.value().corrId)
         val responseEvent = consumerRecord.value()
-        contractService.updateActivity(responseEvent.adapterId, responseEvent.handledAt)
-        responseFintEventJpaRepository.save(
-            mappingService.mapResponseFintEventToEntity(
-                consumerRecord.value(),
-                consumerRecord.topic()
-            )
-        )
-        eventStatusCache.add(consumerRecord.value(), consumerRecord.topic())
+        try {
+            log.info("Consumed Response: {}", responseEvent.corrId)
+            require(responseEvent.adapterId.isNotBlank()) {
+                "adapterId is missing for corrId=${responseEvent.corrId}"
+            }
+            contractService.updateActivity(responseEvent.adapterId, responseEvent.handledAt)
+            responseFintEventJpaRepository.save(mappingService.mapResponseFintEventToEntity(responseEvent, consumerRecord.topic()))
+            eventStatusCache.add(responseEvent, consumerRecord.topic())
+        } catch (e: ListenerExecutionFailedException) {
+            log.error("AdapterId missing on event with corrId={}", responseEvent.corrId, e)
+        }
     }
 
 }
