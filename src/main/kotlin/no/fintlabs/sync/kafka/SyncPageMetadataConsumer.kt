@@ -26,11 +26,15 @@ class SyncPageMetadataConsumer(
 
     private val log = LoggerFactory.getLogger(SyncPageMetadataConsumer::class.java)
 
+    //Todo: after database is implenemted, remove seekeingoffset
     @Bean
     fun registerSyncPageConsumer(eventConsumerFactoryService: EventConsumerFactoryService): ConcurrentMessageListenerContainer<String, SyncPageMetadata> {
         return eventConsumerFactoryService.createFactory(
             SyncPageMetadata::class.java,
             this::processEvent,
+            EventConsumerConfiguration.builder()
+                .seekingOffsetResetOnAssignment(true)
+                .build()
         ).createContainer(
             EventTopicNamePatternParameters.builder()
                 .orgId(FormattedTopicComponentPattern.containing("fintlabs-no"))
