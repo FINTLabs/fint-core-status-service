@@ -63,26 +63,22 @@ class ContractService(
     }
 
     fun getByOrgAndComponent(orgId: String, component: String): MutableSet<ContractDto> {
-        var contracts = mutableSetOf<ContractDto>()
-        for (contract in contractCache.getByOrgId(orgId)) {
-            if (contract.components.contains(component))
-                contracts.add(mapContractDto(contract))
-        }
-        return contracts
+        return contractJpaRepository.findByOrgIdAndCapabilitiesComponentName(orgId, component)
+            .map { mapContractDto(it) }
+            .toMutableSet()
     }
 
-    fun mapContractDto(contract: Contract): ContractDto {
+    fun mapContractDto(contract: ContractEntity): ContractDto {
         return ContractDto(
             adapterId = contract.adapterId,
             heartbeat = contract.hasContact,
             lastDelta = syncCacheService.getLastdeltabyAdapterId(contract.adapterId)?.getLastPageTime() ?: 0,
             lastFull = syncCacheService.getLastFyllbyAdapterId(contract.adapterId)?.getLastPageTime() ?: 0
-
         )
     }
 
     fun getStatus(): Set<AdapterStatus> {
-        return contractCache.getAll().map { contract ->
+        return contractJpaRepository.findAll().map { contract ->
             AdapterStatus(
                 organzation = contract.orgId,
                 domain = getDomain(contract),
@@ -126,8 +122,8 @@ class ContractService(
     }
 
 
-    private fun getDomain(contract: Contract): String {
-        return contract.components.map { component ->
+    private fun getDomain(contract: ContractEntity): String {
+        return contract.getComponents().map { component ->
             component.substringBefore("-")
         }.first()
     }
@@ -140,11 +136,11 @@ class ContractService(
         return false
     }
 
-    private fun getFollowsContract(contract: Contract): Boolean {
-        return contract.capabilities.values.none { !it.followsContract }
+    private fun getFollowsContract(contract: ContractEntity): Boolean {
+        return contract.capabilities.none { !it.followsContract }
     }
 
-    private fun calculateHealth(contract: Contract): AdapterStatusEnum =
+    private fun calculateHealth(contract: ContractEntity): AdapterStatusEnum =
         when {
             contract.hasContact && getFollowsContract(contract) ->
                 AdapterStatusEnum.HEALTHY
