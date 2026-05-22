@@ -1,6 +1,7 @@
 package no.fintlabs.contract.heartbeat
 
 import no.fintlabs.adapter.models.AdapterHeartbeat
+import no.fintlabs.contract.ContractService
 import no.fintlabs.kafka.common.topic.pattern.FormattedTopicComponentPattern
 import no.fintlabs.kafka.common.topic.pattern.ValidatedTopicComponentPattern
 import no.fintlabs.kafka.event.EventConsumerFactoryService
@@ -11,7 +12,7 @@ import org.springframework.kafka.listener.ConcurrentMessageListenerContainer
 import org.springframework.stereotype.Component
 
 @Component
-class HeartbeatConsumer(val heartbeatCache: HeartbeatCache) {
+class HeartbeatConsumer(val heartbeatCache: HeartbeatCache, val contractService: ContractService) {
 
     @Bean
     fun registerAdapterHeartbeatKafkaConsumer(eventConsumerFactoryService: EventConsumerFactoryService): ConcurrentMessageListenerContainer<String, AdapterHeartbeat> {
@@ -29,5 +30,6 @@ class HeartbeatConsumer(val heartbeatCache: HeartbeatCache) {
 
     fun processEvent(consumerRecord: ConsumerRecord<String, AdapterHeartbeat>) {
         heartbeatCache.add(consumerRecord.value())
+        contractService.updateHeartbeat(consumerRecord.value())
     }
 }

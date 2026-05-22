@@ -1,6 +1,6 @@
 package no.fintlabs.contract.heartbeat
 
-import no.fintlabs.contract.ContractCache
+import no.fintlabs.contract.ContractJpaRepository
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
@@ -8,27 +8,19 @@ import org.springframework.stereotype.Service
 @Service
 class HeartbeatChecker(
     val heartbeatCache: HeartbeatCache,
-    val contractCache: ContractCache
+    val contractJpaRepository: ContractJpaRepository
 ) {
 
     private val log = LoggerFactory.getLogger(HeartbeatChecker::class.java)
 
     @Scheduled(fixedRateString = "\${fint.heartbeat.check-rate}")
     fun checkHeartbeats() {
-        contractCache.getAll().onEach { contract ->
-            heartbeatCache.getLastHeartbeat(contract.adapterId)?.let { lastHeartbeat ->
-                val timeInSeconds = System.currentTimeMillis() / 1000
-                val timeSinceLastHeartbeat = timeInSeconds - lastHeartbeat
-                val expectedIntervalSeconds = contract.heartbeatIntervalInMinutes * 60
-
-                if (timeSinceLastHeartbeat <= expectedIntervalSeconds) {
-                    contract.hasContact = true
-                    contract.lastHeartbeat = timeInSeconds
-                }else {
-                    contract.hasContact = false
-                }
-                contractCache.save(contract)
-            }
+        val nowMillis = System.currentTimeMillis()
+        contractJpaRepository.findAll().onEach { contract ->
+            val lastHeartbeat = heartbeatCache.getLastHeartbeat(contract.adapterId)
+            val expectedIntervalMillis = contract.heartbeatIntervalInMinutes * 60 * 1000L
+            contract.hasContact = lastHeartbeat != null && nowMillis - lastHeartbeat <= expectedIntervalMillis
+            contractJpaRepository.save(contract)
         }
     }
 

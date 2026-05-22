@@ -2,6 +2,7 @@ package no.fintlabs.contract
 
 import no.fintlabs.contract.model.AdapterStatus
 import no.fintlabs.contract.model.Contract
+import no.fintlabs.contract.model.ContractEntity
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -16,8 +17,8 @@ class ContractController(
 ) {
 
     @GetMapping
-    fun getContracts(): ResponseEntity<MutableCollection<Contract>> {
-        return ResponseEntity.ok(adapterContractCache.getAll())
+    fun getContracts(): ResponseEntity<MutableCollection<ContractEntity>> {
+        return ResponseEntity.ok(contractService.getAll())
     }
 
     @GetMapping("/inactive")

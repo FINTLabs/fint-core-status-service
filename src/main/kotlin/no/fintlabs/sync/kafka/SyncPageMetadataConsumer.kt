@@ -20,8 +20,7 @@ import org.springframework.stereotype.Component
 @Component
 class SyncPageMetadataConsumer(
     val syncCache: SyncCache,
-    val contractService: ContractService,
-    val repository: SyncJpaRepository
+    val contractService: ContractService
 ) {
 
     private val log = LoggerFactory.getLogger(SyncPageMetadataConsumer::class.java)
@@ -33,7 +32,6 @@ class SyncPageMetadataConsumer(
             SyncPageMetadata::class.java,
             this::processEvent,
             EventConsumerConfiguration.builder()
-                .seekingOffsetResetOnAssignment(true)
                 .build()
         ).createContainer(
             EventTopicNamePatternParameters.builder()
@@ -49,7 +47,6 @@ class SyncPageMetadataConsumer(
         val syncType = topicSplit[topicSplit.size - 2]
         val syncMetadata = SyncMetadata.create(consumerRecord.value(), syncType)
 
-        log.debug("Consumed {}-sync From: {}", syncType, syncMetadata.adapterId)
         contractService.updateActivity(syncMetadata)
         syncCache.add(syncMetadata)
     }
