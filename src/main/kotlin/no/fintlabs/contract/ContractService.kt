@@ -72,7 +72,7 @@ class ContractService(
     }
 
     fun getDomainForOrg(orgId: String, domain: String): Set<DomainStatus> {
-        return getByOrIdAndComponent(orgId, domain)
+        return contractJpaRepository.findByOrgIdAndCapabilitiesComponentName(orgId, domain)
             .map { contract ->
                 DomainStatus(
                     component = getComponent(domain, contract),
@@ -93,18 +93,6 @@ class ContractService(
         }
         return ""
     }
-
-    private fun getByOrIdAndComponent(orgid: String, component: String): MutableList<ContractEntity> {
-        val contracts = mutableListOf<ContractEntity>()
-        contractJpaRepository.getByOrgId(orgid)?.forEach { contract ->
-            val domain = contract.getComponents().any { comp ->
-                comp.substringBefore("-") == component
-            }
-            if (domain) contracts.add(contract)
-        }
-        return contracts
-    }
-
 
     private fun getDomain(contract: ContractEntity): String {
         return contract.getComponents().map { component ->
