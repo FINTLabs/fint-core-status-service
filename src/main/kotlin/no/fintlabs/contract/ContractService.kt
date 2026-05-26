@@ -46,14 +46,14 @@ class ContractService(
         }
     }
 
-    fun getByOrgAndComponent(orgId: String, component: String): MutableSet<ContractDto> {
+    fun getByOrgAndComponent(orgId: String, component: String): MutableSet<ComponentStatus> {
         return contractJpaRepository.findByOrgIdAndCapabilitiesComponentName(orgId, component)
             .map { mapContractDto(it) }
             .toMutableSet()
     }
 
-    fun mapContractDto(contract: ContractEntity): ContractDto {
-        return ContractDto(
+    fun mapContractDto(contract: ContractEntity): ComponentStatus {
+        return ComponentStatus(
             adapterId = contract.adapterId,
             heartbeat = contract.hasContact,
             lastDelta = syncService.getLastdeltabyAdapterId(contract.adapterId)?.getLastPageTime() ?: 0,
@@ -61,9 +61,9 @@ class ContractService(
         )
     }
 
-    fun getStatus(): Set<AdapterStatus> {
+    fun getStatus(): Set<AdapterOverview> {
         return contractJpaRepository.findAll().map { contract ->
-            AdapterStatus(
+            AdapterOverview(
                 organzation = contract.orgId,
                 domain = getDomain(contract),
                 status = calculateHealth(contract)
