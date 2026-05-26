@@ -84,7 +84,7 @@ class CapabilityEntity(
                 componentName = capability.component,
                 entityUri = capability.entityUri,
                 fullSyncIntervalInDays = capability.fullSyncIntervalInDays,
-                deltaSyncInterval = AdapterCapability.DeltaSyncInterval.IMMEDIATE,
+                deltaSyncInterval = AdapterCapability.DeltaSyncInterval.valueOf(capability.deltaSyncInterval.name),
                 followsContract = true,
                 lastFullSync = null,
                 contract = contract
