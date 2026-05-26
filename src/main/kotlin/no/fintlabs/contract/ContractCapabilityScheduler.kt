@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service
 
 @Service
 class ContractCapabilityScheduler(
-    private val contractCache: ContractCache,
     private val syncMetricService: SyncMetricService,
     private val contractJpaRepository: ContractJpaRepository
 ) {

@@ -1,6 +1,5 @@
 package no.fintlabs.contract
 
-import no.fintlabs.adapter.models.AdapterContract
 import no.fintlabs.adapter.models.AdapterHeartbeat
 import no.fintlabs.adapter.models.sync.SyncType
 import no.fintlabs.contract.model.*
@@ -10,11 +9,9 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.time.Instant
 import java.time.Instant.now
-import kotlin.contracts.contract
 
 @Service
 class ContractService(
-    private val contractCache: ContractCache,
     private val syncCacheService: SyncCacheService,
     private val contractJpaRepository: ContractJpaRepository
 ) {
@@ -49,17 +46,6 @@ class ContractService(
             entity.updateLastActivity(time)
             contractJpaRepository.save(entity)
         }
-    }
-
-    fun inactiveContracts(): List<Contract> {
-        val aWeekAgo = now().minusMillis(604800000L)
-        val inactiveContractsList = mutableListOf<Contract>()
-        contractCache.getAll()?.forEach { contract ->
-            if (Instant.ofEpochMilli(contract.lastActivity).isBefore(aWeekAgo) && !contract.hasContact) {
-                inactiveContractsList.add(contract)
-            }
-        }
-        return inactiveContractsList
     }
 
     fun getByOrgAndComponent(orgId: String, component: String): MutableSet<ContractDto> {

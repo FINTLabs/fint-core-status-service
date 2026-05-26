@@ -1,7 +1,6 @@
 package no.fintlabs.contract
 
 import no.fintlabs.adapter.models.AdapterContract
-import no.fintlabs.contract.model.Contract
 import no.fintlabs.contract.model.ContractEntity
 import no.fintlabs.kafka.common.topic.pattern.FormattedTopicComponentPattern
 import no.fintlabs.kafka.common.topic.pattern.ValidatedTopicComponentPattern
@@ -16,7 +15,7 @@ import org.springframework.stereotype.Component
 
 
 @Component
-class ContractConsumer(val contractCache: ContractCache, private val contractJpaRepository: ContractJpaRepository) {
+class ContractConsumer(private val contractJpaRepository: ContractJpaRepository) {
 
     private val log = LoggerFactory.getLogger(ContractConsumer::class.java)
 

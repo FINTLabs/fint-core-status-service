@@ -1,7 +1,8 @@
 package no.fintlabs.stats
 
+import no.fintlabs.contract.ContractJpaRepository
 import no.fintlabs.contract.model.Contract
-import no.fintlabs.contract.ContractCache
+import no.fintlabs.contract.model.ContractEntity
 import no.fintlabs.event.EventStatus
 import no.fintlabs.event.FintEventService
 import org.springframework.stereotype.Service
@@ -9,11 +10,11 @@ import org.springframework.stereotype.Service
 @Service
 class StatsService(
     val fintEventService: FintEventService,
-    val contractCache: ContractCache
+    val contractRepo: ContractJpaRepository
 ) {
 
     fun getStats(): Stats {
-        val contracts = contractCache.getAll()
+        val contracts = contractRepo.findAll()
         val events = fintEventService.getAllEvents()
         val adapterContractAmount = contracts.count()
         val hasContectAmount = getHasContactAmount(contracts)
@@ -32,7 +33,7 @@ class StatsService(
         return stats
     }
 
-    private fun getHasContactAmount(contracts: Collection<Contract>): Int {
+    private fun getHasContactAmount(contracts: Collection<ContractEntity>): Int {
         return contracts.count { it.hasContact }
     }
 

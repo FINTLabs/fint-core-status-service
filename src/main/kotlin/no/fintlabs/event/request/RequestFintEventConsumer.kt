@@ -1,7 +1,6 @@
 package no.fintlabs.event.request
 
 import no.fintlabs.adapter.models.event.RequestFintEvent
-import no.fintlabs.contract.ContractCache
 import no.fintlabs.event.cache.EventStatusCache
 import no.fintlabs.kafka.common.topic.pattern.FormattedTopicComponentPattern
 import no.fintlabs.kafka.common.topic.pattern.ValidatedTopicComponentPattern
@@ -16,8 +15,7 @@ import org.springframework.stereotype.Component
 @Component
 class RequestFintEventConsumer(
     val eventStatusCache: EventStatusCache,
-    val requestFintEventJpaRepository: RequestFintEventJpaRepository,
-    private val contractCache: ContractCache
+    val requestFintEventJpaRepository: RequestFintEventJpaRepository
 ) {
 
     private val log = LoggerFactory.getLogger(RequestFintEventConsumer::class.java)

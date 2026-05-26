@@ -1,7 +1,6 @@
 package no.fintlabs.contract
 
 import no.fintlabs.contract.model.AdapterStatus
-import no.fintlabs.contract.model.Contract
 import no.fintlabs.contract.model.ContractEntity
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/contract")
 class ContractController(
-    val adapterContractCache: ContractCache,
     val contractService: ContractService
 ) {
 
@@ -20,9 +18,6 @@ class ContractController(
     fun getContracts(): ResponseEntity<MutableCollection<ContractEntity>> {
         return ResponseEntity.ok(contractService.getAll())
     }
-
-    @GetMapping("/inactive")
-    fun getInactiveContracts(): List<Contract> = contractService.inactiveContracts()
 
     @GetMapping("/{orgId}/domain/{domain}")
     fun getDomainStatus(
