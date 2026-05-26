@@ -136,7 +136,7 @@ class ContractService(
                 AdapterStatusEnum.NOT_FOLLOWING_CONTRACT
 
             else ->
-                AdapterStatusEnum.UNOWN_STATUS
+                AdapterStatusEnum.NO_STATUS
         }
 
     fun updateHeartbeat(value: AdapterHeartbeat) {
