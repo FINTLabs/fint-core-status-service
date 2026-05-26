@@ -3,16 +3,14 @@ package no.fintlabs.contract
 import no.fintlabs.adapter.models.AdapterHeartbeat
 import no.fintlabs.adapter.models.sync.SyncType
 import no.fintlabs.contract.model.*
-import no.fintlabs.sync.SyncCacheService
+import no.fintlabs.sync.SyncService
 import no.fintlabs.sync.model.SyncMetadata
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import java.time.Instant
-import java.time.Instant.now
 
 @Service
 class ContractService(
-    private val syncCacheService: SyncCacheService,
+    private val syncService: SyncService,
     private val contractJpaRepository: ContractJpaRepository
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
@@ -58,8 +56,8 @@ class ContractService(
         return ContractDto(
             adapterId = contract.adapterId,
             heartbeat = contract.hasContact,
-            lastDelta = syncCacheService.getLastdeltabyAdapterId(contract.adapterId)?.getLastPageTime() ?: 0,
-            lastFull = syncCacheService.getLastFyllbyAdapterId(contract.adapterId)?.getLastPageTime() ?: 0
+            lastDelta = syncService.getLastdeltabyAdapterId(contract.adapterId)?.getLastPageTime() ?: 0,
+            lastFull = syncService.getLastFyllbyAdapterId(contract.adapterId)?.getLastPageTime() ?: 0
         )
     }
 
@@ -80,8 +78,8 @@ class ContractService(
                     component = getComponent(domain, contract),
                     hasContact = contract.hasContact,
                     answersEvents = getFollowsContractForDomain(contract, domain),
-                    lastDeltaSync = syncCacheService.getLastdeltabyAdapterId(contract.adapterId)?.getLastPageTime() ?: 0,
-                    lastFullSync = syncCacheService.getLastFyllbyAdapterId(contract.adapterId)?.getLastPageTime() ?: 0
+                    lastDeltaSync = syncService.getLastdeltabyAdapterId(contract.adapterId)?.getLastPageTime() ?: 0,
+                    lastFullSync = syncService.getLastFyllbyAdapterId(contract.adapterId)?.getLastPageTime() ?: 0
                 )
             }
             .distinctBy { it.component }

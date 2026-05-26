@@ -7,8 +7,7 @@ import no.fintlabs.kafka.common.topic.pattern.ValidatedTopicComponentPattern
 import no.fintlabs.kafka.event.EventConsumerConfiguration
 import no.fintlabs.kafka.event.EventConsumerFactoryService
 import no.fintlabs.kafka.event.topic.EventTopicNamePatternParameters
-import no.fintlabs.sync.SyncCache
-import no.fintlabs.sync.SyncJpaRepository
+import no.fintlabs.sync.SyncService
 import no.fintlabs.sync.kafka.KafkaTopicConstants.Companion.ADAPTER_SYNC_TOPICS
 import no.fintlabs.sync.model.SyncMetadata
 import org.apache.kafka.clients.consumer.ConsumerRecord
@@ -19,7 +18,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class SyncPageMetadataConsumer(
-    val syncCache: SyncCache,
+    val syncCache: SyncService,
     val contractService: ContractService
 ) {
 

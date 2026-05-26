@@ -7,8 +7,7 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/page-metadata")
 class SyncController(
-    val syncCacheService: SyncCacheService,
-    private val syncCache: SyncCache
+    val syncService: SyncService
 ) {
 
     @GetMapping
@@ -16,20 +15,20 @@ class SyncController(
         @RequestParam(required = false) from: Long?,
         @RequestParam(required = false) to: Long?
     ): ResponseEntity<Collection<SyncMetadata>> {
-        return ResponseEntity.ok(syncCache.getByTimeRange(from, to))
+        return ResponseEntity.ok(syncService.getByTimeRange(from, to))
     }
 
     @GetMapping("/all")
     fun getAll(): ResponseEntity<Collection<SyncMetadata>> =
-        ResponseEntity.ok(syncCache.getAll())
+        ResponseEntity.ok(syncService.getAll())
 
     @GetMapping("/org/{orgId}")
     fun getByOrg(@PathVariable orgId: String): ResponseEntity<Collection<SyncMetadata>> =
-        ResponseEntity.ok(syncCacheService.getByOrgId(orgId))
+        ResponseEntity.ok(syncService.getByOrgId(orgId))
 
     @GetMapping("/id/{corrId}")
     fun getByCorrId(@PathVariable corrId: String): ResponseEntity<SyncMetadata> =
-        syncCacheService.getByCorrId(corrId)
+        syncService.getByCorrId(corrId)
             ?.let { ResponseEntity.ok(it) }
             ?: ResponseEntity.notFound().build()
 }
