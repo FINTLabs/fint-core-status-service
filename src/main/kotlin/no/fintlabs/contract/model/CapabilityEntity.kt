@@ -65,11 +65,11 @@ class CapabilityEntity(
     }
 
     fun updateFollowsContract() {
-        followsContract = lastFullSync?.let {
-            Duration.between(Instant.ofEpochMilli(it), Instant.now()).toDays()
-        }?.let {
-            it <= fullSyncIntervalInDays
-        } ?: false
+        followsContract = when {
+            fullSyncIntervalInDays == 0 -> true
+            lastFullSync == null -> false
+            else -> Duration.between(Instant.ofEpochMilli(lastFullSync!!), Instant.now()).toDays() <= fullSyncIntervalInDays
+        }
     }
 
     companion object {
