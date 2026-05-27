@@ -84,7 +84,7 @@ class CapabilityEntity(
                 componentName = capability.component,
                 entityUri = capability.entityUri,
                 fullSyncIntervalInDays = capability.fullSyncIntervalInDays,
-                deltaSyncInterval = AdapterCapability.DeltaSyncInterval.valueOf(capability.deltaSyncInterval.name?.let { it.uppercase() } ?: "NONE"),
+                deltaSyncInterval = capability.deltaSyncInterval?.let { AdapterCapability.DeltaSyncInterval.valueOf(it.name) },
                 followsContract = true,
                 lastFullSync = null,
                 contract = contract
