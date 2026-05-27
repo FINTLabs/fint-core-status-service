@@ -72,7 +72,7 @@ class ContractService(
     }
 
     fun getDomainForOrg(orgId: String, domain: String): Set<DomainStatus> {
-        return contractJpaRepository.findByOrgIdAndCapabilitiesComponentName(orgId, domain)
+        return contractJpaRepository.findByOrgIdAndDomain(orgId, domain)
             .map { contract ->
                 DomainStatus(
                     component = getComponent(domain, contract),

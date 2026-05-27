@@ -13,4 +13,7 @@ interface ContractJpaRepository : JpaRepository<ContractEntity, String> {
     @Query("SELECT c FROM ContractEntity c JOIN c.capabilities cap WHERE c.orgId = :orgId AND cap.componentName = :componentName")
     fun findByOrgIdAndCapabilitiesComponentName(orgId: String, componentName: String): List<ContractEntity>
 
+    @Query("SELECT c FROM ContractEntity c JOIN c.capabilities cap WHERE c.orgId = :orgId AND cap.domainName = :domain")
+    fun findByOrgIdAndDomain(orgId: String, domain: String): List<ContractEntity>
+
 }
