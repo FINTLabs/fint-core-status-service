@@ -82,7 +82,6 @@ class ContractService(
                     lastFullSync = syncService.getLastFyllbyAdapterId(contract.adapterId)?.getLastPageTime() ?: 0
                 )
             }
-            .distinctBy { it.component }
             .toSet()
     }
 

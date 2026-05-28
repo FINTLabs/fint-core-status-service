@@ -15,6 +15,7 @@ class HeartbeatChecker(
 
     @Scheduled(fixedRateString = "\${fint.heartbeat.check-rate}")
     fun checkHeartbeats() {
+        log.info("Checking heartbeats")
         val nowMillis = System.currentTimeMillis()
         contractJpaRepository.findAll().onEach { contract ->
             val lastHeartbeat = heartbeatCache.getLastHeartbeat(contract.adapterId)
