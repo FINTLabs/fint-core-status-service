@@ -95,7 +95,7 @@ class ContractService(
 
     private fun getDomain(contract: ContractEntity): String {
         return contract.getComponents().map { component ->
-            component.substringBefore("-")
+            component
         }.first()
     }
 

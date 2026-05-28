@@ -26,7 +26,6 @@ class ContractConsumer(private val contractJpaRepository: ContractJpaRepository)
             AdapterContract::class.java,
             this::processEvent,
             EventConsumerConfiguration.builder()
-                .seekingOffsetResetOnAssignment(true)
                 .build()
         ).createContainer(
             EventTopicNamePatternParameters.builder()
