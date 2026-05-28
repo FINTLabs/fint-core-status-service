@@ -6,6 +6,7 @@ import no.fintlabs.contract.model.*
 import no.fintlabs.sync.SyncService
 import no.fintlabs.sync.model.SyncMetadata
 import org.slf4j.LoggerFactory
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
 @Service
@@ -127,12 +128,11 @@ class ContractService(
         }
 
     fun updateHeartbeat(value: AdapterHeartbeat) {
-        val contract = contractJpaRepository.findById(value.adapterId)
-        if (contract.isPresent) {
-            contract.get().lastHeartbeat = value.time
-            contract.get().hasContact = true
-            contract.get().updateLastActivity(value.time)
-            contractJpaRepository.save(contract.get())
+        contractJpaRepository.findByIdOrNull(value.adapterId)?.let { contract ->
+            contract.lastHeartbeat = value.time
+            contract.hasContact = true
+            contract.updateLastActivity(value.time)
+            contractJpaRepository.save(contract)
         }
     }
 }
