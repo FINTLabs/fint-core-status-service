@@ -7,12 +7,16 @@ import no.fintlabs.kafka.common.topic.pattern.ValidatedTopicComponentPattern
 import no.fintlabs.kafka.event.EventConsumerFactoryService
 import no.fintlabs.kafka.event.topic.EventTopicNamePatternParameters
 import org.apache.kafka.clients.consumer.ConsumerRecord
+import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Bean
 import org.springframework.kafka.listener.ConcurrentMessageListenerContainer
 import org.springframework.stereotype.Component
+import kotlin.math.log
 
 @Component
 class HeartbeatConsumer(val heartbeatCache: HeartbeatCache, val contractService: ContractService) {
+
+    private val log = LoggerFactory.getLogger(HeartbeatChecker::class.java)
 
     @Bean
     fun registerAdapterHeartbeatKafkaConsumer(eventConsumerFactoryService: EventConsumerFactoryService): ConcurrentMessageListenerContainer<String, AdapterHeartbeat> {
@@ -29,6 +33,7 @@ class HeartbeatConsumer(val heartbeatCache: HeartbeatCache, val contractService:
     }
 
     fun processEvent(consumerRecord: ConsumerRecord<String, AdapterHeartbeat>) {
+        log.info("consuming heartbeat for adapter: ${consumerRecord.value().adapterId}")
         heartbeatCache.add(consumerRecord.value())
         contractService.updateHeartbeat(consumerRecord.value())
     }
