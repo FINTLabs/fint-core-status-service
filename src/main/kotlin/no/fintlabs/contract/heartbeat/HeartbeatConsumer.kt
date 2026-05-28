@@ -34,7 +34,11 @@ class HeartbeatConsumer(val heartbeatCache: HeartbeatCache, val contractService:
 
     fun processEvent(consumerRecord: ConsumerRecord<String, AdapterHeartbeat>) {
         log.info("consuming heartbeat for adapter: ${consumerRecord.value().adapterId}")
-        heartbeatCache.add(consumerRecord.value())
-        contractService.updateHeartbeat(consumerRecord.value())
+        try {
+            heartbeatCache.add(consumerRecord.value())
+            contractService.updateHeartbeat(consumerRecord.value())
+        } catch (e: Exception) {
+            log.error("Failed to process heartbeat for adapter: ${consumerRecord.value().adapterId}", e)
+        }
     }
 }

@@ -86,7 +86,6 @@ class ContractService(
             .toSet()
     }
 
-
     private fun getComponent(domain: String, contract: ContractEntity): String {
         contract.getComponents().map { component ->
             if (component.contains(domain)) return component
@@ -133,6 +132,6 @@ class ContractService(
             contract.hasContact = true
             contract.updateLastActivity(value.time)
             contractJpaRepository.save(contract)
-        }
+        } ?: logger.warn("Received heartbeat for unknown adapterId: {}", value.adapterId)
     }
 }

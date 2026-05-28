@@ -41,7 +41,6 @@ class ContractEntity(
     var capabilities: MutableSet<CapabilityEntity> = mutableSetOf()
 ) {
 
-
     fun updateLastActivity(newTime: Long) {
         if (newTime > lastActivity) {
             lastActivity = newTime
