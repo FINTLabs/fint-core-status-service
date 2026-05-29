@@ -63,13 +63,18 @@ class ContractService(
     }
 
     fun getStatus(): Set<AdapterOverview> {
-        return contractJpaRepository.findAll().map { contract ->
-            AdapterOverview(
-                organzation = contract.orgId,
-                domain = getDomain(contract),
-                status = calculateHealth(contract)
-            )
-        }.toSet()
+        return contractJpaRepository.findAll()
+            .groupBy { contract -> contract.orgId to getDomain(contract) }
+            .map { (key, contracts) ->
+                val (orgId, domain) = key
+                val statuses = contracts.map { findHealthStatus(it) }
+                AdapterOverview(
+                    organzation = orgId,
+                    domain = domain,
+                    status = statuses.firstOrNull { it == AdapterStatusEnum.HEALTHY }
+                        ?: statuses.first()
+                )
+            }.toSet()
     }
 
     fun getDomainForOrg(orgId: String, domain: String): Set<DomainStatus> {
@@ -95,7 +100,7 @@ class ContractService(
 
     private fun getDomain(contract: ContractEntity): String {
         return contract.getComponents().map { component ->
-            component
+            component.substringBefore("-")
         }.first()
     }
 
@@ -111,7 +116,7 @@ class ContractService(
         return contract.capabilities.none { !it.followsContract }
     }
 
-    private fun calculateHealth(contract: ContractEntity): AdapterStatusEnum =
+    private fun findHealthStatus(contract: ContractEntity): AdapterStatusEnum =
         when {
             contract.hasContact && getFollowsContract(contract) ->
                 AdapterStatusEnum.HEALTHY
