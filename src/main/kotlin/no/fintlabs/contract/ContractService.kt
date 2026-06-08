@@ -3,6 +3,7 @@ package no.fintlabs.contract
 import no.fintlabs.adapter.models.AdapterHeartbeat
 import no.fintlabs.adapter.models.sync.SyncType
 import no.fintlabs.contract.model.*
+import no.fintlabs.event.cache.EventStatusCache
 import no.fintlabs.sync.SyncService
 import no.fintlabs.sync.model.SyncMetadata
 import org.slf4j.LoggerFactory
@@ -15,6 +16,8 @@ class ContractService(
     private val contractJpaRepository: ContractJpaRepository
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
+
+    fun getAll() = contractJpaRepository.findAll()
 
     fun updateActivity(syncMetadata: SyncMetadata) {
         logger.info("Updating activity for {}", syncMetadata.adapterId)
@@ -38,7 +41,11 @@ class ContractService(
         }
     }
 
-    fun getAll() = contractJpaRepository.findAll()
+    fun getContractMetrics(): Map<Int, Int> {
+        return mapOf(
+            contractJpaRepository.findAll().size to contractJpaRepository.findAll().count { !it.hasContact }
+        )
+    }
 
     fun updateActivity(adapterId: String, time: Long) {
         contractJpaRepository.findById(adapterId).ifPresent { entity ->

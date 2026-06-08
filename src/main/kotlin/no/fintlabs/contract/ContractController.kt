@@ -19,6 +19,9 @@ class ContractController(
         return ResponseEntity.ok(contractService.getAll())
     }
 
+    @GetMapping("/metrics")
+    fun getContractMetrics() = contractService.getContractMetrics()
+
     @GetMapping("/{orgId}/domain/{domain}")
     fun getDomainStatus(
         @PathVariable orgId: String,

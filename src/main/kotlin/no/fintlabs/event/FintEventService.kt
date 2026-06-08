@@ -9,8 +9,10 @@ class FintEventService(val eventStatusCache: EventStatusCache) {
 
     private val aDayAgo = 24 * 60 * 60 * 1000
 
-    fun getAllEvents(): Collection<EventStatus> {
-        return eventStatusCache.cache.values.toList()
+    fun getEventsMetrics(): Map<Int, Int> {
+        return mapOf(
+            eventStatusCache.getAll().size to eventStatusCache.getAll().count { it.hasError },
+        )
     }
 
     fun getEventById(id: String): EventStatus? {
