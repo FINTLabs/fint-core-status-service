@@ -1,7 +1,6 @@
 package no.fintlabs.contract
 
 import no.fintlabs.adapter.models.AdapterContract
-import no.fintlabs.contract.model.CapabilityEntity
 import no.fintlabs.contract.model.ContractEntity
 import no.fintlabs.kafka.common.topic.pattern.FormattedTopicComponentPattern
 import no.fintlabs.kafka.common.topic.pattern.ValidatedTopicComponentPattern

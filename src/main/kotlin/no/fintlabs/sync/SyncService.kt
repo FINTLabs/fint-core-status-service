@@ -44,6 +44,11 @@ class SyncService(
     fun getLastdeltabyAdapterId(adapterId: String): SyncMetadata? =
         getAll().firstOrNull { it.adapterId == adapterId && it.syncType.isDelta() }
 
+    fun getByAdapterIds(adapterIds: Set<String>): Map<String, List<SyncMetadata>> =
+        repository.findByAdapterIdIn(adapterIds)
+            .map { it.toDomain() }
+            .groupBy { it.adapterId }
+
     fun getByCorrId(id: String): SyncMetadata? = getAll().firstOrNull { it.corrId == id }
 
     private fun SyncType.isFull() = this == SyncType.FULL

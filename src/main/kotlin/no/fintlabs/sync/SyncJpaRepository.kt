@@ -13,6 +13,8 @@ interface SyncJpaRepository : JpaRepository<SyncEntity, Long> {
 
     fun findByOrgId(orgId: String): List<SyncEntity>
 
+    fun findByAdapterIdIn(adapterIds: Collection<String>): List<SyncEntity>
+
     fun findByCorrId(corrId: String): SyncEntity?
 
     @Modifying

@@ -78,17 +78,18 @@ class ContractService(
     }
 
     fun getDomainForOrg(orgId: String, domain: String): Set<DomainStatus> {
-        return contractJpaRepository.findByOrgIdAndDomain(orgId, domain)
-            .map { contract ->
-                DomainStatus(
-                    component = getComponent(domain, contract),
-                    hasContact = contract.hasContact,
-                    answersEvents = getFollowsContractForDomain(contract, domain),
-                    lastDeltaSync = syncService.getLastdeltabyAdapterId(contract.adapterId)?.getLastPageTime() ?: 0,
-                    lastFullSync = syncService.getLastFyllbyAdapterId(contract.adapterId)?.getLastPageTime() ?: 0
-                )
-            }
-            .toSet()
+        val contracts = contractJpaRepository.findByOrgIdAndDomain(orgId, domain)
+        val syncsByAdapter = syncService.getByAdapterIds(contracts.map { it.adapterId }.toSet())
+        return contracts.map { contract ->
+            val syncs = syncsByAdapter[contract.adapterId] ?: emptyList()
+            DomainStatus(
+                component = getComponent(domain, contract),
+                hasContact = contract.hasContact,
+                answersEvents = getFollowsContractForDomain(contract, domain),
+                lastDeltaSync = syncs.firstOrNull { it.syncType == SyncType.DELTA }?.getLastPageTime() ?: 0,
+                lastFullSync = syncs.firstOrNull { it.syncType == SyncType.FULL }?.getLastPageTime() ?: 0
+            )
+        }.toSet()
     }
 
     private fun getComponent(domain: String, contract: ContractEntity): String {

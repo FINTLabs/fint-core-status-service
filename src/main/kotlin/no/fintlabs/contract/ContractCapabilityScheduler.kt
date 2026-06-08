@@ -16,7 +16,7 @@ class ContractCapabilityScheduler(
             contract.capabilities.forEach { capability ->
                 capability.updateFollowsContract()
             }
-           syncMetricService.publishContractMetrics(contract.capabilities.toList(), contract.orgId)
+            syncMetricService.publishContractMetrics(contract.capabilities.toList(), contract.orgId)
         }
     }
 }
