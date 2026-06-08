@@ -7,7 +7,6 @@ import java.util.*
 @Service
 class FintEventService(val eventStatusCache: EventStatusCache) {
 
-    private val aDayAgo = 24 * 60 * 60 * 1000
 
     fun getEventsMetrics(): Map<Int, Int> {
         return mapOf(
@@ -20,6 +19,7 @@ class FintEventService(val eventStatusCache: EventStatusCache) {
     }
 
     fun getEventsByTime(from: Long?, to: Long?): Collection<EventStatus> {
+        val aDayAgo = 24 * 60 * 60 * 1000
         val current = Date().time
         val defaultFrom = current - aDayAgo
 
