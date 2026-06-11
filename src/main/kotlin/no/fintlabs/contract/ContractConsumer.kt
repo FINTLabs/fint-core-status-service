@@ -38,8 +38,10 @@ class ContractConsumer(private val contractJpaRepository: ContractJpaRepository)
     fun processEvent(consumerRecord: ConsumerRecord<String, AdapterContract>) {
         log.info("Consumed AdapterContract: {}", consumerRecord.value().adapterId)
         try {
-            contractJpaRepository.save(ContractEntity.fromAdapterContract(consumerRecord.value()))
-            log.info("Saved AdapterContract: {}", consumerRecord.value().adapterId)
+            if (!contractJpaRepository.existsById(consumerRecord.value().adapterId)) {
+                contractJpaRepository.save(ContractEntity.fromAdapterContract(consumerRecord.value()))
+                log.info("Saved AdapterContract: {}", consumerRecord.value().adapterId)
+            }
         } catch (e: Exception) {
             log.error("Failed to save AdapterContract: {}", consumerRecord.value().adapterId, e)
         }
