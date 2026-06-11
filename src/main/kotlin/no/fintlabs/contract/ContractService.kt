@@ -77,8 +77,10 @@ class ContractService(
                 AdapterOverview(
                     organzation = orgId,
                     domain = domain,
-                    status = statuses.firstOrNull { it == AdapterStatusEnum.HEALTHY }
-                        ?: statuses.first()
+                    status = if (statuses.all { it == AdapterStatusEnum.HEALTHY })
+                        AdapterStatusEnum.HEALTHY
+                    else
+                        statuses.first { it != AdapterStatusEnum.HEALTHY }
                 )
             }.toSet()
     }
