@@ -18,6 +18,7 @@ class SyncMetricService(
 
     fun publishContractMetrics(capabilities: List<CapabilityEntity>, orgId: String) {
         capabilities.forEach { cap ->
+            if (cap.lastFullSync == null) return@forEach
             val resource = cap.resourceName
             val key = "$orgId|$resource"
 
