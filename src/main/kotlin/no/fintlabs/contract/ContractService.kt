@@ -41,11 +41,13 @@ class ContractService(
         }
     }
 
-    fun getContractMetrics(): Map<String, Int> {
+    fun getContractMetrics(): Map<String, Map<String, Int>> {
         val contracts = contractJpaRepository.findAll()
         return mapOf(
-            "total" to contracts.size,
-            "no contact" to contracts.count { !it.hasContact }
+            "ContractsMetrics" to mapOf(
+                "total" to contracts.size,
+                "no contact" to contracts.count { !it.hasContact }
+            )
         )
     }
 
