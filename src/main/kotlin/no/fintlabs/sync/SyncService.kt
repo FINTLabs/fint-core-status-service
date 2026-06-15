@@ -38,12 +38,6 @@ class SyncService(
         else return repository.findByTime(twentyFourHoursAgo, System.currentTimeMillis()).map { it.toDomain() }
     }
 
-    fun getLastFyllbyAdapterId(adapterId: String): SyncMetadata? =
-        getAll().firstOrNull { it.adapterId == adapterId && it.syncType.isFull() }
-
-    fun getLastdeltabyAdapterId(adapterId: String): SyncMetadata? =
-        getAll().firstOrNull { it.adapterId == adapterId && it.syncType.isDelta() }
-
     fun getByAdapterIds(adapterIds: Set<String>): Map<String, List<SyncMetadata>> =
         repository.findByAdapterIdIn(adapterIds)
             .map { it.toDomain() }
@@ -54,4 +48,13 @@ class SyncService(
     private fun SyncType.isFull() = this == SyncType.FULL
 
     private fun SyncType.isDelta() = this == SyncType.DELTA
+
+    fun getMetrics(): Map<String, Map<String, Int>> {
+        return mapOf(
+            "SyncMetrics" to mapOf(
+                "full" to getAll().count { it.syncType == SyncType.FULL },
+                "delta" to getAll().count { it.syncType == SyncType.DELTA }
+            )
+        )
+    }
 }
