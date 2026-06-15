@@ -19,14 +19,14 @@ class SyncMetricService(
     fun publishContractMetrics(capabilities: List<CapabilityEntity>, orgId: String) {
         capabilities.forEach { cap ->
             if (cap.lastFullSync == null) return@forEach
-            val resource = cap.resourceName
-            val key = "$orgId|$resource"
+            val resourcePath = cap.domainName + "." + cap.packageName + "." + cap.resourceName
+            val key = "$orgId|$resourcePath"
 
             val backing = contractGauges.computeIfAbsent(key) {
                 val ai = AtomicInteger(0)
                 Gauge.builder("adapter_contract_gauge") { ai.get().toDouble() }
                     .description("Adapter contract status")
-                    .tags(Tags.of("org", orgId, "resource", resource))
+                    .tags(Tags.of("org", orgId, "resource", resourcePath))
                     .register(meterRegistry)
                 ai
             }
