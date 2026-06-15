@@ -8,11 +8,13 @@ import java.util.*
 class FintEventService(val eventStatusCache: EventStatusCache) {
 
 
-    fun getEventsMetrics(): Map<String, Int> {
+    fun getEventsMetrics(): Map<String, Map<String, Int>> {
         val all = eventStatusCache.getAll()
         return mapOf(
+            "EventsMetrics" to mapOf(
             "total" to all.size,
             "errors" to all.count { it.hasError }
+            )
         )
     }
 
