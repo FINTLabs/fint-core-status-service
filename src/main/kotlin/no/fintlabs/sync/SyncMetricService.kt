@@ -19,7 +19,7 @@ class SyncMetricService(
     fun publishContractMetrics(capabilities: List<CapabilityEntity>, orgId: String) {
         capabilities.forEach { cap ->
             if (cap.lastFullSync == null) return@forEach
-            val resourcePath = cap.domainName + "." + cap.packageName + "." + cap.resourceName
+            val resourcePath = cap.domainName + "/" + cap.packageName + "/" + cap.resourceName
             val key = "$orgId|$resourcePath"
 
             val backing = contractGauges.computeIfAbsent(key) {
