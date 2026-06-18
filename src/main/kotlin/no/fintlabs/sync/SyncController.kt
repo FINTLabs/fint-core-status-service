@@ -32,6 +32,6 @@ class SyncController(
             ?.let { ResponseEntity.ok(it) }
             ?: ResponseEntity.notFound().build()
 
-    @GetMapping("/metrics")
+    @GetMapping("/sync-metrics")
     fun getSyncMetrics() = syncService.getMetrics()
 }
