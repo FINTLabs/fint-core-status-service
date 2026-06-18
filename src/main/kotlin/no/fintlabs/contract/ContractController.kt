@@ -19,7 +19,7 @@ class ContractController(
         return ResponseEntity.ok(contractService.getAll())
     }
 
-    @GetMapping("/metrics")
+    @GetMapping("/contract-metrics")
     fun getContractMetrics() = contractService.getContractMetrics()
 
     @GetMapping("/{orgId}/domain/{domain}")
