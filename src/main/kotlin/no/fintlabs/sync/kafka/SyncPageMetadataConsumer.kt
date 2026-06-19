@@ -30,8 +30,7 @@ class SyncPageMetadataConsumer(
         return eventConsumerFactoryService.createFactory(
             SyncPageMetadata::class.java,
             this::processEvent,
-            EventConsumerConfiguration.builder()
-                .build()
+            EventConsumerConfiguration.builder().build()
         ).createContainer(
             EventTopicNamePatternParameters.builder()
                 .orgId(FormattedTopicComponentPattern.containing("fintlabs-no"))
