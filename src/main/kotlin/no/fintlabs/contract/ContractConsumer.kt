@@ -24,9 +24,7 @@ class ContractConsumer(private val contractJpaRepository: ContractJpaRepository)
         return eventConsumerFactoryService.createFactory(
             AdapterContract::class.java,
             this::processEvent,
-            EventConsumerConfiguration.builder()
-                .seekingOffsetResetOnAssignment(true)
-                .build()
+            EventConsumerConfiguration.builder().build()
         ).createContainer(
             EventTopicNamePatternParameters.builder()
                 .orgId(FormattedTopicComponentPattern.any())
