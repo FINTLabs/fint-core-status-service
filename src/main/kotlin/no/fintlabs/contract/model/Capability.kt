@@ -27,20 +27,4 @@ data class Capability(
             )
         }
     }
-
-    fun updateLastFullSync(newLastFullSync: Long) {
-        if (lastFullSync == null || newLastFullSync > lastFullSync!!) {
-            lastFullSync = newLastFullSync
-        }
-    }
-
-    fun updateFollowsContract() {
-        followsContract = lastFullSync?.getDaysSinceNow()
-            ?.let { it <= fullSyncIntervalInDays }
-            ?: false
-    }
-
-    private fun Long.getDaysSinceNow(): Long =
-        this.let { Duration.between(Instant.ofEpochMilli(it), Instant.now()) }.toDays()
-
 }

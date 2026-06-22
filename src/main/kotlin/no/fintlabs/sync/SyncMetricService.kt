@@ -4,6 +4,7 @@ import io.micrometer.core.instrument.Gauge
 import io.micrometer.core.instrument.MeterRegistry
 import io.micrometer.core.instrument.Tags
 import no.fintlabs.contract.model.Capability
+import no.fintlabs.contract.model.CapabilityEntity
 import no.fintlabs.sync.model.SyncMetadata
 import org.springframework.stereotype.Component
 import java.util.concurrent.ConcurrentHashMap
@@ -15,16 +16,17 @@ class SyncMetricService(
 ) {
     private val contractGauges = ConcurrentHashMap<String, AtomicInteger>()
 
-    fun publishContractMetrics(capabilities: List<Capability>, orgId: String) {
+    fun publishContractMetrics(capabilities: List<CapabilityEntity>, orgId: String) {
         capabilities.forEach { cap ->
-            val resource = cap.resourceName
-            val key = "$orgId|$resource"
+            if (cap.lastFullSync == null) return@forEach
+            val resourcePath = cap.domainName + "/" + cap.packageName + "/" + cap.resourceName
+            val key = "$orgId|$resourcePath"
 
             val backing = contractGauges.computeIfAbsent(key) {
                 val ai = AtomicInteger(0)
                 Gauge.builder("adapter_contract_gauge") { ai.get().toDouble() }
                     .description("Adapter contract status")
-                    .tags(Tags.of("org", orgId, "resource", resource))
+                    .tags(Tags.of("org", orgId, "resource", resourcePath))
                     .register(meterRegistry)
                 ai
             }

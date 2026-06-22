@@ -25,10 +25,10 @@ spec:
         path: /
   env:
     - name: JAVA_TOOL_OPTIONS
-      value: '-XX:+ExitOnOutOfMemoryError -Xmx525M'
+      value: '-XX:+ExitOnOutOfMemoryError -Xmx4525M'
   resources:
     limits:
-      memory: "1Gi"
+      memory: "5Gi"
       cpu: "500m"
     requests:
       memory: "500Mi"
