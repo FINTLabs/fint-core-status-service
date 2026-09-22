@@ -1,17 +1,22 @@
 package no.fintlabs.contract.heartbeat
 
 import no.fintlabs.adapter.models.AdapterHeartbeat
+import no.fintlabs.contract.ContractService
 import no.fintlabs.kafka.common.topic.pattern.FormattedTopicComponentPattern
 import no.fintlabs.kafka.common.topic.pattern.ValidatedTopicComponentPattern
 import no.fintlabs.kafka.event.EventConsumerFactoryService
 import no.fintlabs.kafka.event.topic.EventTopicNamePatternParameters
 import org.apache.kafka.clients.consumer.ConsumerRecord
+import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Bean
 import org.springframework.kafka.listener.ConcurrentMessageListenerContainer
 import org.springframework.stereotype.Component
+import kotlin.math.log
 
 @Component
-class HeartbeatConsumer(val heartbeatCache: HeartbeatCache) {
+class HeartbeatConsumer(val heartbeatCache: HeartbeatCache, val contractService: ContractService) {
+
+    private val log = LoggerFactory.getLogger(HeartbeatChecker::class.java)
 
     @Bean
     fun registerAdapterHeartbeatKafkaConsumer(eventConsumerFactoryService: EventConsumerFactoryService): ConcurrentMessageListenerContainer<String, AdapterHeartbeat> {
@@ -28,6 +33,12 @@ class HeartbeatConsumer(val heartbeatCache: HeartbeatCache) {
     }
 
     fun processEvent(consumerRecord: ConsumerRecord<String, AdapterHeartbeat>) {
-        heartbeatCache.add(consumerRecord.value())
+        log.info("consuming heartbeat for adapter: ${consumerRecord.value().adapterId}")
+        try {
+            heartbeatCache.add(consumerRecord.value())
+            contractService.updateHeartbeat(consumerRecord.value())
+        } catch (e: Exception) {
+            log.error("Failed to process heartbeat for adapter: ${consumerRecord.value().adapterId}", e)
+        }
     }
 }

@@ -1,7 +1,7 @@
 package no.fintlabs.contract
 
-import no.fintlabs.contract.model.AdapterStatus
-import no.fintlabs.contract.model.Contract
+import no.fintlabs.contract.model.AdapterOverview
+import no.fintlabs.contract.model.ContractEntity
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -11,17 +11,16 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/contract")
 class ContractController(
-    val adapterContractCache: ContractCache,
     val contractService: ContractService
 ) {
 
     @GetMapping
-    fun getContracts(): ResponseEntity<MutableCollection<Contract>> {
-        return ResponseEntity.ok(adapterContractCache.getAll())
+    fun getContracts(): ResponseEntity<MutableCollection<ContractEntity>> {
+        return ResponseEntity.ok(contractService.getAll())
     }
 
-    @GetMapping("/inactive")
-    fun getInactiveContracts(): List<Contract> = contractService.inactiveContracts()
+    @GetMapping("/contract-metrics")
+    fun getContractMetrics() = contractService.getContractMetrics()
 
     @GetMapping("/{orgId}/domain/{domain}")
     fun getDomainStatus(
@@ -36,5 +35,5 @@ class ContractController(
     ) = contractService.getByOrgAndComponent(orgId, component)
 
     @GetMapping("/status")
-    fun getAdapters(): Set<AdapterStatus> = contractService.getStatus()
+    fun getAdapters(): Set<AdapterOverview> = contractService.getStatus()
 }

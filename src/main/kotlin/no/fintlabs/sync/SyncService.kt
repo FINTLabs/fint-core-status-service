@@ -1,11 +1,12 @@
 package no.fintlabs.sync
 
+import no.fintlabs.adapter.models.sync.SyncType
 import no.fintlabs.sync.model.SyncMetadata
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 
 @Component
-class SyncCache(
+class SyncService(
     private val syncProgressionService: SyncProgressionService,
     private val repository: SyncJpaRepository
 ) {
@@ -32,8 +33,28 @@ class SyncCache(
     }
 
     fun getByTimeRange(from: Long?, to: Long?): Collection<SyncMetadata> {
-        var sixHoursAgo = System.currentTimeMillis() - 6 * 60 * 60 * 1000
+        var twentyFourHoursAgo = System.currentTimeMillis() - 24 * 60 * 60 * 1000
         if (from != null && to != null) return repository.findByTime(from, to).map { it.toDomain() }
-        else return repository.findByTime(sixHoursAgo, System.currentTimeMillis()).map { it.toDomain() }
+        else return repository.findByTime(twentyFourHoursAgo, System.currentTimeMillis()).map { it.toDomain() }
+    }
+
+    fun getByAdapterIds(adapterIds: Set<String>): Map<String, List<SyncMetadata>> =
+        repository.findByAdapterIdIn(adapterIds)
+            .map { it.toDomain() }
+            .groupBy { it.adapterId }
+
+    fun getByCorrId(id: String): SyncMetadata? = getAll().firstOrNull { it.corrId == id }
+
+    private fun SyncType.isFull() = this == SyncType.FULL
+
+    private fun SyncType.isDelta() = this == SyncType.DELTA
+
+    fun getMetrics(): Map<String, Map<String, Int>> {
+        return mapOf(
+            "SyncMetrics" to mapOf(
+                "full" to getAll().count { it.syncType == SyncType.FULL },
+                "delta" to getAll().count { it.syncType == SyncType.DELTA }
+            )
+        )
     }
 }

@@ -6,17 +6,17 @@ import org.springframework.stereotype.Service
 
 @Service
 class ContractCapabilityScheduler(
-    private val contractCache: ContractCache,
-    private val syncMetricService: SyncMetricService
+    private val syncMetricService: SyncMetricService,
+    private val contractJpaRepository: ContractJpaRepository
 ) {
 
     @Scheduled(cron = "0 * * * * *")
     fun updateFollowsContract() {
-        contractCache.getAll().onEach { contract ->
-            contract.getCapabilities().forEach { capability ->
+        contractJpaRepository.findAll().onEach { contract ->
+            contract.capabilities.forEach { capability ->
                 capability.updateFollowsContract()
             }
-            syncMetricService.publishContractMetrics(contract.capabilities.values.toList(), contract.orgId)
+            syncMetricService.publishContractMetrics(contract.capabilities.toList(), contract.orgId)
         }
     }
 }

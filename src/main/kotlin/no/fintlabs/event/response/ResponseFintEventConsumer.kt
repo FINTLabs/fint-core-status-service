@@ -45,7 +45,7 @@ class ResponseFintEventConsumer(
                 "adapterId is missing for corrId=${responseEvent.corrId}"
             }
             contractService.updateActivity(responseEvent.adapterId, responseEvent.handledAt)
-            responseFintEventJpaRepository.save(mappingService.mapResponseFintEventToEntity(responseEvent, consumerRecord.topic()))
+            responseFintEventJpaRepository.save(ResponseFintEventEntity.fromResponseEvent(responseEvent, consumerRecord.topic()))
             eventStatusCache.add(responseEvent, consumerRecord.topic())
         } catch (e: ListenerExecutionFailedException) {
             log.error("AdapterId missing on event with corrId={}", responseEvent.corrId, e)

@@ -15,6 +15,7 @@ class EventStatusCache() {
     private val log = LoggerFactory.getLogger(ResponseFintEventConsumer::class.java)
     val cache: ConcurrentHashMap<String, EventStatus> = ConcurrentHashMap()
 
+    fun getAll(): Collection<EventStatus> = cache.values
 
     fun add(fintEvent: FintEvent, topic: String) {
         cache.compute(fintEvent.corrId) { _, cachedEvent ->

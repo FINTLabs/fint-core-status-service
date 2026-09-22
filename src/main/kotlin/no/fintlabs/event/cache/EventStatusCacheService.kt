@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 
+//TODO: REFACTOR: dont know what i was thinking here
 @Component
 class EventStatusCacheService(
     private val requestFintEventJpaRepository: RequestFintEventJpaRepository,

@@ -7,8 +7,7 @@ import no.fintlabs.kafka.common.topic.pattern.ValidatedTopicComponentPattern
 import no.fintlabs.kafka.event.EventConsumerConfiguration
 import no.fintlabs.kafka.event.EventConsumerFactoryService
 import no.fintlabs.kafka.event.topic.EventTopicNamePatternParameters
-import no.fintlabs.sync.SyncCache
-import no.fintlabs.sync.SyncJpaRepository
+import no.fintlabs.sync.SyncService
 import no.fintlabs.sync.kafka.KafkaTopicConstants.Companion.ADAPTER_SYNC_TOPICS
 import no.fintlabs.sync.model.SyncMetadata
 import org.apache.kafka.clients.consumer.ConsumerRecord
@@ -19,9 +18,8 @@ import org.springframework.stereotype.Component
 
 @Component
 class SyncPageMetadataConsumer(
-    val syncCache: SyncCache,
-    val contractService: ContractService,
-    val repository: SyncJpaRepository
+    val syncCache: SyncService,
+    val contractService: ContractService
 ) {
 
     private val log = LoggerFactory.getLogger(SyncPageMetadataConsumer::class.java)
@@ -32,9 +30,7 @@ class SyncPageMetadataConsumer(
         return eventConsumerFactoryService.createFactory(
             SyncPageMetadata::class.java,
             this::processEvent,
-            EventConsumerConfiguration.builder()
-                .seekingOffsetResetOnAssignment(true)
-                .build()
+            EventConsumerConfiguration.builder().build()
         ).createContainer(
             EventTopicNamePatternParameters.builder()
                 .orgId(FormattedTopicComponentPattern.containing("fintlabs-no"))
@@ -49,7 +45,6 @@ class SyncPageMetadataConsumer(
         val syncType = topicSplit[topicSplit.size - 2]
         val syncMetadata = SyncMetadata.create(consumerRecord.value(), syncType)
 
-        log.debug("Consumed {}-sync From: {}", syncType, syncMetadata.adapterId)
         contractService.updateActivity(syncMetadata)
         syncCache.add(syncMetadata)
     }
