@@ -28,8 +28,7 @@ spec:
       value: '-XX:+ExitOnOutOfMemoryError -Xmx525M'
   resources:
     limits:
-      memory: "1Gi"
-      cpu: "500m"
+      memory: "5Gi"
     requests:
-      memory: "500Mi"
-      cpu: "100m"
+      memory: "1Gi"
+      cpu: "1"
