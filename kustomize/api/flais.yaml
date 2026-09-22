@@ -30,8 +30,7 @@ spec:
       value: /api
   resources:
     limits:
+      memory: "5Gi"
+    requests:
       memory: "1Gi"
       cpu: "1"
-    requests:
-      memory: "500Mi"
-      cpu: "100m"
