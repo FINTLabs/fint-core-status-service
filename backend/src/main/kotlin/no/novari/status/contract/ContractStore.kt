@@ -13,6 +13,7 @@ import java.time.Instant
  * Contracts are identified by (username, orgId), the same key the adapter gateway uses.
  * A heartbeat for a contract we have not seen registered creates it with registered = false,
  * so adapters that registered before the contract topic's retention window still show up.
+ * A tombstone on the contract topic deletes the contract and its capabilities.
  */
 @Repository
 class ContractStore(
@@ -83,6 +84,17 @@ class ContractStore(
             .param("orgId", normalizeOrgId(message.orgId))
             .param("adapterId", message.adapterId)
             .param("at", at.toOffset())
+            .update()
+    }
+
+    fun delete(
+        username: String,
+        orgId: String,
+    ) {
+        jdbcClient
+            .sql("delete from contract where username = :username and org_id = :orgId")
+            .param("username", username)
+            .param("orgId", normalizeOrgId(orgId))
             .update()
     }
 }

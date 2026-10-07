@@ -104,6 +104,19 @@ class StatusListenerIntegrationTest {
     }
 
     @Test
+    fun `a tombstone deletes the contract and its capabilities`() {
+        send(StatusTopics.CONTRACT, contract(capabilities = setOf(capability("elev"))), key = "adapter@afk.no\u001Fafk.no")
+        await.atMost(Duration.ofSeconds(20)) untilAsserted { assertEquals(1, count("select count(*) from capability")) }
+
+        producer.send(ProducerRecord<String, String>(StatusTopics.CONTRACT, "adapter@afk.no\u001Fafk.no", null)).get()
+
+        await.atMost(Duration.ofSeconds(20)) untilAsserted {
+            assertEquals(0, count("select count(*) from contract"))
+            assertEquals(0, count("select count(*) from capability"))
+        }
+    }
+
+    @Test
     fun `a heartbeat for an unknown contract creates an unregistered contract`() {
         send(StatusTopics.HEARTBEAT, heartbeat(orgId = "ude.oslo.kommune.no"))
 
@@ -177,8 +190,9 @@ class StatusListenerIntegrationTest {
     private fun send(
         topic: String,
         value: Any,
+        key: String? = null,
     ) {
-        producer.send(ProducerRecord(topic, objectMapper.writeValueAsString(value))).get()
+        producer.send(ProducerRecord(topic, key, objectMapper.writeValueAsString(value))).get()
     }
 
     private fun count(sql: String): Long =

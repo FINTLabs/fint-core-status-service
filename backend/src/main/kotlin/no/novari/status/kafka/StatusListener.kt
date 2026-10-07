@@ -22,29 +22,35 @@ class StatusListener(
     private val logger = LoggerFactory.getLogger(javaClass)
 
     @KafkaListener(topics = [StatusTopics.CONTRACT])
-    fun onContract(record: ConsumerRecord<String, String>) =
+    fun onContract(record: ConsumerRecord<String, String?>) {
+        if (record.value() == null) {
+            ContractKey.parse(record.key())?.let { contractStore.delete(it.username, it.orgId) }
+                ?: logger.warn("Skipping contract tombstone without a valid key at offset {}", record.offset())
+            return
+        }
         handle(record) { contractStore.saveRegistration(jsonMapper.readValue<ContractMessage>(it), record.time()) }
+    }
 
     @KafkaListener(topics = [StatusTopics.HEARTBEAT])
-    fun onHeartbeat(record: ConsumerRecord<String, String>) =
+    fun onHeartbeat(record: ConsumerRecord<String, String?>) =
         handle(record) { contractStore.saveHeartbeat(jsonMapper.readValue<HeartbeatMessage>(it), record.time()) }
 
     @KafkaListener(topics = [StatusTopics.FULL_SYNC, StatusTopics.DELTA_SYNC, StatusTopics.DELETE_SYNC])
-    fun onSyncPage(record: ConsumerRecord<String, String>) =
+    fun onSyncPage(record: ConsumerRecord<String, String?>) =
         handle(record) {
             syncStore.savePage(StatusTopics.syncTypeOf(record.topic()), jsonMapper.readValue<SyncPageMessage>(it), record.time())
         }
 
     @KafkaListener(topics = [StatusTopics.EVENT_REQUEST])
-    fun onRequest(record: ConsumerRecord<String, String>) =
+    fun onRequest(record: ConsumerRecord<String, String?>) =
         handle(record) { eventStore.saveRequest(jsonMapper.readValue<RequestEventMessage>(it), record.time()) }
 
     @KafkaListener(topics = [StatusTopics.EVENT_RESPONSE])
-    fun onResponse(record: ConsumerRecord<String, String>) =
+    fun onResponse(record: ConsumerRecord<String, String?>) =
         handle(record) { eventStore.saveResponse(jsonMapper.readValue<ResponseEventMessage>(it), record.time()) }
 
     private fun handle(
-        record: ConsumerRecord<String, String>,
+        record: ConsumerRecord<String, String?>,
         save: (String) -> Unit,
     ) {
         val value = record.value() ?: return
