@@ -74,7 +74,7 @@ class StatusListenerIntegrationTest {
 
     @BeforeEach
     fun clean() {
-        jdbcClient.sql("truncate contract, capability, sync, sync_page, event cascade").update()
+        jdbcClient.sql("truncate contract, capability, heartbeat, sync, sync_page, event cascade").update()
     }
 
     @AfterAll
@@ -85,7 +85,7 @@ class StatusListenerIntegrationTest {
         send(StatusTopics.CONTRACT, contract(orgId = "AFK-no", capabilities = setOf(capability("elev"), capability("klasse"))))
 
         await.atMost(Duration.ofSeconds(20)) untilAsserted {
-            assertEquals(1, count("select count(*) from contract where username = 'adapter@afk.no' and org_id = 'afk.no' and registered"))
+            assertEquals(1, count("select count(*) from contract where username = 'adapter@afk.no' and org_id = 'afk.no'"))
             assertEquals(2, count("select count(*) from capability"))
         }
     }
@@ -117,16 +117,15 @@ class StatusListenerIntegrationTest {
     }
 
     @Test
-    fun `a heartbeat for an unknown contract creates an unregistered contract`() {
+    fun `heartbeats are stored per username and org, whether or not the contract has arrived`() {
         send(StatusTopics.HEARTBEAT, heartbeat(orgId = "ude.oslo.kommune.no"))
 
         await.atMost(Duration.ofSeconds(20)) untilAsserted {
             assertEquals(
                 1,
-                count(
-                    "select count(*) from contract where org_id = 'ude.oslo.kommune.no' and not registered and last_heartbeat_at is not null",
-                ),
+                count("select count(*) from heartbeat where username = 'adapter@afk.no' and org_id = 'ude.oslo.kommune.no'"),
             )
+            assertEquals(0, count("select count(*) from contract"))
         }
     }
 
@@ -184,7 +183,7 @@ class StatusListenerIntegrationTest {
         producer.send(ProducerRecord(StatusTopics.HEARTBEAT, "not json")).get()
         send(StatusTopics.HEARTBEAT, heartbeat())
 
-        await.atMost(Duration.ofSeconds(20)) untilAsserted { assertEquals(1, count("select count(*) from contract")) }
+        await.atMost(Duration.ofSeconds(20)) untilAsserted { assertEquals(1, count("select count(*) from heartbeat")) }
     }
 
     private fun send(

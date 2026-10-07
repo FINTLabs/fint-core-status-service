@@ -2,6 +2,7 @@ package no.novari.status.kafka
 
 import no.novari.status.contract.ContractStore
 import no.novari.status.event.EventStore
+import no.novari.status.heartbeat.HeartbeatStore
 import no.novari.status.sync.SyncStore
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.slf4j.LoggerFactory
@@ -16,6 +17,7 @@ import java.time.Instant
 class StatusListener(
     private val jsonMapper: JsonMapper,
     private val contractStore: ContractStore,
+    private val heartbeatStore: HeartbeatStore,
     private val syncStore: SyncStore,
     private val eventStore: EventStore,
 ) {
@@ -33,7 +35,7 @@ class StatusListener(
 
     @KafkaListener(topics = [StatusTopics.HEARTBEAT])
     fun onHeartbeat(record: ConsumerRecord<String, String?>) =
-        handle(record) { contractStore.saveHeartbeat(jsonMapper.readValue<HeartbeatMessage>(it), record.time()) }
+        handle(record) { heartbeatStore.save(jsonMapper.readValue<HeartbeatMessage>(it), record.time()) }
 
     @KafkaListener(topics = [StatusTopics.FULL_SYNC, StatusTopics.DELTA_SYNC, StatusTopics.DELETE_SYNC])
     fun onSyncPage(record: ConsumerRecord<String, String?>) =

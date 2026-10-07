@@ -4,7 +4,7 @@ data class ContractMessage(
     val adapterId: String,
     val orgId: String,
     val username: String,
-    val heartbeatIntervalInMinutes: Int? = null,
+    val heartbeatIntervalInMinutes: Int,
     val capabilities: Set<CapabilityMessage> = emptySet(),
 )
 

@@ -39,6 +39,6 @@ class LegacySchemaMigrationTest {
                 ).query(String::class.java)
                 .list()
                 .toSet()
-        assertEquals(setOf("contract", "capability", "sync", "sync_page", "event"), tables)
+        assertEquals(setOf("contract", "capability", "heartbeat", "sync", "sync_page", "event"), tables)
     }
 }

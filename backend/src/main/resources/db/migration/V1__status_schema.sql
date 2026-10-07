@@ -7,12 +7,17 @@ create table contract (
     username               text        not null,
     org_id                 text        not null,
     adapter_id             text        not null,
-    heartbeat_interval_min integer,
-    registered             boolean     not null,
-    first_seen_at          timestamptz not null,
-    registered_at          timestamptz,
-    last_heartbeat_at      timestamptz,
+    heartbeat_interval_min integer     not null,
+    registered_at          timestamptz not null,
     unique (username, org_id)
+);
+
+create table heartbeat (
+    username     text        not null,
+    org_id       text        not null,
+    adapter_id   text        not null,
+    last_seen_at timestamptz not null,
+    primary key (username, org_id)
 );
 
 create table capability (

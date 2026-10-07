@@ -1,7 +1,6 @@
 package no.novari.status.contract
 
 import no.novari.status.kafka.ContractMessage
-import no.novari.status.kafka.HeartbeatMessage
 import no.novari.status.normalizeOrgId
 import no.novari.status.toOffset
 import org.springframework.jdbc.core.simple.JdbcClient
@@ -11,9 +10,8 @@ import java.time.Instant
 
 /**
  * Contracts are identified by (username, orgId), the same key the adapter gateway uses.
- * A heartbeat for a contract we have not seen registered creates it with registered = false,
- * so adapters that registered before the contract topic's retention window still show up.
- * A tombstone on the contract topic deletes the contract and its capabilities.
+ * A new registration replaces the capability list, and a tombstone on the contract topic
+ * deletes the contract and its capabilities.
  */
 @Repository
 class ContractStore(
@@ -28,12 +26,11 @@ class ContractStore(
             jdbcClient
                 .sql(
                     """
-                    insert into contract (username, org_id, adapter_id, heartbeat_interval_min, registered, first_seen_at, registered_at)
-                    values (:username, :orgId, :adapterId, :interval, true, :at, :at)
+                    insert into contract (username, org_id, adapter_id, heartbeat_interval_min, registered_at)
+                    values (:username, :orgId, :adapterId, :interval, :at)
                     on conflict (username, org_id) do update set
                         adapter_id = excluded.adapter_id,
                         heartbeat_interval_min = excluded.heartbeat_interval_min,
-                        registered = true,
                         registered_at = excluded.registered_at
                     returning id
                     """,
@@ -66,25 +63,6 @@ class ContractStore(
                 .param("deltaSyncInterval", capability.deltaSyncInterval)
                 .update()
         }
-    }
-
-    fun saveHeartbeat(
-        message: HeartbeatMessage,
-        at: Instant,
-    ) {
-        jdbcClient
-            .sql(
-                """
-                insert into contract (username, org_id, adapter_id, registered, first_seen_at, last_heartbeat_at)
-                values (:username, :orgId, :adapterId, false, :at, :at)
-                on conflict (username, org_id) do update set
-                    last_heartbeat_at = greatest(contract.last_heartbeat_at, excluded.last_heartbeat_at)
-                """,
-            ).param("username", message.username)
-            .param("orgId", normalizeOrgId(message.orgId))
-            .param("adapterId", message.adapterId)
-            .param("at", at.toOffset())
-            .update()
     }
 
     fun delete(
