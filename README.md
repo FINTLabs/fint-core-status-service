@@ -11,10 +11,11 @@ The frontend was moved here from `FINTLabs/fint-core-status-service-frontend` wi
 
 ## Build and deploy
 
-Each part has its own workflow and only runs when its directory changes:
+The setup follows fint-core:
 
-- `.github/workflows/backend.yaml`: builds and tests on pull requests, deploys to beta on `main`.
-- `.github/workflows/frontend.yaml`: builds on pull requests, deploys to api on `main`.
-- `.github/workflows/backend-manual-deploy.yaml`: deploys the backend to a chosen cluster by hand.
+- **CI** (`ci.yml`) checks only the parts whose code changed.
+- **CD** (`cd.yml`) runs on `main` (api) and `develop` (beta). Each image is tagged `sha-<last commit that changed the code>`, so a change to `kustomize/` or a README only redeploys the image that is already there, without a new build. The paths that count as code are listed in `.github/scripts/paths.sh`.
+- A part is only deployed to an environment it has an overlay for, for example `backend/kustomize/beta`. The frontend only runs in api.
+- `backend-manual-deploy.yaml` deploys the backend to a chosen cluster by hand, which is how alpha is deployed.
 
 See [`backend/README.md`](backend/README.md) and [`frontend/README.md`](frontend/README.md) for running each part locally.

@@ -1,0 +1,166 @@
+name: CD
+
+on:
+  push:
+    branches: [main, develop]
+
+concurrency:
+  group: deploy-${{ github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      environment: ${{ steps.env.outputs.environment }}
+      cluster: ${{ steps.env.outputs.cluster }}
+      backend-image: ${{ steps.versions.outputs.backend-image }}
+      frontend-image: ${{ steps.versions.outputs.frontend-image }}
+      parts: ${{ steps.versions.outputs.parts }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Map branch to environment
+        id: env
+        run: |
+          case "$GITHUB_REF_NAME" in
+            main)    echo "environment=api"  >> "$GITHUB_OUTPUT"; echo "cluster=aks-api-fint-2022-02-08"  >> "$GITHUB_OUTPUT" ;;
+            develop) echo "environment=beta" >> "$GITHUB_OUTPUT"; echo "cluster=aks-beta-fint-2021-11-23" >> "$GITHUB_OUTPUT" ;;
+            *) echo "no environment for branch $GITHUB_REF_NAME"; exit 1 ;;
+          esac
+
+      - name: Resolve per-part versions
+        id: versions
+        run: |
+          eval "$(.github/scripts/part-versions.sh)"
+          echo "backend=$backend frontend=$frontend"
+          echo "backend-image=ghcr.io/fintlabs/fint-core-status-service:sha-$backend" >> "$GITHUB_OUTPUT"
+          echo "frontend-image=ghcr.io/fintlabs/fint-core-status-service-frontend:sha-$frontend" >> "$GITHUB_OUTPUT"
+          jq -nc --arg b "$backend" --arg f "$frontend" \
+            '[{part:"backend", image:"fint-core-status-service", sha:$b}, {part:"frontend", image:"fint-core-status-service-frontend", sha:$f}]' \
+            | sed 's/^/parts=/' >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: setup
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJson(needs.setup.outputs.parts) }}
+    env:
+      IMAGE: ghcr.io/fintlabs/${{ matrix.image }}:sha-${{ matrix.sha }}
+    steps:
+      - uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check whether ${{ env.IMAGE }} already exists
+        id: exists
+        run: |
+          if docker manifest inspect "$IMAGE" > /dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+            echo "$IMAGE already in registry, skipping build"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v7
+        if: steps.exists.outputs.exists == 'false'
+
+      - name: Build and push
+        if: steps.exists.outputs.exists == 'false'
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.part }}
+          push: true
+          tags: ${{ env.IMAGE }}
+          labels: |
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+            org.opencontainers.image.revision=${{ matrix.sha }}
+
+  deploy:
+    needs: [setup, build]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        part: [backend, frontend]
+    environment: ${{ needs.setup.outputs.environment }}
+    env:
+      ENVIRONMENT: ${{ needs.setup.outputs.environment }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Resolve kustomize path and image
+        id: target
+        env:
+          PART: ${{ matrix.part }}
+          BACKEND_IMAGE: ${{ needs.setup.outputs.backend-image }}
+          FRONTEND_IMAGE: ${{ needs.setup.outputs.frontend-image }}
+        run: |
+          case "$PART" in
+            backend)  path="backend/kustomize/$ENVIRONMENT"; image="$BACKEND_IMAGE" ;;
+            frontend) path="frontend/kustomize/$ENVIRONMENT"; image="$FRONTEND_IMAGE" ;;
+          esac
+          if [ -d "$path" ]; then
+            echo "deploy=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "deploy=false" >> "$GITHUB_OUTPUT"
+            echo "$PART has no overlay for $ENVIRONMENT, skipping"
+          fi
+          echo "path=$path" >> "$GITHUB_OUTPUT"
+          echo "image=$image" >> "$GITHUB_OUTPUT"
+
+      - name: Bake manifests with Kustomize
+        if: steps.target.outputs.deploy == 'true'
+        id: bake
+        uses: azure/k8s-bake@v4.0.0
+        with:
+          renderEngine: "kustomize"
+          kustomizationPath: ${{ steps.target.outputs.path }}
+
+      - name: Substitute image into baked YAML
+        if: steps.target.outputs.deploy == 'true'
+        id: substitute
+        uses: azure/k8s-artifact-substitute@v2.0.0
+        with:
+          manifests: ${{ steps.bake.outputs.manifestsBundle }}
+          images: ${{ steps.target.outputs.image }}
+
+      - uses: azure/login@v3.0.0
+        if: steps.target.outputs.deploy == 'true'
+        with:
+          creds: "${{ secrets[format('AKS_{0}_FINT_GITHUB', needs.setup.outputs.environment)] }}"
+
+      - uses: azure/use-kubelogin@v1
+        if: steps.target.outputs.deploy == 'true'
+        with:
+          kubelogin-version: "v0.0.26"
+
+      - name: Set the target cluster
+        if: steps.target.outputs.deploy == 'true'
+        uses: azure/aks-set-context@v5.0.0
+        with:
+          cluster-name: ${{ needs.setup.outputs.cluster }}
+          resource-group: rg-aks-${{ needs.setup.outputs.environment }}
+          admin: "true"
+          use-kubelogin: "true"
+
+      - name: Deploy
+        if: steps.target.outputs.deploy == 'true'
+        uses: azure/k8s-deploy@v6.0.0
+        with:
+          action: deploy
+          manifests: ${{ steps.substitute.outputs.manifests }}
+          images: ${{ steps.target.outputs.image }}
+          pull-images: false
+          namespace: fint-core
