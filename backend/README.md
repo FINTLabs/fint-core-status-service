@@ -1,31 +1,34 @@
-# FINT Core Status Service
+# Status service backend
 
-## Overview
-The **fint-core-status-service** is a backend service designed to fetch and present metadata and events produced by the [provider-gateway](https://github.com/FINTLabs/fint-core-provider-gateway). The service updates and displays metadata in a presentable way, while also updating the health status of each **AdapterContract** by monitoring their heartbeats.
+Reads the status topics that fint-core publishes and stores what it needs in Postgres. The API is served under `/api/v1`.
 
-### Key Features:
-- **Heartbeat Monitoring**: Listens to and tracks heartbeat events from each adapter to update their health status.
-- **Sync Events**: Fetches and monitors full-sync, delta-sync, and delete-sync events from each adapter. These events represent data sets that include full data transmissions, updates, and deletions.
-- **Entity Tracking**: Fetches the total number of entities being sent by each adapter to track how much data is delivered by each one.
+## Topics
 
-## Running the Project Locally
+All topics are global, written by every org's adapter gateway (or the client API for requests).
 
-### Prerequisites:
-- Java 21
-- Docker
-- Docker Compose
+| Topic | What we store |
+|---|---|
+| `novari-no.fint-core.fint-felleskomponent-adapter-contract` | Contracts and their capabilities, keyed on (username, orgId) |
+| `novari-no.fint-core.fint-felleskomponent-adapter-heartbeat` | Last heartbeat per contract, using the Kafka record time |
+| `novari-no.fint-core.fint-felleskomponent-adapter-{full,delta,delete}-sync` | One row per sync and one per received page |
+| `novari-no.fint-core.fint-felleskomponent-event-request` | Requests, as pending events |
+| `novari-no.fint-core.fint-felleskomponent-event-response` | Answers, failures and expiries for those events |
 
-### Steps to Run Locally:
-1. Clone the repository:
-   ```bash
-   git clone <repository-url>
-   cd fint-core-status-service
-   ```
-2. Run the docker-compose file
-    ```bash
-   docker-compose up -d
-   ```
-3. Start the service with the local profile
-    ```bash
-   ./gradlew bootRun --args='--spring.profiles.active=local'
-   ```
+The topics only keep data for one day, so Postgres is where history lives. Events and syncs are kept for 30 days.
+
+## Running locally
+
+Requires Docker. The Java 25 toolchain is downloaded by Gradle if you do not have it.
+
+```bash
+docker compose up -d
+./gradlew bootRun --args='--spring.profiles.active=local'
+```
+
+## Tests
+
+```bash
+./gradlew check
+```
+
+The integration tests start Postgres and Kafka with Testcontainers and send records shaped like the ones fint-core produces.

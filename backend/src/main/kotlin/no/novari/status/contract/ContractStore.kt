@@ -1,0 +1,88 @@
+package no.novari.status.contract
+
+import no.novari.status.kafka.ContractMessage
+import no.novari.status.kafka.HeartbeatMessage
+import no.novari.status.normalizeOrgId
+import no.novari.status.toOffset
+import org.springframework.jdbc.core.simple.JdbcClient
+import org.springframework.stereotype.Repository
+import org.springframework.transaction.annotation.Transactional
+import java.time.Instant
+
+/**
+ * Contracts are identified by (username, orgId), the same key the adapter gateway uses.
+ * A heartbeat for a contract we have not seen registered creates it with registered = false,
+ * so adapters that registered before the contract topic's retention window still show up.
+ */
+@Repository
+class ContractStore(
+    private val jdbcClient: JdbcClient,
+) {
+    @Transactional
+    fun saveRegistration(
+        message: ContractMessage,
+        at: Instant,
+    ) {
+        val contractId =
+            jdbcClient
+                .sql(
+                    """
+                    insert into contract (username, org_id, adapter_id, heartbeat_interval_min, registered, first_seen_at, registered_at)
+                    values (:username, :orgId, :adapterId, :interval, true, :at, :at)
+                    on conflict (username, org_id) do update set
+                        adapter_id = excluded.adapter_id,
+                        heartbeat_interval_min = excluded.heartbeat_interval_min,
+                        registered = true,
+                        registered_at = excluded.registered_at
+                    returning id
+                    """,
+                ).param("username", message.username)
+                .param("orgId", normalizeOrgId(message.orgId))
+                .param("adapterId", message.adapterId)
+                .param("interval", message.heartbeatIntervalInMinutes)
+                .param("at", at.toOffset())
+                .query(Long::class.java)
+                .single()
+
+        jdbcClient
+            .sql("delete from capability where contract_id = :contractId")
+            .param("contractId", contractId)
+            .update()
+
+        message.capabilities.forEach { capability ->
+            jdbcClient
+                .sql(
+                    """
+                    insert into capability (contract_id, domain_name, package_name, resource_name, full_sync_interval_days, delta_sync_interval)
+                    values (:contractId, :domain, :pkg, :resource, :fullSyncDays, :deltaSyncInterval)
+                    on conflict do nothing
+                    """,
+                ).param("contractId", contractId)
+                .param("domain", capability.domainName.lowercase())
+                .param("pkg", capability.packageName.lowercase())
+                .param("resource", capability.resourceName.lowercase())
+                .param("fullSyncDays", capability.fullSyncIntervalInDays)
+                .param("deltaSyncInterval", capability.deltaSyncInterval)
+                .update()
+        }
+    }
+
+    fun saveHeartbeat(
+        message: HeartbeatMessage,
+        at: Instant,
+    ) {
+        jdbcClient
+            .sql(
+                """
+                insert into contract (username, org_id, adapter_id, registered, first_seen_at, last_heartbeat_at)
+                values (:username, :orgId, :adapterId, false, :at, :at)
+                on conflict (username, org_id) do update set
+                    last_heartbeat_at = greatest(contract.last_heartbeat_at, excluded.last_heartbeat_at)
+                """,
+            ).param("username", message.username)
+            .param("orgId", normalizeOrgId(message.orgId))
+            .param("adapterId", message.adapterId)
+            .param("at", at.toOffset())
+            .update()
+    }
+}
