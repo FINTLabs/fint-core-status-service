@@ -1,0 +1,14 @@
+[
+  {
+    "adapterId": "https://vigoiks.no/fintlabs-no/personvern/samtykke",
+    "heartbeat": true,
+    "lastDelta": 0,
+    "lastFull": 1765362783215
+  },
+  {
+    "adapterId": "https://vigoiks.no/fintlabs-no/utdanning/vurdering/skeleton/beta",
+    "heartbeat": true,
+    "lastDelta": 1765361237489,
+    "lastFull": 0
+  }
+]

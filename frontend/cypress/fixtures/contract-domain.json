@@ -1,0 +1,23 @@
+[
+  {
+    "component": "utdanning-larling",
+    "hasContact": true,
+    "answersEvents": false,
+    "lastDeltaSync": 0,
+    "lastFullSync": 1766098800000
+  },
+  {
+    "component": "utdanning-ot",
+    "hasContact": true,
+    "answersEvents": false,
+    "lastDeltaSync": 0,
+    "lastFullSync": 1766012400000
+  },
+  {
+    "component": "utdanning-kodeverk",
+    "hasContact": true,
+    "answersEvents": false,
+    "lastDeltaSync": 0,
+    "lastFullSync": 1765566328610
+  }
+]

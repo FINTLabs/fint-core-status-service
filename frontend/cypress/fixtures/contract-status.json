@@ -1,0 +1,142 @@
+[
+  {
+    "organzation": "fintlabs.no",
+    "domain": "personvern",
+    "status": "NOT_FOLLOWING_CONTRACT"
+  },
+  {
+    "organzation": "fintlabs.no",
+    "domain": "utdanning",
+    "status": "NOT_FOLLOWING_CONTRACT"
+  },
+  {
+    "organzation": "rogfk.no",
+    "domain": "utdanning",
+    "status": "NOT_FOLLOWING_CONTRACT"
+  },
+  {
+    "organzation": "vestfoldfylke.no",
+    "domain": "administrasjon",
+    "status": "NOT_FOLLOWING_CONTRACT"
+  },
+  {
+    "organzation": "trondelagfylke.no",
+    "domain": "utdanning",
+    "status": "NOT_FOLLOWING_CONTRACT"
+  },
+  {
+    "organzation": "telemarkfylke.no",
+    "domain": "utdanning",
+    "status": "NOT_FOLLOWING_CONTRACT"
+  },
+  {
+    "organzation": "vestfoldfylke.no",
+    "domain": "utdanning",
+    "status": "NOT_FOLLOWING_CONTRACT"
+  },
+  {
+    "organzation": "tffk.no",
+    "domain": "utdanning",
+    "status": "NOT_FOLLOWING_CONTRACT"
+  },
+  {
+    "organzation": "nfk.no",
+    "domain": "utdanning",
+    "status": "NOT_FOLLOWING_CONTRACT"
+  },
+  {
+    "organzation": "mrfylke.no",
+    "domain": "utdanning",
+    "status": "NOT_FOLLOWING_CONTRACT"
+  },
+  {
+    "organzation": "agderfk.no",
+    "domain": "utdanning",
+    "status": "NOT_FOLLOWING_CONTRACT"
+  },
+  {
+    "organzation": "innlandetfylke.no",
+    "domain": "utdanning",
+    "status": "NOT_FOLLOWING_CONTRACT"
+  },
+  {
+    "organzation": "vlfk.no",
+    "domain": "utdanning",
+    "status": "NOT_FOLLOWING_CONTRACT"
+  },
+  {
+    "organzation": "ffk.no",
+    "domain": "utdanning",
+    "status": "NOT_FOLLOWING_CONTRACT"
+  },
+  {
+    "organzation": "bfk.no",
+    "domain": "utdanning",
+    "status": "NOT_FOLLOWING_CONTRACT"
+  },
+  {
+    "organzation": "ude.oslo.kommune.no",
+    "domain": "utdanning",
+    "status": "NOT_FOLLOWING_CONTRACT"
+  },
+  {
+    "organzation": "ofk.no",
+    "domain": "utdanning",
+    "status": "NOT_FOLLOWING_CONTRACT"
+  },
+  {
+    "organzation": "afk.no",
+    "domain": "utdanning",
+    "status": "NOT_FOLLOWING_CONTRACT"
+  },
+  {
+    "organzation": "rogfk.no",
+    "domain": "personvern",
+    "status": "NOT_FOLLOWING_CONTRACT"
+  },
+  {
+    "organzation": "sdworx.com",
+    "domain": "administrasjon",
+    "status": "NOT_FOLLOWING_CONTRACT"
+  },
+  {
+    "organzation": "telemarkfylke.no",
+    "domain": "administrasjon",
+    "status": "NO_HEARTBEAT"
+  },
+  {
+    "organzation": "vestfoldfylke.no",
+    "domain": "administrasjon",
+    "status": "NO_HEARTBEAT"
+  },
+  {
+    "organzation": "trondelagfylke.no",
+    "domain": "personvern",
+    "status": "NOT_FOLLOWING_CONTRACT"
+  },
+  {
+    "organzation": "tromsfylke.no",
+    "domain": "utdanning",
+    "status": "NOT_FOLLOWING_CONTRACT"
+  },
+  {
+    "organzation": "rogfk.no",
+    "domain": "administrasjon",
+    "status": "NO_HEARTBEAT"
+  },
+  {
+    "organzation": "th.rogfk.no",
+    "domain": "administrasjon",
+    "status": "NO_HEARTBEAT"
+  },
+  {
+    "organzation": "trondelagfylke.no",
+    "domain": "administrasjon",
+    "status": "NO_HEARTBEAT"
+  },
+  {
+    "organzation": "fintlabs.no",
+    "domain": "administrasjon",
+    "status": "NOT_FOLLOWING_CONTRACT"
+  }
+]

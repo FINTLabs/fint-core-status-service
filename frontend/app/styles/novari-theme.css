@@ -1,0 +1,32 @@
+/*.aksel-button[data-variant="tertiary"] {*/
+/*  color: #7F78E8;*/
+/*}*/
+
+.novari-header {
+  background-color: var(--ax-bg-brand-beige-soft);
+}
+
+/*--color-primary: #7F78E8;*/
+ .novari-header-title  {
+  color: #6B133D;
+}
+
+.novari-header-user {
+  color: #6B133D;
+}
+
+.novari-footer {
+  background-color: #6B133D;
+}
+.novari-json-box {
+  margin-top: 0.5rem;
+  padding: 1rem;
+  background-color: #f5f5f5;
+  border: 1px solid  #e5e5e5;
+  border-radius: 0.5rem;
+  font-size: 12px;
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: 24rem;
+  max-width: 37.5rem;
+}

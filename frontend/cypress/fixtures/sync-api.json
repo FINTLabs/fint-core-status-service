@@ -1,0 +1,57 @@
+[
+  {
+    "corrId": "c8491980-05ea-467b-bcdb-a381cb1be122",
+    "adapterId": "https://vigoiks.no/agderfk-no/utdanning/kodeverk",
+    "orgId": "agderfk.no",
+    "domain": "utdanning",
+    "package": "kodeverk",
+    "resource": "otenhet",
+    "totalPages": 1,
+    "pagesAcquired": 1,
+    "totalEntities": 15,
+    "entitiesAquired": 15,
+    "syncType": "FULL",
+    "pages": [
+      {
+        "pageNumber": 1,
+        "pageSize": 15,
+        "time": 1760182228350
+      }
+    ],
+    "finished": true,
+    "lastPageTime": 1760182228350
+  },
+  {
+    "corrId": "a7b3c2d1-1234-5678-90ab-cdef12345678",
+    "adapterId": "https://vigoiks.no/rogfk-no/administrasjon/personal",
+    "orgId": "rogfk.no",
+    "domain": "administrasjon",
+    "package": "personal",
+    "resource": "personalressurs",
+    "totalPages": 3,
+    "pagesAcquired": 3,
+    "totalEntities": 450,
+    "entitiesAquired": 450,
+    "syncType": "DELTA",
+    "pages": [
+      {
+        "pageNumber": 1,
+        "pageSize": 200,
+        "time": 1760182228350
+      },
+      {
+        "pageNumber": 2,
+        "pageSize": 200,
+        "time": 1760182229350
+      },
+      {
+        "pageNumber": 3,
+        "pageSize": 50,
+        "time": 1760182230350
+      }
+    ],
+    "finished": true,
+    "lastPageTime": 1760182230350
+  }
+]
+
