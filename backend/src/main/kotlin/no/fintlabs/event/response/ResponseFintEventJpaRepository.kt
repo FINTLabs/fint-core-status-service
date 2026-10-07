@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 
 @Repository
-interface ResponseFintEventJpaRepository : JpaRepository<ResponseFintEventEntity, Long> {
+interface ResponseFintEventJpaRepository : JpaRepository<ResponseFintEventEntity, String> {
 
     @Modifying
     @Transactional

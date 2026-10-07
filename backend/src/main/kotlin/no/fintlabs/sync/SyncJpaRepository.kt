@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 
 @Repository
-interface SyncJpaRepository : JpaRepository<SyncEntity, Long> {
+interface SyncJpaRepository : JpaRepository<SyncEntity, String> {
 
     fun findByOrgId(orgId: String): List<SyncEntity>
 
