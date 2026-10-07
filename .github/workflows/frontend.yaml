@@ -1,0 +1,112 @@
+name: Frontend
+
+on:
+  pull_request:
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/frontend.yaml'
+  push:
+    branches: [main]
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/frontend.yaml'
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}-frontend
+
+defaults:
+  run:
+    working-directory: frontend
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - run: npm ci
+
+      - run: npm run build
+
+  build-and-push:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      tags: ${{ steps.meta.outputs.tags }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=sha,enable=true,priority=100,prefix=sha-,suffix=,format=short
+            latest
+
+      - uses: docker/build-push-action@v6
+        with:
+          context: frontend
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+  deploy:
+    name: deploy to ${{ matrix.cluster }}
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    strategy:
+      matrix:
+        cluster:
+          - aks-api-fint-2022-02-08
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: environment
+        uses: actions/github-script@v7
+        with:
+          script: return '${{ matrix.cluster }}'.split('-')[1]
+          result-encoding: string
+
+      - id: bake
+        uses: azure/k8s-bake@v3
+        with:
+          renderEngine: 'kustomize'
+          kustomizationPath: 'frontend/kustomize/base'
+
+      - uses: azure/login@v2
+        with:
+          creds: "${{ secrets[format('AKS_{0}_FINT_GITHUB', steps.environment.outputs.result)] }}"
+
+      - uses: azure/aks-set-context@v4
+        with:
+          cluster-name: '${{ matrix.cluster }}'
+          resource-group: 'rg-aks-${{ steps.environment.outputs.result }}'
+          admin: 'true'
+          use-kubelogin: 'true'
+
+      - uses: azure/k8s-deploy@v5.0.3
+        with:
+          action: deploy
+          manifests: ${{ steps.bake.outputs.manifestsBundle }}
+          images: ${{ needs.build-and-push.outputs.tags }}
+          namespace: fint-core

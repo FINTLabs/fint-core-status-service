@@ -1,4 +1,4 @@
-name: MD
+name: Backend manual deploy
 
 on:
   workflow_dispatch:
@@ -58,6 +58,7 @@ jobs:
           gradle-version: wrapper
       - name: build gradlew
         run: ./gradlew -x test build
+        working-directory: backend
 
       - uses: docker/login-action@v3
         with:
@@ -71,7 +72,7 @@ jobs:
           tags: type=sha,enable=true,priority=100,prefix=sha-,suffix=,format=short
       - uses: docker/build-push-action@v6
         with:
-          context: .
+          context: backend
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
@@ -79,7 +80,7 @@ jobs:
         uses: azure/k8s-bake@v3
         with:
           renderEngine: 'kustomize'
-          kustomizationPath: kustomize/base/${{ steps.environment.outputs.result }}
+          kustomizationPath: backend/kustomize/${{ steps.environment.outputs.result }}
       - name: Determine secret name
         id: secretname
         run: |
