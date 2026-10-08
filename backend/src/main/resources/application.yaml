@@ -15,6 +15,8 @@ spring:
     baseline-version: 0
     default-schema: ${fint.database.username}
   kafka:
+    listener:
+      auto-startup: ${fint.status.enabled:true}
     security:
       protocol: SSL
     consumer:

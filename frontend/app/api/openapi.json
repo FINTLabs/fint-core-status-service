@@ -309,6 +309,24 @@
         }
       }
     },
+    "/api/v1/info" : {
+      "get" : {
+        "tags" : [ "info-controller" ],
+        "operationId" : "info",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Info"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/events" : {
       "get" : {
         "tags" : [ "event-controller" ],
@@ -891,6 +909,14 @@
             "items" : {
               "type" : "string"
             }
+          }
+        }
+      },
+      "Info" : {
+        "type" : "object",
+        "properties" : {
+          "enabled" : {
+            "type" : "boolean"
           }
         }
       },
