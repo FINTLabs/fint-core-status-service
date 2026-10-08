@@ -10,8 +10,9 @@ import java.time.Instant
 
 /**
  * Contracts are identified by (username, orgId), the same key the adapter gateway uses.
- * A new registration replaces the capability list, and a tombstone on the contract topic
- * deletes the contract and its capabilities.
+ * A new registration replaces the capability list but keeps the first registration time,
+ * since gateways publish all their contracts again when they start. A tombstone on the
+ * contract topic deletes the contract, its capabilities and any mute.
  */
 @Repository
 class ContractStore(
@@ -26,8 +27,8 @@ class ContractStore(
             jdbcClient
                 .sql(
                     """
-                    insert into contract (username, org_id, adapter_id, heartbeat_interval_min, registered_at)
-                    values (:username, :orgId, :adapterId, :interval, :at)
+                    insert into contract (username, org_id, adapter_id, heartbeat_interval_min, first_registered_at, registered_at)
+                    values (:username, :orgId, :adapterId, :interval, :at, :at)
                     on conflict (username, org_id) do update set
                         adapter_id = excluded.adapter_id,
                         heartbeat_interval_min = excluded.heartbeat_interval_min,
@@ -65,14 +66,17 @@ class ContractStore(
         }
     }
 
+    @Transactional
     fun delete(
         username: String,
         orgId: String,
     ) {
-        jdbcClient
-            .sql("delete from contract where username = :username and org_id = :orgId")
-            .param("username", username)
-            .param("orgId", normalizeOrgId(orgId))
-            .update()
+        listOf("contract", "contract_mute").forEach { table ->
+            jdbcClient
+                .sql("delete from $table where username = :username and org_id = :orgId")
+                .param("username", username)
+                .param("orgId", normalizeOrgId(orgId))
+                .update()
+        }
     }
 }

@@ -74,7 +74,7 @@ class StatusListenerIntegrationTest {
 
     @BeforeEach
     fun clean() {
-        jdbcClient.sql("truncate contract, capability, heartbeat, sync, sync_page, event cascade").update()
+        jdbcClient.sql("truncate contract, capability, contract_mute, heartbeat, sync, sync_page, full_sync_status, event cascade").update()
     }
 
     @AfterAll

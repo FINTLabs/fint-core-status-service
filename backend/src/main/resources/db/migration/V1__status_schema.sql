@@ -8,8 +8,19 @@ create table contract (
     org_id                 text        not null,
     adapter_id             text        not null,
     heartbeat_interval_min integer     not null,
+    first_registered_at    timestamptz not null,
     registered_at          timestamptz not null,
     unique (username, org_id)
+);
+
+create table contract_mute (
+    username    text        not null,
+    org_id      text        not null,
+    muted_by    text        not null,
+    reason      text,
+    muted_at    timestamptz not null,
+    muted_until timestamptz,
+    primary key (username, org_id)
 );
 
 create table heartbeat (
@@ -52,6 +63,15 @@ create index sync_type_started_idx on sync (sync_type, started_at desc);
 create index sync_resource_started_idx on sync (org_id, domain_name, package_name, resource_name, sync_type, started_at desc);
 create index sync_started_idx on sync (started_at);
 
+create table full_sync_status (
+    org_id            text        not null,
+    domain_name       text        not null,
+    package_name      text        not null,
+    resource_name     text        not null,
+    last_completed_at timestamptz not null,
+    primary key (org_id, domain_name, package_name, resource_name)
+);
+
 create table sync_page (
     corr_id     text        not null references sync (corr_id) on delete cascade,
     page        integer     not null,
@@ -78,4 +98,4 @@ create table event (
 
 create index event_status_created_idx on event (status, created_at desc);
 create index event_org_created_idx on event (org_id, created_at desc);
-create index event_received_idx on event (received_at);
+create index event_received_idx on event (received_at desc);

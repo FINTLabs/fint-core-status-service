@@ -11,7 +11,8 @@ import java.time.Instant
 /**
  * One row per sync (corrId) and one row per received page. A page that arrives twice is
  * only counted once. A sync is completed when every page has been received; this is what
- * the gateway received, not what it has stored.
+ * the gateway received, not what it has stored. The last completed full sync per org and
+ * resource is also kept in full_sync_status, which the retention job does not touch.
  */
 @Repository
 class SyncStore(
@@ -62,24 +63,40 @@ class SyncStore(
 
         if (!newPage) return
 
-        jdbcClient
-            .sql(
-                """
-                update sync set
-                    pages_received = pages_received + 1,
-                    entities_received = entities_received + :pageSize,
-                    started_at = least(started_at, :at),
-                    last_page_at = greatest(last_page_at, :at),
-                    completed_at = case
-                        when completed_at is null and pages_received + 1 >= greatest(total_pages, 1) then :at
-                        else completed_at
-                    end
-                where corr_id = :corrId
-                """,
-            ).param("corrId", message.corrId)
-            .param("pageSize", message.pageSize)
-            .param("at", receivedAt)
-            .update()
+        val justCompleted =
+            jdbcClient
+                .sql(
+                    """
+                    update sync set
+                        pages_received = pages_received + 1,
+                        entities_received = entities_received + :pageSize,
+                        started_at = least(started_at, :at),
+                        last_page_at = greatest(last_page_at, :at),
+                        completed_at = case
+                            when completed_at is null and pages_received + 1 >= greatest(total_pages, 1) then :at
+                            else completed_at
+                        end
+                    where corr_id = :corrId
+                    returning coalesce(completed_at = :at, false)
+                    """,
+                ).param("corrId", message.corrId)
+                .param("pageSize", message.pageSize)
+                .param("at", receivedAt)
+                .query(Boolean::class.java)
+                .single()
+
+        if (justCompleted && type == SyncType.FULL) {
+            jdbcClient
+                .sql(
+                    """
+                    insert into full_sync_status (org_id, domain_name, package_name, resource_name, last_completed_at)
+                    select org_id, domain_name, package_name, resource_name, completed_at from sync where corr_id = :corrId
+                    on conflict (org_id, domain_name, package_name, resource_name) do update set
+                        last_completed_at = greatest(full_sync_status.last_completed_at, excluded.last_completed_at)
+                    """,
+                ).param("corrId", message.corrId)
+                .update()
+        }
     }
 
     private fun parseUriRef(uriRef: String): Triple<String, String, String>? {
