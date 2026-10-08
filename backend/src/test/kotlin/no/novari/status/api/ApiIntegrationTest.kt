@@ -6,6 +6,7 @@ import no.novari.status.event.EventStore
 import no.novari.status.heartbeat.HeartbeatStore
 import no.novari.status.kafka.CapabilityMessage
 import no.novari.status.kafka.ContractMessage
+import no.novari.status.kafka.EventCapabilityMessage
 import no.novari.status.kafka.HeartbeatMessage
 import no.novari.status.kafka.RequestEventMessage
 import no.novari.status.kafka.ResponseEventMessage
@@ -266,6 +267,28 @@ class ApiIntegrationTest {
             .andExpect(jsonPath("$.adapterId").value("arkiv-oslo"))
             .andExpect(jsonPath("$.capabilities[0].fullSync").value("OVERDUE"))
             .andExpect(jsonPath("$.mainOrgId").value("oslo.kommune.no"))
+    }
+
+    @Test
+    fun `a contract shows the resources it answers events for, with READ first`() {
+        contractStore.saveRegistration(
+            ContractMessage(
+                "live-afk",
+                "afk.no",
+                "live@afk.no",
+                1,
+                setOf(cap("utdanning", "elev", "elev", 7)),
+                setOf(EventCapabilityMessage("Utdanning", "Elev", "Elev", setOf("update", "READ", "CREATE"))),
+            ),
+            now,
+        )
+
+        mockMvc
+            .perform(get("/api/v1/contracts/${contractId("live@afk.no", "afk.no")}").with(token))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.eventCapabilities", hasSize<Any>(1)))
+            .andExpect(jsonPath("$.eventCapabilities[0].resourceName").value("elev"))
+            .andExpect(jsonPath("$.eventCapabilities[0].operations", contains("READ", "CREATE", "UPDATE")))
     }
 
     @Test

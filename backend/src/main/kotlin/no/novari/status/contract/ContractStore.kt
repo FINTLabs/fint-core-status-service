@@ -10,9 +10,9 @@ import java.time.Instant
 
 /**
  * Contracts are identified by (username, orgId), the same key the adapter gateway uses.
- * A new registration replaces the capability list but keeps the first registration time,
- * since gateways publish all their contracts again when they start. A tombstone on the
- * contract topic deletes the contract, its capabilities and any mute.
+ * A new registration replaces the capability and event capability lists but keeps the first
+ * registration time, since gateways publish all their contracts again when they start. A
+ * tombstone on the contract topic deletes the contract, its capabilities and any mute.
  */
 @Repository
 class ContractStore(
@@ -43,10 +43,12 @@ class ContractStore(
                 .query(Long::class.java)
                 .single()
 
-        jdbcClient
-            .sql("delete from capability where contract_id = :contractId")
-            .param("contractId", contractId)
-            .update()
+        listOf("capability", "event_capability").forEach { table ->
+            jdbcClient
+                .sql("delete from $table where contract_id = :contractId")
+                .param("contractId", contractId)
+                .update()
+        }
 
         message.capabilities.forEach { capability ->
             jdbcClient
@@ -63,6 +65,27 @@ class ContractStore(
                 .param("fullSyncDays", capability.fullSyncIntervalInDays)
                 .param("deltaSyncInterval", capability.deltaSyncInterval)
                 .update()
+        }
+
+        message.eventCapabilities.orEmpty().forEach { capability ->
+            jdbcClient
+                .sql(
+                    """
+                    insert into event_capability (contract_id, domain_name, package_name, resource_name, operations)
+                    values (:contractId, :domain, :pkg, :resource, string_to_array(:operations, ','))
+                    on conflict do nothing
+                    """,
+                ).param("contractId", contractId)
+                .param("domain", capability.domainName.lowercase())
+                .param("pkg", capability.packageName.lowercase())
+                .param("resource", capability.resourceName.lowercase())
+                .param(
+                    "operations",
+                    capability.operations
+                        .map { it.uppercase() }
+                        .sorted()
+                        .joinToString(","),
+                ).update()
         }
     }
 

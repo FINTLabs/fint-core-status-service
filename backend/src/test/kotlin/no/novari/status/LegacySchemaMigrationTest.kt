@@ -40,7 +40,17 @@ class LegacySchemaMigrationTest {
                 .list()
                 .toSet()
         assertEquals(
-            setOf("contract", "contract_mute", "capability", "heartbeat", "sync", "full_sync_status", "sync_page", "event"),
+            setOf(
+                "contract",
+                "contract_mute",
+                "capability",
+                "event_capability",
+                "heartbeat",
+                "sync",
+                "full_sync_status",
+                "sync_page",
+                "event",
+            ),
             tables,
         )
     }

@@ -6,6 +6,14 @@ data class ContractMessage(
     val username: String,
     val heartbeatIntervalInMinutes: Int,
     val capabilities: Set<CapabilityMessage> = emptySet(),
+    val eventCapabilities: Set<EventCapabilityMessage>? = null,
+)
+
+data class EventCapabilityMessage(
+    val domainName: String,
+    val packageName: String,
+    val resourceName: String,
+    val operations: Set<String> = emptySet(),
 )
 
 data class CapabilityMessage(
