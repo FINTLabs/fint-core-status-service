@@ -55,6 +55,10 @@ Filtering on an org always includes its sub-orgs.
 | `fint_status_contract_muted` | org, main_org, username | 1 for each muted contract |
 | `fint_status_events_expired` | org, main_org | expired events in the last 24 hours that count as problems |
 
+## Switching an environment on or off
+
+`fint.status.enabled` in `kustomize/<env>/flais.yaml` decides whether the service reads fint-core in that environment. With `"false"` the Kafka listeners do not start, and the frontend greys the environment out. Set it to `"true"` (or remove it) and merge to switch it on. When it comes back on it catches up on what the topics still hold: every contract, and the last day of heartbeats, syncs and events.
+
 ## Running locally
 
 Requires Docker. The Java 25 toolchain is downloaded by Gradle if you do not have it.
