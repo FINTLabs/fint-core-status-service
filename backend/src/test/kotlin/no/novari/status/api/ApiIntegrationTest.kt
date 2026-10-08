@@ -353,6 +353,11 @@ class ApiIntegrationTest {
     }
 
     @Test
+    fun `info says the environment is enabled by default`() {
+        mockMvc.perform(get("/api/v1/info").with(token)).andExpect(jsonPath("$.enabled").value(true))
+    }
+
+    @Test
     fun `an unknown filter value is a 400 problem`() {
         mockMvc
             .perform(get("/api/v1/contracts").param("filter", "nope").with(token))

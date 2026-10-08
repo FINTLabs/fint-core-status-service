@@ -36,6 +36,8 @@ spec:
       - host: core-status.fintlabs.no
         path: /api
   env:
+    - name: fint.status.enabled
+      value: "false"
     - name: JAVA_TOOL_OPTIONS
       value: '-XX:+ExitOnOutOfMemoryError -Xmx525M'
   resources:

@@ -100,6 +100,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/info": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["info"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/events": {
         parameters: {
             query?: never;
@@ -307,6 +323,9 @@ export interface components {
         ModelPackage: {
             name: string;
             resources: string[];
+        };
+        Info: {
+            enabled: boolean;
         };
         EventSummary: {
             corrId: string;
@@ -599,6 +618,26 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["ModelDomain"][];
+                };
+            };
+        };
+    };
+    info: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["Info"];
                 };
             };
         };

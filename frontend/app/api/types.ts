@@ -17,6 +17,7 @@ export type EventPage = Schemas["PageResponseEventSummary"];
 export type OrgNode = Schemas["OrgNode"];
 export type ModelDomain = Schemas["ModelDomain"];
 export type CountResponse = Schemas["CountResponse"];
+export type Info = Schemas["Info"];
 export type HeartbeatHealth = ContractSummary["heartbeat"];
 export type ContractFilter =
   | "ALL"
