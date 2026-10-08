@@ -10,13 +10,25 @@ spec:
   kafka:
     enabled: true
     acls:
-      - topic: '*.fint-core.event.*'
-        permission: admin
+      - topic: "novari-no.fint-core.fint-felleskomponent-adapter-contract"
+        permission: read
+      - topic: "novari-no.fint-core.fint-felleskomponent-adapter-heartbeat"
+        permission: read
+      - topic: "novari-no.fint-core.fint-felleskomponent-adapter-full-sync"
+        permission: read
+      - topic: "novari-no.fint-core.fint-felleskomponent-adapter-delta-sync"
+        permission: read
+      - topic: "novari-no.fint-core.fint-felleskomponent-adapter-delete-sync"
+        permission: read
+      - topic: "novari-no.fint-core.fint-felleskomponent-event-request"
+        permission: read
+      - topic: "novari-no.fint-core.fint-felleskomponent-event-response"
+        permission: read
   observability:
     metrics:
       enabled: true
       port: "8080"
-      path: /api/actuator/prometheus
+      path: /actuator/prometheus
   database:
     database: fint-core
   ingress:
@@ -26,8 +38,6 @@ spec:
   env:
     - name: JAVA_TOOL_OPTIONS
       value: '-XX:+ExitOnOutOfMemoryError -Xmx525M'
-    - name: spring.webflux.base-path
-      value: /api
   resources:
     limits:
       memory: "5Gi"

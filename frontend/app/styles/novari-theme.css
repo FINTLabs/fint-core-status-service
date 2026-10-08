@@ -7,22 +7,22 @@
 }
 
 /*--color-primary: #7F78E8;*/
- .novari-header-title  {
-  color: #6B133D;
+.novari-header-title {
+  color: #6b133d;
 }
 
 .novari-header-user {
-  color: #6B133D;
+  color: #6b133d;
 }
 
 .novari-footer {
-  background-color: #6B133D;
+  background-color: #6b133d;
 }
 .novari-json-box {
   margin-top: 0.5rem;
   padding: 1rem;
   background-color: #f5f5f5;
-  border: 1px solid  #e5e5e5;
+  border: 1px solid #e5e5e5;
   border-radius: 0.5rem;
   font-size: 12px;
   overflow-x: auto;

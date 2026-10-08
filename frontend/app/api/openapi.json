@@ -1,0 +1,1187 @@
+{
+  "openapi" : "3.1.0",
+  "info" : {
+    "title" : "OpenAPI definition",
+    "version" : "v0"
+  },
+  "paths" : {
+    "/api/v1/contracts/{id}/mute" : {
+      "put" : {
+        "tags" : [ "contract-controller" ],
+        "operationId" : "mute",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/MuteRequest"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ContractDetail"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "contract-controller" ],
+        "operationId" : "unmute",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "No Content"
+          }
+        }
+      }
+    },
+    "/api/v1/syncs" : {
+      "get" : {
+        "tags" : [ "sync-controller" ],
+        "operationId" : "list",
+        "parameters" : [ {
+          "name" : "type",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "default" : "FULL",
+            "enum" : [ "FULL", "DELTA", "DELETE", "ALL" ]
+          }
+        }, {
+          "name" : "from",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }, {
+          "name" : "to",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }, {
+          "name" : "state",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "COMPLETED", "RUNNING", "STALLED" ]
+          }
+        }, {
+          "name" : "org",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "corrId",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "domain",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "package",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "resource",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "page",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }, {
+          "name" : "size",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PageResponseSyncSummary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/syncs/{corrId}" : {
+      "get" : {
+        "tags" : [ "sync-controller" ],
+        "operationId" : "get",
+        "parameters" : [ {
+          "name" : "corrId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SyncDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/syncs/count" : {
+      "get" : {
+        "tags" : [ "sync-controller" ],
+        "operationId" : "countNew",
+        "parameters" : [ {
+          "name" : "since",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }, {
+          "name" : "type",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "default" : "FULL",
+            "enum" : [ "FULL", "DELTA", "DELETE", "ALL" ]
+          }
+        }, {
+          "name" : "state",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "COMPLETED", "RUNNING", "STALLED" ]
+          }
+        }, {
+          "name" : "org",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "corrId",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "domain",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "package",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "resource",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CountResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/orgs" : {
+      "get" : {
+        "tags" : [ "org-controller" ],
+        "operationId" : "orgs",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/OrgNode"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/model" : {
+      "get" : {
+        "tags" : [ "model-controller" ],
+        "operationId" : "model",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/ModelDomain"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/events" : {
+      "get" : {
+        "tags" : [ "event-controller" ],
+        "operationId" : "list_1",
+        "parameters" : [ {
+          "name" : "status",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "PENDING", "EXPIRED", "ANSWERED", "ERRORS" ]
+          }
+        }, {
+          "name" : "from",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }, {
+          "name" : "to",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }, {
+          "name" : "org",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "corrId",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "domain",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "package",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "resource",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "page",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }, {
+          "name" : "size",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PageResponseEventSummary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/events/{corrId}" : {
+      "get" : {
+        "tags" : [ "event-controller" ],
+        "operationId" : "get_1",
+        "parameters" : [ {
+          "name" : "corrId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/EventDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/events/count" : {
+      "get" : {
+        "tags" : [ "event-controller" ],
+        "operationId" : "countNew_1",
+        "parameters" : [ {
+          "name" : "since",
+          "in" : "query",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }, {
+          "name" : "status",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "PENDING", "EXPIRED", "ANSWERED", "ERRORS" ]
+          }
+        }, {
+          "name" : "org",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "corrId",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "domain",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "package",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "resource",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CountResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/dashboard" : {
+      "get" : {
+        "tags" : [ "dashboard-controller" ],
+        "operationId" : "dashboard",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Dashboard"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/contracts" : {
+      "get" : {
+        "tags" : [ "contract-controller" ],
+        "operationId" : "list_2",
+        "parameters" : [ {
+          "name" : "q",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "filter",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "default" : "ALL",
+            "enum" : [ "ALL", "HEARTBEAT_STOPPED", "HEARTBEAT_NEVER", "FULL_SYNC_OVERDUE", "FULL_SYNC_NEVER", "MUTED" ]
+          }
+        }, {
+          "name" : "sort",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "default" : "HEALTH",
+            "enum" : [ "HEALTH", "ORG", "USERNAME", "HEARTBEAT", "FULL_SYNC", "CAPABILITIES" ]
+          }
+        }, {
+          "name" : "direction",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "default" : "ASC",
+            "enum" : [ "ASC", "DESC" ]
+          }
+        }, {
+          "name" : "page",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }, {
+          "name" : "size",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ContractPage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/contracts/{id}" : {
+      "get" : {
+        "tags" : [ "contract-controller" ],
+        "operationId" : "get_2",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ContractDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "MuteRequest" : {
+        "type" : "object",
+        "properties" : {
+          "reason" : {
+            "type" : [ "string", "null" ]
+          },
+          "mutedUntil" : {
+            "type" : [ "string", "null" ],
+            "format" : "date-time"
+          }
+        }
+      },
+      "CapabilityView" : {
+        "type" : "object",
+        "properties" : {
+          "domainName" : {
+            "type" : "string"
+          },
+          "packageName" : {
+            "type" : "string"
+          },
+          "resourceName" : {
+            "type" : "string"
+          },
+          "fullSyncIntervalDays" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "deltaSyncInterval" : {
+            "type" : [ "string", "null" ]
+          },
+          "lastFullSyncAt" : {
+            "type" : [ "string", "null" ],
+            "format" : "date-time"
+          },
+          "fullSync" : {
+            "type" : "string",
+            "enum" : [ "OK", "WAITING", "OVERDUE", "NEVER" ]
+          }
+        }
+      },
+      "ContractDetail" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "orgId" : {
+            "type" : "string"
+          },
+          "mainOrgId" : {
+            "type" : "string"
+          },
+          "username" : {
+            "type" : "string"
+          },
+          "adapterId" : {
+            "type" : "string"
+          },
+          "heartbeatIntervalMinutes" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "firstRegisteredAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "registeredAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "lastHeartbeatAt" : {
+            "type" : [ "string", "null" ],
+            "format" : "date-time"
+          },
+          "heartbeat" : {
+            "type" : "string",
+            "enum" : [ "OK", "STOPPED", "NEVER" ]
+          },
+          "mute" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/MuteView"
+            }, {
+              "type" : "null"
+            } ]
+          },
+          "capabilities" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/CapabilityView"
+            }
+          }
+        }
+      },
+      "MuteView" : {
+        "type" : "object",
+        "properties" : {
+          "mutedBy" : {
+            "type" : "string"
+          },
+          "reason" : {
+            "type" : [ "string", "null" ]
+          },
+          "mutedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "mutedUntil" : {
+            "type" : [ "string", "null" ],
+            "format" : "date-time"
+          }
+        }
+      },
+      "PageResponseSyncSummary" : {
+        "type" : "object",
+        "properties" : {
+          "items" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SyncSummary"
+            }
+          },
+          "page" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "size" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "total" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "SyncSummary" : {
+        "type" : "object",
+        "properties" : {
+          "corrId" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "enum" : [ "FULL", "DELTA", "DELETE" ]
+          },
+          "orgId" : {
+            "type" : "string"
+          },
+          "domainName" : {
+            "type" : "string"
+          },
+          "packageName" : {
+            "type" : "string"
+          },
+          "resourceName" : {
+            "type" : "string"
+          },
+          "adapterId" : {
+            "type" : "string"
+          },
+          "totalPages" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "pagesReceived" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "totalSize" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "entitiesReceived" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "startedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "lastPageAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "completedAt" : {
+            "type" : [ "string", "null" ],
+            "format" : "date-time"
+          },
+          "state" : {
+            "type" : "string",
+            "enum" : [ "COMPLETED", "RUNNING", "STALLED" ]
+          }
+        }
+      },
+      "SyncDetail" : {
+        "type" : "object",
+        "properties" : {
+          "sync" : {
+            "$ref" : "#/components/schemas/SyncSummary"
+          },
+          "pages" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SyncPageView"
+            }
+          }
+        }
+      },
+      "SyncPageView" : {
+        "type" : "object",
+        "properties" : {
+          "page" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "pageSize" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "receivedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }
+      },
+      "CountResponse" : {
+        "type" : "object",
+        "properties" : {
+          "count" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "OrgNode" : {
+        "type" : "object",
+        "properties" : {
+          "orgId" : {
+            "type" : "string"
+          },
+          "subOrgs" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }
+      },
+      "ModelDomain" : {
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "type" : "string"
+          },
+          "packages" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ModelPackage"
+            }
+          }
+        }
+      },
+      "ModelPackage" : {
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "type" : "string"
+          },
+          "resources" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }
+      },
+      "EventSummary" : {
+        "type" : "object",
+        "properties" : {
+          "corrId" : {
+            "type" : "string"
+          },
+          "orgId" : {
+            "type" : "string"
+          },
+          "domainName" : {
+            "type" : [ "string", "null" ]
+          },
+          "packageName" : {
+            "type" : [ "string", "null" ]
+          },
+          "resourceName" : {
+            "type" : [ "string", "null" ]
+          },
+          "operationType" : {
+            "type" : [ "string", "null" ]
+          },
+          "createdAt" : {
+            "type" : [ "string", "null" ],
+            "format" : "date-time"
+          },
+          "expiresAt" : {
+            "type" : [ "string", "null" ],
+            "format" : "date-time"
+          },
+          "receivedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "handledAt" : {
+            "type" : [ "string", "null" ],
+            "format" : "date-time"
+          },
+          "status" : {
+            "type" : "string",
+            "enum" : [ "PENDING", "ANSWERED", "FAILED", "REJECTED", "CONFLICTED", "EXPIRED" ]
+          },
+          "reason" : {
+            "type" : [ "string", "null" ]
+          },
+          "answeredBy" : {
+            "type" : [ "string", "null" ]
+          },
+          "candidates" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }
+      },
+      "PageResponseEventSummary" : {
+        "type" : "object",
+        "properties" : {
+          "items" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/EventSummary"
+            }
+          },
+          "page" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "size" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "total" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "Candidate" : {
+        "type" : "object",
+        "properties" : {
+          "contractId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "username" : {
+            "type" : "string"
+          },
+          "orgId" : {
+            "type" : "string"
+          },
+          "heartbeat" : {
+            "type" : "string",
+            "enum" : [ "OK", "STOPPED", "NEVER" ]
+          },
+          "muted" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "EventDetail" : {
+        "type" : "object",
+        "properties" : {
+          "event" : {
+            "$ref" : "#/components/schemas/EventSummary"
+          },
+          "adapterId" : {
+            "type" : [ "string", "null" ]
+          },
+          "candidates" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Candidate"
+            }
+          }
+        }
+      },
+      "Dashboard" : {
+        "type" : "object",
+        "properties" : {
+          "generatedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "totals" : {
+            "$ref" : "#/components/schemas/DashboardTotals"
+          },
+          "orgs" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/OrgHealth"
+            }
+          }
+        }
+      },
+      "DashboardTotals" : {
+        "type" : "object",
+        "properties" : {
+          "heartbeatStopped" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "heartbeatNever" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "fullSyncOverdue" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "fullSyncNever" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "eventsExpired" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "eventsPendingLong" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "orgsWithProblems" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "OrgHealth" : {
+        "type" : "object",
+        "properties" : {
+          "orgId" : {
+            "type" : "string"
+          },
+          "contracts" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "muted" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "heartbeatStopped" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "heartbeatNever" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "fullSyncOverdue" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "fullSyncNever" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "eventsExpired" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "eventsPendingLong" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "subOrgs" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/OrgHealth"
+            }
+          },
+          "hasProblems" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "ContractPage" : {
+        "type" : "object",
+        "properties" : {
+          "items" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ContractSummary"
+            }
+          },
+          "page" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "size" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "total" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "counts" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "integer",
+              "format" : "int32"
+            }
+          }
+        }
+      },
+      "ContractSummary" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "orgId" : {
+            "type" : "string"
+          },
+          "mainOrgId" : {
+            "type" : "string"
+          },
+          "username" : {
+            "type" : "string"
+          },
+          "heartbeat" : {
+            "type" : "string",
+            "enum" : [ "OK", "STOPPED", "NEVER" ]
+          },
+          "lastHeartbeatAt" : {
+            "type" : [ "string", "null" ],
+            "format" : "date-time"
+          },
+          "fullSyncOverdue" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "fullSyncNever" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "capabilities" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "muted" : {
+            "type" : "boolean"
+          }
+        }
+      }
+    }
+  }
+}

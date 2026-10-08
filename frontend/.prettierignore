@@ -8,10 +8,6 @@ dist/
 .server/
 .client/
 
-# Cypress
-cypress/downloads/
-cypress/screenshots/
-cypress/videos/
 
 # Package manager files
 package-lock.json
@@ -28,3 +24,5 @@ pnpm-lock.yaml
 *.min.css
 *.bundle.js
 
+app/api/schema.ts
+app/api/openapi.json

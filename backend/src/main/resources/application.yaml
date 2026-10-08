@@ -1,42 +1,49 @@
-fint:
-  prometheus:
-    baseUrl: "http://prometheus-stack-prometheus.flais-system:80"
-    query:
-      memory: 'sum by (pod, namespace) (container_memory_usage_bytes{pod=~".*fint-core-consumer.*"}) * on (pod, namespace) group_left (uid) kube_pod_info{pod=~".*fint-core-consumer.*"}'
-      restarts: 'sum by (pod, namespace) (  kube_pod_container_status_restarts_total{pod=~".*fint-core-consumer.*"})* on (pod, namespace) group_left(uid) (  kube_pod_info{pod=~".*fint-core-consumer.*"})'
-
-  security:
-    open-paths: |
-      /actuator/prometheus
-    org-id: false
-    component: false
-  heartbeat:
-    check-rate: 10000
-  kafka:
-    application-id: fint-core-status-service
-
 spring:
+  application:
+    name: fint-core-status-service
+  threads:
+    virtual:
+      enabled: true
+  datasource:
+    url: ${fint.database.url}
+    username: ${fint.database.username}
+    password: ${fint.database.password}
+    hikari:
+      schema: ${fint.database.username}
+  flyway:
+    baseline-on-migrate: true
+    baseline-version: 0
+    default-schema: ${fint.database.username}
+  kafka:
+    security:
+      protocol: SSL
+    consumer:
+      group-id: fint-core-status-service
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+  mvc:
+    problemdetails:
+      enabled: true
   security:
     oauth2:
       resourceserver:
         jwt:
           issuer-uri: https://idp.felleskomponent.no/nidp/oauth/nam
-  kafka:
-    consumer:
-      group-id: ${fint.kafka.application-id}
-  profiles:
-    include: db
+
+springdoc:
+  api-docs:
+    path: /api/v1/api-docs
+  swagger-ui:
+    path: /api/v1/swagger-ui.html
 
 management:
   endpoints:
     web:
       exposure:
-        include: "prometheus"
+        include: health,prometheus
 
 logging:
   level:
-    no.fintlabs.kafka: warn
-    org.springframework.kafka: warn
-    org.apache.kafka: warn
-    no.fintlabs.event: debug
-    no.fintlabs.page: info
+    root: INFO
+    org.apache.kafka: WARN
