@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5436/fint-core-status-service
+    username: postgres
+    password: password
+    hikari:
+      schema: public
+  flyway:
+    default-schema: public
+  kafka:
+    bootstrap-servers: localhost:9092
+    security:
+      protocol: PLAINTEXT

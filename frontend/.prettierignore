@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+build/
+dist/
+.react-router/
+.server/
+.client/
+
+
+# Package manager files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Environment files
+.env
+.env.local
+.env.production
+
+# Misc
+*.min.js
+*.min.css
+*.bundle.js
+
+app/api/schema.ts
+app/api/openapi.json
