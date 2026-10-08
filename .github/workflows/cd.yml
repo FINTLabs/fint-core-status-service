@@ -2,45 +2,58 @@ name: CD
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main]
 
 concurrency:
-  group: deploy-${{ github.ref_name }}
+  group: deploy-main
   cancel-in-progress: false
 
 jobs:
   setup:
     runs-on: ubuntu-latest
     outputs:
-      environment: ${{ steps.env.outputs.environment }}
-      cluster: ${{ steps.env.outputs.cluster }}
-      backend-image: ${{ steps.versions.outputs.backend-image }}
-      frontend-image: ${{ steps.versions.outputs.frontend-image }}
       parts: ${{ steps.versions.outputs.parts }}
+      targets: ${{ steps.targets.outputs.targets }}
     steps:
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
-
-      - name: Map branch to environment
-        id: env
-        run: |
-          case "$GITHUB_REF_NAME" in
-            main)    echo "environment=api"  >> "$GITHUB_OUTPUT"; echo "cluster=aks-api-fint-2022-02-08"  >> "$GITHUB_OUTPUT" ;;
-            develop) echo "environment=beta" >> "$GITHUB_OUTPUT"; echo "cluster=aks-beta-fint-2021-11-23" >> "$GITHUB_OUTPUT" ;;
-            *) echo "no environment for branch $GITHUB_REF_NAME"; exit 1 ;;
-          esac
 
       - name: Resolve per-part versions
         id: versions
         run: |
           eval "$(.github/scripts/part-versions.sh)"
           echo "backend=$backend frontend=$frontend"
-          echo "backend-image=ghcr.io/fintlabs/fint-core-status-service:sha-$backend" >> "$GITHUB_OUTPUT"
-          echo "frontend-image=ghcr.io/fintlabs/fint-core-status-service-frontend:sha-$frontend" >> "$GITHUB_OUTPUT"
+          {
+            echo "backend=$backend"
+            echo "frontend=$frontend"
+          } >> "$GITHUB_OUTPUT"
           jq -nc --arg b "$backend" --arg f "$frontend" \
             '[{part:"backend", image:"fint-core-status-service", sha:$b}, {part:"frontend", image:"fint-core-status-service-frontend", sha:$f}]' \
             | sed 's/^/parts=/' >> "$GITHUB_OUTPUT"
+
+      - name: Find every part and environment with an overlay
+        id: targets
+        env:
+          BACKEND_IMAGE: ghcr.io/fintlabs/fint-core-status-service:sha-${{ steps.versions.outputs.backend }}
+          FRONTEND_IMAGE: ghcr.io/fintlabs/fint-core-status-service-frontend:sha-${{ steps.versions.outputs.frontend }}
+        run: |
+          targets="[]"
+          for env in alpha beta api; do
+            case "$env" in
+              alpha) cluster="aks-alpha-fint-2021-11-18" ;;
+              beta)  cluster="aks-beta-fint-2021-11-23" ;;
+              api)   cluster="aks-api-fint-2022-02-08" ;;
+            esac
+            for part in backend frontend; do
+              path="$part/kustomize/$env"
+              [ -d "$path" ] || continue
+              image=$([ "$part" = backend ] && echo "$BACKEND_IMAGE" || echo "$FRONTEND_IMAGE")
+              targets=$(jq -c --arg p "$part" --arg e "$env" --arg c "$cluster" --arg k "$path" --arg i "$image" \
+                '. + [{part:$p, environment:$e, cluster:$c, path:$k, image:$i}]' <<< "$targets")
+            done
+          done
+          echo "targets=$targets" | tee -a "$GITHUB_OUTPUT"
 
   build:
     needs: setup
@@ -86,6 +99,7 @@ jobs:
             org.opencontainers.image.revision=${{ matrix.sha }}
 
   deploy:
+    name: deploy ${{ matrix.part }} to ${{ matrix.environment }}
     needs: [setup, build]
     runs-on: ubuntu-latest
     permissions:
@@ -93,74 +107,46 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        part: [backend, frontend]
-    environment: ${{ needs.setup.outputs.environment }}
-    env:
-      ENVIRONMENT: ${{ needs.setup.outputs.environment }}
+        include: ${{ fromJson(needs.setup.outputs.targets) }}
+    environment: ${{ matrix.environment }}
     steps:
       - uses: actions/checkout@v7
 
-      - name: Resolve kustomize path and image
-        id: target
-        env:
-          PART: ${{ matrix.part }}
-          BACKEND_IMAGE: ${{ needs.setup.outputs.backend-image }}
-          FRONTEND_IMAGE: ${{ needs.setup.outputs.frontend-image }}
-        run: |
-          case "$PART" in
-            backend)  path="backend/kustomize/$ENVIRONMENT"; image="$BACKEND_IMAGE" ;;
-            frontend) path="frontend/kustomize/$ENVIRONMENT"; image="$FRONTEND_IMAGE" ;;
-          esac
-          if [ -d "$path" ]; then
-            echo "deploy=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "deploy=false" >> "$GITHUB_OUTPUT"
-            echo "$PART has no overlay for $ENVIRONMENT, skipping"
-          fi
-          echo "path=$path" >> "$GITHUB_OUTPUT"
-          echo "image=$image" >> "$GITHUB_OUTPUT"
-
       - name: Bake manifests with Kustomize
-        if: steps.target.outputs.deploy == 'true'
         id: bake
         uses: azure/k8s-bake@v4.0.0
         with:
           renderEngine: "kustomize"
-          kustomizationPath: ${{ steps.target.outputs.path }}
+          kustomizationPath: ${{ matrix.path }}
 
       - name: Substitute image into baked YAML
-        if: steps.target.outputs.deploy == 'true'
         id: substitute
         uses: azure/k8s-artifact-substitute@v2.0.0
         with:
           manifests: ${{ steps.bake.outputs.manifestsBundle }}
-          images: ${{ steps.target.outputs.image }}
+          images: ${{ matrix.image }}
 
       - uses: azure/login@v3.0.0
-        if: steps.target.outputs.deploy == 'true'
         with:
-          creds: "${{ secrets[format('AKS_{0}_FINT_GITHUB', needs.setup.outputs.environment)] }}"
+          creds: "${{ secrets[format('AKS_{0}_FINT_GITHUB', matrix.environment)] }}"
 
       - uses: azure/use-kubelogin@v1
-        if: steps.target.outputs.deploy == 'true'
         with:
           kubelogin-version: "v0.0.26"
 
       - name: Set the target cluster
-        if: steps.target.outputs.deploy == 'true'
         uses: azure/aks-set-context@v5.0.0
         with:
-          cluster-name: ${{ needs.setup.outputs.cluster }}
-          resource-group: rg-aks-${{ needs.setup.outputs.environment }}
+          cluster-name: ${{ matrix.cluster }}
+          resource-group: rg-aks-${{ matrix.environment }}
           admin: "true"
           use-kubelogin: "true"
 
       - name: Deploy
-        if: steps.target.outputs.deploy == 'true'
         uses: azure/k8s-deploy@v6.0.0
         with:
           action: deploy
           manifests: ${{ steps.substitute.outputs.manifests }}
-          images: ${{ steps.target.outputs.image }}
+          images: ${{ matrix.image }}
           pull-images: false
           namespace: fint-core
