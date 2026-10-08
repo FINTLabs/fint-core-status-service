@@ -8,24 +8,18 @@
     "dev": "react-router dev",
     "start": "react-router-serve ./build/server/index.js",
     "typecheck": "react-router typegen && tsc",
-    "cypress:open": "cypress open",
-    "cypress:run": "cypress run",
-    "cypress:run:component": "cypress run --component",
-    "cypress:open:component": "cypress open --component",
-    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
-    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
-    "lint": "eslint app/ cypress/",
-    "lint:fix": "eslint app/ cypress/ --fix"
+    "api:types": "openapi-typescript app/api/openapi.json -o app/api/schema.ts --properties-required-by-default",
+    "lint": "eslint app/",
+    "format": "prettier --write \"app/**/*.{ts,tsx,css}\"",
+    "format:check": "prettier --check \"app/**/*.{ts,tsx,css}\""
   },
   "dependencies": {
-    "@cypress/react": "^9.0.2",
     "@navikt/aksel-icons": "^8.13.0",
     "@navikt/ds-css": "^8.13.0",
     "@navikt/ds-react": "^8.13.0",
     "@react-router/node": "^7.18.0",
     "@react-router/serve": "^7.18.0",
     "isbot": "^5.1.43",
-    "msw": "^2.14.6",
     "novari-frontend-components": "^7.0.2",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
@@ -39,20 +33,19 @@
     "@types/node": "^22",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.1.9",
-    "@typescript-eslint/eslint-plugin": "^8.61.1",
-    "@typescript-eslint/parser": "^8.61.1",
-    "cypress": "^15.17.0",
     "prettier": "^3.8.4",
     "tailwindcss": "^4.3.1",
     "typescript": "^6.0.3",
-    "vite": "^8.0.16"
-  },
-  "msw": {
-    "workerDirectory": [
-      "public"
-    ]
+    "vite": "^8.0.16",
+    "eslint": "^10.0.0",
+    "typescript-eslint": "^8.61.1",
+    "eslint-plugin-react-hooks": "^7.0.0",
+    "openapi-typescript": "^7.10.0"
   },
   "overrides": {
-    "esbuild": "0.28.1"
+    "esbuild": "0.28.1",
+    "openapi-typescript": {
+      "typescript": "$typescript"
+    }
   }
 }

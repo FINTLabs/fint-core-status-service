@@ -1,0 +1,152 @@
+name: CD
+
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: deploy-main
+  cancel-in-progress: false
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      parts: ${{ steps.versions.outputs.parts }}
+      targets: ${{ steps.targets.outputs.targets }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Resolve per-part versions
+        id: versions
+        run: |
+          eval "$(.github/scripts/part-versions.sh)"
+          echo "backend=$backend frontend=$frontend"
+          {
+            echo "backend=$backend"
+            echo "frontend=$frontend"
+          } >> "$GITHUB_OUTPUT"
+          jq -nc --arg b "$backend" --arg f "$frontend" \
+            '[{part:"backend", image:"fint-core-status-service", sha:$b}, {part:"frontend", image:"fint-core-status-service-frontend", sha:$f}]' \
+            | sed 's/^/parts=/' >> "$GITHUB_OUTPUT"
+
+      - name: Find every part and environment with an overlay
+        id: targets
+        env:
+          BACKEND_IMAGE: ghcr.io/fintlabs/fint-core-status-service:sha-${{ steps.versions.outputs.backend }}
+          FRONTEND_IMAGE: ghcr.io/fintlabs/fint-core-status-service-frontend:sha-${{ steps.versions.outputs.frontend }}
+        run: |
+          targets="[]"
+          for env in alpha beta api; do
+            case "$env" in
+              alpha) cluster="aks-alpha-fint-2021-11-18" ;;
+              beta)  cluster="aks-beta-fint-2021-11-23" ;;
+              api)   cluster="aks-api-fint-2022-02-08" ;;
+            esac
+            for part in backend frontend; do
+              path="$part/kustomize/$env"
+              [ -d "$path" ] || continue
+              image=$([ "$part" = backend ] && echo "$BACKEND_IMAGE" || echo "$FRONTEND_IMAGE")
+              targets=$(jq -c --arg p "$part" --arg e "$env" --arg c "$cluster" --arg k "$path" --arg i "$image" \
+                '. + [{part:$p, environment:$e, cluster:$c, path:$k, image:$i}]' <<< "$targets")
+            done
+          done
+          echo "targets=$targets" | tee -a "$GITHUB_OUTPUT"
+
+  build:
+    needs: setup
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJson(needs.setup.outputs.parts) }}
+    env:
+      IMAGE: ghcr.io/fintlabs/${{ matrix.image }}:sha-${{ matrix.sha }}
+    steps:
+      - uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check whether ${{ env.IMAGE }} already exists
+        id: exists
+        run: |
+          if docker manifest inspect "$IMAGE" > /dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+            echo "$IMAGE already in registry, skipping build"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v7
+        if: steps.exists.outputs.exists == 'false'
+
+      - name: Build and push
+        if: steps.exists.outputs.exists == 'false'
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.part }}
+          push: true
+          tags: ${{ env.IMAGE }}
+          labels: |
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+            org.opencontainers.image.revision=${{ matrix.sha }}
+
+  deploy:
+    name: deploy ${{ matrix.part }} to ${{ matrix.environment }}
+    needs: [setup, build]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJson(needs.setup.outputs.targets) }}
+    environment: ${{ matrix.environment }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Bake manifests with Kustomize
+        id: bake
+        uses: azure/k8s-bake@v4.0.0
+        with:
+          renderEngine: "kustomize"
+          kustomizationPath: ${{ matrix.path }}
+
+      - name: Substitute image into baked YAML
+        id: substitute
+        uses: azure/k8s-artifact-substitute@v2.0.0
+        with:
+          manifests: ${{ steps.bake.outputs.manifestsBundle }}
+          images: ${{ matrix.image }}
+
+      - uses: azure/login@v3.0.0
+        with:
+          creds: "${{ secrets[format('AKS_{0}_FINT_GITHUB', matrix.environment)] }}"
+
+      - uses: azure/use-kubelogin@v1
+        with:
+          kubelogin-version: "v0.0.26"
+
+      - name: Set the target cluster
+        uses: azure/aks-set-context@v5.0.0
+        with:
+          cluster-name: ${{ matrix.cluster }}
+          resource-group: rg-aks-${{ matrix.environment }}
+          admin: "true"
+          use-kubelogin: "true"
+
+      - name: Deploy
+        uses: azure/k8s-deploy@v6.0.0
+        with:
+          action: deploy
+          manifests: ${{ steps.substitute.outputs.manifests }}
+          images: ${{ matrix.image }}
+          pull-images: false
+          namespace: fint-core

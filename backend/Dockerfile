@@ -1,9 +1,9 @@
-FROM gradle:8.8-jdk21 as builder
+FROM gradle:9.7.1-jdk25 AS builder
 USER root
 COPY . .
-RUN gradle --no-daemon build
+RUN ./gradlew --no-daemon bootJar
 
-FROM gcr.io/distroless/java21
-ENV JAVA_TOOL_OPTIONS -XX:+ExitOnOutOfMemoryError
+FROM gcr.io/distroless/java25-debian13
+ENV JAVA_TOOL_OPTIONS="-XX:+ExitOnOutOfMemoryError"
 COPY --from=builder /home/gradle/build/libs/fint-core-status-service-*.jar /data/app.jar
 CMD ["/data/app.jar"]

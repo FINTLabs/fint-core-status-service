@@ -1,53 +1,37 @@
-# Fint Core Status Service Frontend
+# Status service frontend
 
-🚧 **Under Construction** 🚧
+React Router app (server-rendered) with Aksel and Novari components. It shows the four screens from the status service: Oversikt, Kontrakter, Syncer and Events.
 
-A React application for monitoring Fint Core service status and events.
+## How it talks to the backend
 
-_This project is currently in development._
+- All backend calls happen in loaders and actions on the server, in `app/api/client.server.ts`. The browser never calls the backend directly.
+- The token comes from the `Authorization` header that the SSO middleware puts on each incoming request, and is passed on for that request only.
+- Each environment has its own backend. The environment is the first part of the path: `/prod` (the api environment), `/beta` and `/alpha`. `api` cannot be used in the path, because Traefik sends `/api` on core-status.fintlabs.no to the backend.
+- Filters and paging live in the URL, so a filtered view can be shared as a link.
 
-***Frontend only exists in API environment.***
+## API types
 
-## Getting Started
-
-Install dependencies:
+`app/api/openapi.json` is written by the backend's `OpenApiSpecTest`. Generate the types from it after a backend change:
 
 ```bash
-npm install
+npm run api:types
 ```
 
-Start the development server:
+CI fails if `openapi.json` or `schema.ts` is out of date.
+
+## Running locally
 
 ```bash
-npm run dev
+npm ci
+STATUS_BACKEND_URL=http://localhost:8080 npm run dev
 ```
 
-The application will be available at `http://localhost:5173`.
+`STATUS_BACKEND_URL` points every environment at one backend. Without it the real backends are used, which need a valid token.
 
-## Building for Production
+## Checks
 
 ```bash
+npm run typecheck
+npm run lint
 npm run build
 ```
-
-## Available Scripts
-
-### Development
-
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run typecheck` - Run TypeScript type checking
-
-### Code Quality
-
-- `npm run lint` - Run ESLint on app and cypress
-- `npm run lint:fix` - Run ESLint with auto-fix
-- `npm run format` - Format all files with Prettier
-- `npm run format:check` - Check formatting without modifying files
-
-### Testing
-
-- `npm run cypress:open` - Open Cypress Test Runner (E2E)
-- `npm run cypress:run` - Run E2E tests headlessly
-- `npm run cypress:open:component` - Open Cypress Component Test Runner
-- `npm run cypress:run:component` - Run component tests headlessly
