@@ -15,9 +15,6 @@ spec:
   port: 8000
   orgId: fintlabs.no
   image: ghcr.io/fintlabs/fint-core-status-service-frontend:latest
-  env:
-    - name: PUBLIC_API_URL
-      value: https://core-status.fintlabs.no/api
   ingress:
     routes:
       - host: core-status.fintlabs.no

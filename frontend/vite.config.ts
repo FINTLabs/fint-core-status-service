@@ -7,17 +7,4 @@ export default defineConfig({
   resolve: {
     tsconfigPaths: true,
   },
-  build: {
-    commonjsOptions: {
-      transformMixedEsModules: true,
-      // Exclude MSW from CommonJS transformation to avoid resolver issues
-      exclude: ["msw", "@mswjs/interceptors"],
-    },
-    rollupOptions: {
-      // Mark MSW as external to prevent bundling issues
-      external: (id) => {
-        return id.includes("msw/node") || id.includes("@mswjs/interceptors");
-      },
-    },
-  },
 });
