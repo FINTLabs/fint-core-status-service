@@ -59,6 +59,12 @@ Filtering on an org always includes its sub-orgs.
 
 `fint.status.enabled` in `kustomize/<env>/flais.yaml` decides whether the service reads fint-core in that environment. With `"false"` the Kafka listeners do not start, and the frontend greys the environment out. Set it to `"true"` (or remove it) and merge to switch it on. When it comes back on it catches up on what the topics still hold: every contract, and the last day of heartbeats, syncs and events.
 
+## Switching an environment on or off
+
+`fint.status.enabled` in `kustomize/<env>/flais.yaml` decides whether the service reads fint-core in that environment. With `"false"` the Kafka listeners do not start, and the frontend greys the environment out. Set it to `"true"` (or remove it) and merge to switch it on. When it comes back on it catches up on what the topics still hold: every contract, and the last day of heartbeats, syncs and events.
+
+Today it is on in beta and off in alpha and api, which do not run fint-core yet.
+
 ## Running locally
 
 Requires Docker. The Java 25 toolchain is downloaded by Gradle if you do not have it.
