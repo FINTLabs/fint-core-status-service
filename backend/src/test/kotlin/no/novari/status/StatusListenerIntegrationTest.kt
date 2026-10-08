@@ -75,7 +75,10 @@ class StatusListenerIntegrationTest {
 
     @BeforeEach
     fun clean() {
-        jdbcClient.sql("truncate contract, capability, contract_mute, heartbeat, sync, sync_page, full_sync_status, event cascade").update()
+        jdbcClient
+            .sql(
+                "truncate contract, capability, event_capability, contract_mute, heartbeat, sync, sync_page, full_sync_status, event cascade",
+            ).update()
     }
 
     @AfterAll
@@ -118,18 +121,30 @@ class StatusListenerIntegrationTest {
     }
 
     @Test
-    fun `a contract with event capabilities is stored like any other contract`() {
+    fun `event capabilities are stored with the contract and replaced on re-registration`() {
         send(
             StatusTopics.CONTRACT,
             contract(
                 capabilities = setOf(capability("elev")),
-                eventCapabilities = setOf(eventCapability("elev", OperationType.READ, OperationType.CREATE)),
+                eventCapabilities =
+                    setOf(
+                        eventCapability("elev", OperationType.READ, OperationType.CREATE),
+                        eventCapability("klasse", OperationType.READ),
+                    ),
             ),
         )
 
         await.atMost(Duration.ofSeconds(20)) untilAsserted {
-            assertEquals(1, count("select count(*) from contract"))
             assertEquals(1, count("select count(*) from capability"))
+            assertEquals(2, count("select count(*) from event_capability"))
+            assertEquals("{CREATE,READ}", text("select operations::text from event_capability where resource_name = 'elev'"))
+        }
+
+        send(StatusTopics.CONTRACT, contract(capabilities = setOf(capability("elev"))))
+
+        await.atMost(Duration.ofSeconds(20)) untilAsserted {
+            assertEquals(0, count("select count(*) from event_capability"))
+            assertEquals(1, count("select count(*) from contract"))
         }
     }
 

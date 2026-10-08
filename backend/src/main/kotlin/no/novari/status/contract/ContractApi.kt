@@ -2,6 +2,7 @@ package no.novari.status.contract
 
 import no.novari.status.health.CapabilityView
 import no.novari.status.health.ContractView
+import no.novari.status.health.EventCapabilityView
 import no.novari.status.health.HeartbeatHealth
 import no.novari.status.health.MuteView
 import java.time.Instant
@@ -44,6 +45,7 @@ data class ContractDetail(
     val heartbeat: HeartbeatHealth,
     val mute: MuteView?,
     val capabilities: List<CapabilityView>,
+    val eventCapabilities: List<EventCapabilityView>,
 )
 
 data class MuteRequest(
@@ -79,4 +81,5 @@ fun ContractView.toDetail() =
         heartbeat = heartbeat,
         mute = mute,
         capabilities = capabilities,
+        eventCapabilities = eventCapabilities,
     )

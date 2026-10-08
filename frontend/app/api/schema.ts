@@ -252,6 +252,13 @@ export interface components {
             heartbeat: "OK" | "STOPPED" | "NEVER";
             mute: components["schemas"]["MuteView"] | null;
             capabilities: components["schemas"]["CapabilityView"][];
+            eventCapabilities: components["schemas"]["EventCapabilityView"][];
+        };
+        EventCapabilityView: {
+            domainName: string;
+            packageName: string;
+            resourceName: string;
+            operations: string[];
         };
         MuteView: {
             mutedBy: string;

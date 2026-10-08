@@ -10,7 +10,7 @@ import java.time.Instant
 import java.time.OffsetDateTime
 
 /**
- * Loads every contract with its capabilities, last heartbeat, last full syncs and mute, and
+ * Loads every contract with its capabilities, event capabilities, last heartbeat, last full syncs and mute, and
  * works out their health. There are a few hundred contracts at most, so the whole set is
  * read on each request instead of filtering in SQL.
  */
@@ -22,6 +22,7 @@ class ContractSnapshotService(
     fun snapshot(): ContractSnapshot {
         val now = clock.instant()
         val capabilityRows = loadCapabilities()
+        val eventCapabilities = loadEventCapabilities()
         val rows =
             jdbcClient
                 .sql(
@@ -63,6 +64,7 @@ class ContractSnapshotService(
                                 fullSync = HealthRules.fullSync(cap.lastCompletedAt, cap.fullSyncIntervalDays, row.firstRegisteredAt, now),
                             )
                         },
+                    eventCapabilities = eventCapabilities[row.id].orEmpty(),
                     mute = row.mute,
                 )
             }
@@ -94,6 +96,25 @@ class ContractSnapshotService(
                 )
             }.list()
             .groupBy { it.contractId }
+
+    private fun loadEventCapabilities(): Map<Long, List<EventCapabilityView>> =
+        jdbcClient
+            .sql(
+                """
+                select contract_id, domain_name, package_name, resource_name, operations
+                from event_capability
+                order by domain_name, package_name, resource_name
+                """,
+            ).query { rs, _ ->
+                rs.getLong("contract_id") to
+                    EventCapabilityView(
+                        domainName = rs.getString("domain_name"),
+                        packageName = rs.getString("package_name"),
+                        resourceName = rs.getString("resource_name"),
+                        operations = (rs.getArray("operations").array as Array<*>).map { it.toString() }.sortedBy(::operationOrder),
+                    )
+            }.list()
+            .groupBy({ it.first }, { it.second })
 
     private fun ResultSet.toContractRow() =
         ContractRow(
@@ -133,5 +154,9 @@ class ContractSnapshotService(
         val lastCompletedAt: Instant?,
     )
 }
+
+private val OPERATION_ORDER = listOf("READ", "CREATE", "UPDATE", "DELETE", "VALIDATE")
+
+private fun operationOrder(operation: String): Int = OPERATION_ORDER.indexOf(operation).let { if (it < 0) OPERATION_ORDER.size else it }
 
 fun ResultSet.instant(column: String): Instant? = getObject(column, OffsetDateTime::class.java)?.toInstant()

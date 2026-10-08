@@ -5,6 +5,7 @@ import {
   Heading,
   Modal,
   Table,
+  Tag,
   TextField,
   useDatepicker,
 } from "@navikt/ds-react";
@@ -233,6 +234,51 @@ export default function ContractModal({ loaderData }: Route.ComponentProps) {
               ))}
             </Table.Body>
           </Table>
+        </section>
+
+        <section className="flex flex-col gap-2">
+          <Heading size="xsmall" level="3">
+            Svarer på events
+          </Heading>
+          {contract.eventCapabilities.length === 0 ? (
+            <BodyShort
+              size="small"
+              className="text-[var(--ax-text-neutral-subtle)]"
+            >
+              Kontrakten sier ikke hvilke events adapteren svarer på.
+            </BodyShort>
+          ) : (
+            <Table size="small">
+              <Table.Header>
+                <Table.Row>
+                  <Table.HeaderCell>Ressurs</Table.HeaderCell>
+                  <Table.HeaderCell>Operasjoner</Table.HeaderCell>
+                </Table.Row>
+              </Table.Header>
+              <Table.Body>
+                {contract.eventCapabilities.map((cap) => (
+                  <Table.Row
+                    key={`${cap.domainName}/${cap.packageName}/${cap.resourceName}`}
+                  >
+                    <Table.DataCell>
+                      <Mono>
+                        {cap.domainName}/{cap.packageName}/{cap.resourceName}
+                      </Mono>
+                    </Table.DataCell>
+                    <Table.DataCell>
+                      <span className="flex flex-wrap gap-1">
+                        {cap.operations.map((op) => (
+                          <Tag key={op} size="xsmall" variant="neutral">
+                            {op}
+                          </Tag>
+                        ))}
+                      </span>
+                    </Table.DataCell>
+                  </Table.Row>
+                ))}
+              </Table.Body>
+            </Table>
+          )}
         </section>
       </Modal.Body>
     </Modal>
