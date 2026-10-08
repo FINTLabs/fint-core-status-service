@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import no.fintlabs.adapter.models.AdapterCapability
 import no.fintlabs.adapter.models.AdapterContract
 import no.fintlabs.adapter.models.AdapterHeartbeat
+import no.fintlabs.adapter.models.EventCapability
 import no.fintlabs.adapter.models.event.RequestFintEvent
 import no.fintlabs.adapter.models.event.ResponseFintEvent
 import no.fintlabs.adapter.models.sync.SyncPageMetadata
@@ -117,6 +118,22 @@ class StatusListenerIntegrationTest {
     }
 
     @Test
+    fun `a contract with event capabilities is stored like any other contract`() {
+        send(
+            StatusTopics.CONTRACT,
+            contract(
+                capabilities = setOf(capability("elev")),
+                eventCapabilities = setOf(eventCapability("elev", OperationType.READ, OperationType.CREATE)),
+            ),
+        )
+
+        await.atMost(Duration.ofSeconds(20)) untilAsserted {
+            assertEquals(1, count("select count(*) from contract"))
+            assertEquals(1, count("select count(*) from capability"))
+        }
+    }
+
+    @Test
     fun `heartbeats are stored per username and org, whether or not the contract has arrived`() {
         send(StatusTopics.HEARTBEAT, heartbeat(orgId = "ude.oslo.kommune.no"))
 
@@ -161,6 +178,18 @@ class StatusListenerIntegrationTest {
         await.atMost(Duration.ofSeconds(20)) untilAsserted {
             assertEquals("ANSWERED", status(corrId))
             assertEquals("adapter-1", text("select adapter_id from event where corr_id = '$corrId'"))
+        }
+    }
+
+    @Test
+    fun `a READ request and its answer are stored`() {
+        val corrId = UUID.randomUUID().toString()
+        send(StatusTopics.EVENT_REQUEST, request(corrId, OperationType.READ))
+        send(StatusTopics.EVENT_RESPONSE, response(corrId, adapterId = "adapter-1"))
+
+        await.atMost(Duration.ofSeconds(20)) untilAsserted {
+            assertEquals("ANSWERED", status(corrId))
+            assertEquals("READ", text("select operation_type from event where corr_id = '$corrId'"))
         }
     }
 
@@ -215,6 +244,7 @@ class StatusListenerIntegrationTest {
     private fun contract(
         orgId: String = "afk.no",
         capabilities: Set<AdapterCapability>,
+        eventCapabilities: Set<EventCapability> = emptySet(),
     ) = AdapterContract
         .builder()
         .adapterId("adapter-1")
@@ -222,7 +252,7 @@ class StatusListenerIntegrationTest {
         .username("adapter@afk.no")
         .heartbeatIntervalInMinutes(1)
         .capabilities(capabilities)
-        .time(System.currentTimeMillis())
+        .eventCapabilities(eventCapabilities)
         .build()
 
     private fun capability(resource: String) =
@@ -234,6 +264,17 @@ class StatusListenerIntegrationTest {
             .fullSyncIntervalInDays(7)
             .deltaSyncInterval(AdapterCapability.DeltaSyncInterval.IMMEDIATE)
             .build()
+
+    private fun eventCapability(
+        resource: String,
+        vararg operations: OperationType,
+    ) = EventCapability
+        .builder()
+        .domainName("utdanning")
+        .packageName("elev")
+        .resourceName(resource)
+        .operations(operations.toSet())
+        .build()
 
     private fun heartbeat(orgId: String = "afk.no") =
         AdapterHeartbeat
@@ -261,19 +302,21 @@ class StatusListenerIntegrationTest {
         .time(System.currentTimeMillis())
         .build()
 
-    private fun request(corrId: String) =
-        RequestFintEvent
-            .builder()
-            .corrId(corrId)
-            .orgId("afk.no")
-            .domainName("utdanning")
-            .packageName("elev")
-            .resourceName("elev")
-            .operationType(OperationType.CREATE)
-            .created(System.currentTimeMillis())
-            .timeToLive(System.currentTimeMillis() + 900_000)
-            .value("{}")
-            .build()
+    private fun request(
+        corrId: String,
+        operationType: OperationType = OperationType.CREATE,
+    ) = RequestFintEvent
+        .builder()
+        .corrId(corrId)
+        .orgId("afk.no")
+        .domainName("utdanning")
+        .packageName("elev")
+        .resourceName("elev")
+        .operationType(operationType)
+        .created(System.currentTimeMillis())
+        .timeToLive(System.currentTimeMillis() + 900_000)
+        .value("{}")
+        .build()
 
     private fun response(
         corrId: String,

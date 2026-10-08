@@ -53,7 +53,7 @@ dependencies {
     testImplementation("org.testcontainers:testcontainers-postgresql")
     testImplementation("org.testcontainers:testcontainers-kafka")
     testImplementation("org.awaitility:awaitility-kotlin:4.3.0")
-    testImplementation("no.fintlabs:fint-core-infra-models:2.1.0")
+    testImplementation("no.fintlabs:fint-core-infra-models:3.4.0")
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
