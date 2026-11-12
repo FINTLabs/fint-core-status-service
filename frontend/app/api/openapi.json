@@ -726,6 +726,32 @@
             "items" : {
               "$ref" : "#/components/schemas/CapabilityView"
             }
+          },
+          "eventCapabilities" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/EventCapabilityView"
+            }
+          }
+        }
+      },
+      "EventCapabilityView" : {
+        "type" : "object",
+        "properties" : {
+          "domainName" : {
+            "type" : "string"
+          },
+          "packageName" : {
+            "type" : "string"
+          },
+          "resourceName" : {
+            "type" : "string"
+          },
+          "operations" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
           }
         }
       },

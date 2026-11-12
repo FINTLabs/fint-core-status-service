@@ -8,7 +8,7 @@ All topics are global, written by every org's adapter gateway (or the client API
 
 | Topic | What we store |
 |---|---|
-| `novari-no.fint-core.fint-felleskomponent-adapter-contract` | Contracts and their capabilities, keyed on (username, orgId) |
+| `novari-no.fint-core.fint-felleskomponent-adapter-contract` | Contracts with their capabilities and event capabilities, keyed on (username, orgId) |
 | `novari-no.fint-core.fint-felleskomponent-adapter-heartbeat` | Last heartbeat per contract, using the Kafka record time |
 | `novari-no.fint-core.fint-felleskomponent-adapter-{full,delta,delete}-sync` | One row per sync and one per received page |
 | `novari-no.fint-core.fint-felleskomponent-event-request` | Requests, as pending events |
@@ -24,7 +24,7 @@ Every endpoint needs a valid token. The OpenAPI description is at `/api/v1/api-d
 |---|---|
 | `GET /api/v1/dashboard` | One row per main org (summed with its sub-orgs), with a row per member org under it |
 | `GET /api/v1/contracts` | `q`, `filter` (all, heartbeat-stopped, heartbeat-never, full-sync-overdue, full-sync-never, muted), `sort` (health, org, username, heartbeat, full-sync, capabilities), `direction` |
-| `GET /api/v1/contracts/{id}` | One contract with its capabilities and mute |
+| `GET /api/v1/contracts/{id}` | One contract with its capabilities, event capabilities and mute |
 | `PUT /api/v1/contracts/{id}/mute` | Mute warnings, with an optional `reason` and `mutedUntil` |
 | `DELETE /api/v1/contracts/{id}/mute` | Turn warnings back on |
 | `GET /api/v1/syncs` | `type` (full by default), `from` (7 days back by default), `to`, `state`, `org`, `corrId`, `domain`, `package`, `resource` |

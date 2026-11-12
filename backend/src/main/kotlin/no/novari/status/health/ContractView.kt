@@ -19,6 +19,13 @@ data class CapabilityView(
     val fullSync: FullSyncHealth,
 )
 
+data class EventCapabilityView(
+    val domainName: String,
+    val packageName: String,
+    val resourceName: String,
+    val operations: List<String>,
+)
+
 data class ContractView(
     val id: Long,
     val username: String,
@@ -31,6 +38,7 @@ data class ContractView(
     val lastHeartbeatAt: Instant?,
     val heartbeat: HeartbeatHealth,
     val capabilities: List<CapabilityView>,
+    val eventCapabilities: List<EventCapabilityView>,
     val mute: MuteView?,
 ) {
     val muted: Boolean get() = mute != null
