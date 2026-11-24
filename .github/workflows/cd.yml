@@ -89,7 +89,7 @@ jobs:
 
       - name: Build and push
         if: steps.exists.outputs.exists == 'false'
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: ${{ matrix.part }}
           push: true
@@ -114,7 +114,7 @@ jobs:
 
       - name: Bake manifests with Kustomize
         id: bake
-        uses: azure/k8s-bake@v4.0.0
+        uses: azure/k8s-bake@v4
         with:
           renderEngine: "kustomize"
           kustomizationPath: ${{ matrix.path }}
@@ -126,7 +126,7 @@ jobs:
           manifests: ${{ steps.bake.outputs.manifestsBundle }}
           images: ${{ matrix.image }}
 
-      - uses: azure/login@v3.0.0
+      - uses: azure/login@v3
         with:
           creds: "${{ secrets[format('AKS_{0}_FINT_GITHUB', matrix.environment)] }}"
 
@@ -135,7 +135,7 @@ jobs:
           kubelogin-version: "v0.0.26"
 
       - name: Set the target cluster
-        uses: azure/aks-set-context@v5.0.0
+        uses: azure/aks-set-context@v5
         with:
           cluster-name: ${{ matrix.cluster }}
           resource-group: rg-aks-${{ matrix.environment }}
@@ -143,7 +143,7 @@ jobs:
           use-kubelogin: "true"
 
       - name: Deploy
-        uses: azure/k8s-deploy@v6.0.0
+        uses: azure/k8s-deploy@v7.0.1
         with:
           action: deploy
           manifests: ${{ steps.substitute.outputs.manifests }}
