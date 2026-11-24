@@ -14,12 +14,12 @@
     "format:check": "prettier --check \"app/**/*.{ts,tsx,css}\""
   },
   "dependencies": {
-    "@navikt/aksel-icons": "^8.13.0",
-    "@navikt/ds-css": "^8.13.0",
-    "@navikt/ds-react": "^8.13.0",
+    "@navikt/aksel-icons": "^8.23.0",
+    "@navikt/ds-css": "^8.23.0",
+    "@navikt/ds-react": "^8.23.0",
     "@react-router/node": "^7.18.0",
     "@react-router/serve": "^7.18.0",
-    "isbot": "^5.1.43",
+    "isbot": "^5.2.3",
     "novari-frontend-components": "^7.0.2",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
