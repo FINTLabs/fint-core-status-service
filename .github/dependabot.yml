@@ -1,0 +1,165 @@
+version: 2
+registries:
+  fintlabs:
+    type: maven-repository
+    url: https://repo.fintlabs.no/releases
+updates:
+  - package-ecosystem: "gradle"
+    registries:
+      - fintlabs
+    directory: "/backend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Europe/Oslo"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "gradle"
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+    groups:
+      spring:
+        patterns:
+          - "org.springframework*"
+          - "org.springdoc*"
+          - "io.spring.gradle:*"
+      kotlin:
+        patterns:
+          - "org.jetbrains.kotlin*"
+          - "org.jetbrains.kotlinx*"
+      fint-novari:
+        patterns:
+          - "no.fint:*"
+          - "no.fintlabs:*"
+          - "no.novari:*"
+      gradle-plugins:
+        patterns:
+          - "com.github.ben-manes.versions"
+          - "se.patrikerdes.use-latest-versions"
+          - "org.jlleitschuh.gradle:*"
+      jackson:
+        patterns:
+          - "com.fasterxml.jackson*"
+      gradle-other-minor-patch:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+
+  - package-ecosystem: "npm"
+    directory: "/frontend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:15"
+      timezone: "Europe/Oslo"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "npm"
+    commit-message:
+      prefix: "deps"
+      prefix-development: "deps-dev"
+      include: "scope"
+    groups:
+      security-patches:
+        applies-to: security-updates
+        patterns: ["*"]
+        update-types: ["patch", "minor"]
+      react-router:
+        applies-to: version-updates
+        patterns:
+          - "react-router"
+          - "@react-router/*"
+      react:
+        applies-to: version-updates
+        patterns:
+          - "react"
+          - "react-dom"
+          - "@types/react"
+          - "@types/react-dom"
+      navikt:
+        applies-to: version-updates
+        patterns:
+          - "@navikt/*"
+      vite-tailwind:
+        applies-to: version-updates
+        patterns:
+          - "vite"
+          - "vite-*"
+          - "tailwindcss"
+          - "@tailwindcss/*"
+      production-minor-patch:
+        applies-to: version-updates
+        dependency-type: "production"
+        update-types: ["minor", "patch"]
+      development-minor-patch:
+        applies-to: version-updates
+        dependency-type: "development"
+        update-types: ["minor", "patch"]
+
+  - package-ecosystem: "docker"
+    directories:
+      - "/backend"
+      - "/frontend"
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
+      time: "06:00"
+      timezone: "Europe/Oslo"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "docker"
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+    groups:
+      docker-images:
+        patterns:
+          - "*"
+
+  - package-ecosystem: "docker-compose"
+    directory: "/backend"
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
+      time: "06:15"
+      timezone: "Europe/Oslo"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "docker-compose"
+    ignore:
+      - dependency-name: "confluentinc/cp-kafka"
+        update-types: ["version-update:semver-major"]
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+    groups:
+      docker-compose-images:
+        patterns:
+          - "*"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "wednesday"
+      time: "06:00"
+      timezone: "Europe/Oslo"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "github-actions"
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+    groups:
+      github-actions:
+        patterns:
+          - "*"
