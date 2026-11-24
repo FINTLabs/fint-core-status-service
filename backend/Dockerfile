@@ -1,4 +1,4 @@
-FROM gradle:9.7.1-jdk25 AS builder
+FROM gradle:9.9.2-jdk25 AS builder
 USER root
 COPY . .
 RUN ./gradlew --no-daemon bootJar
